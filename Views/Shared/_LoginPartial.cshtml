@@ -1,0 +1,22 @@
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+    {
+        @Html.AntiForgeryToken()
+
+            <li class="text-success">
+                @Html.ActionLink("Benvenuto " + User.Identity.GetUserName() + "", "Index", "User", routeValues: null, htmlAttributes: new { title = "Impostazioni" })
+            </li>
+            <li><a class="text-warning" href="javascript:document.getElementById('logoutForm').submit()">Disconnettiti</a></li>
+    }
+}
+else
+{
+        <li>@Html.ActionLink("Entra", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+}
+
+@if (ViewContext.HttpContext.User.IsInRole("Registrazioni"))
+{ 
+        <li>@Html.ActionLink("Registrati", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+}

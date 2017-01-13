@@ -1,0 +1,54 @@
+﻿@model SystemWeb.Models.Pv
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<section id="testimonial" class="block">
+    <div class="container">
+        <div id="review" class="owl-carousel owl-theme wow animated bounceInUp">
+            <div class="item">
+                <div class="center-block">
+                    <div class="header-content">
+                        <h4 class="alert-danger">Mediante il form seguente intraprenderai l'eliminazione permanente del Punto vendita, sicuro di procedere?</h4>
+                    </div>
+                    <dl class="media-middle" style="color:black">
+                        <dt>
+                            Compagnia
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Flag.Nome)
+                        </dd>
+
+                        <dt>
+                            ID Punto Vendita
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.pvID)
+                        </dd>
+
+                        <dt>
+                            Codice punto vendita
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.pvName)
+                        </dd>
+
+                    </dl>
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                            <input type="submit" value="Cancella" class="btn btn-danger" />
+                            <hr style="margin-top:10px; margin-bottom:5px"/>
+                            @Html.ActionLink("Torna Indietro", "Pv", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" })
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

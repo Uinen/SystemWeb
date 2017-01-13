@@ -1,0 +1,74 @@
+﻿@model SystemWeb.Models.ApplicationUser
+<section id="testimonial" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="header-content">
+                <h4 class="alert-info">Utente in Dettaglio</h4>
+            </div>
+            <dl class="center-block" style="color:black; border-color:#d8cfcf">
+                <dt>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.UserName)
+                </dd>
+                <dt>
+                </dt>
+                <dd>
+                </dd>
+            </dl>
+        </div>
+        <h4 class="alert-info">Lista per ruoli</h4>
+        <div id="no-more-tables">
+            @if (ViewBag.RoleNames.Count == 0)
+            {
+                <hr />
+                <p>Nessuna regola trovata per l'utente.</p>
+            }
+            <table class="col-md-12 table-bordered table-striped table-condensed">
+                @foreach (var item in ViewBag.RoleNames)
+                {
+                    <thead>
+                        <tr>
+                            <th>
+                                Ruolo
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-title="Ruolo">
+                                @item
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+            <h4 class="alert-info">Lista Provider associati</h4>
+            <table class="col-md-12 table-bordered table-striped table-condensed">
+                @foreach (var item in Model.Logins)
+                {
+                    <thead>
+                        <tr>
+                            <th>
+                                Providers
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-title="Providers">
+                                @Html.DisplayFor(modelItem => item.LoginProvider)
+                            </td>
+                        </tr>
+                    </tbody>
+                    }
+            </table>
+            <p>
+                @Html.ActionLink("Modifica", "UserAdminEdit", new { id = Model.Id }) |
+                @Html.ActionLink("Torna Indietro", "UserAdmin")
+            </p>
+        </div>
+    </div>
+</section>
+

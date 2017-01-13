@@ -1,0 +1,68 @@
+﻿@model IEnumerable<SystemWeb.Models.PvProfile>
+
+<section id="testimonial" class="block">
+    <div class="container-fluid">
+        <h4>Profilo Punto vendita</h4>
+        <div id="review" class="owl-carousel owl-theme wow animated bounceInUp">
+            <div class="item">
+                <div class="center-block">
+                        @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+                        {
+                        }
+                    <table class="table-condensed table-bordered" style="color:black; border-color:#d8cfcf">
+                        <tr>
+                            <th>
+                                Codice punto vendita
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Indirizzo)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Città)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Nazione)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Cap)
+                            </th>
+                            <th>
+                                @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+                                {
+
+                                    @Html.ActionLink("Crea nuovo profilo", "PvProfilesCreate")}
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Pv.pvName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Indirizzo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Città)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Nazione)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Cap)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Modifica", "PvProfilesEdit", new { id = item.PvProfileId }, new { @class = "client-name" })
+                                    @Html.ActionLink("Dettagli", "PvProfilesDetails", new { id = item.PvProfileId }, new { @class = "client-name" })
+                                    @Html.ActionLink("Cancella", "PvProfilesDelete", new { id = item.PvProfileId }, new { @class = "client-name" })
+                                </td>
+                            </tr>
+                        }
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

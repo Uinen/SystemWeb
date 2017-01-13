@@ -1,0 +1,50 @@
+﻿@model SystemWeb.Models.Notice
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Notice</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationUser.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationUser.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NoticeName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NoticeName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TextBox)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TextBox)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "NoticesEdit", new { id = Model.NoticeId }) |
+    @Html.ActionLink("Back to List", "Notices")
+</p>

@@ -1,0 +1,42 @@
+﻿@model SystemWeb.Models.Company
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Company</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RagioneSociale.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RagioneSociale.Nome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PartitaIva)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PartitaIva)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "CompaniesEdit", new { id = Model.CompanyId }) |
+    @Html.ActionLink("Back to List", "Companies")
+</p>

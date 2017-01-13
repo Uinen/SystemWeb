@@ -1,0 +1,52 @@
+﻿@model SystemWeb.Models.Pv
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <section id="testimonial" class="block">
+        <div class="container">
+                <div class="row">
+                    <div class="center-block">
+                        <div class="col-sm-offset-2 col-sm-8 wow animated bounceInUp">
+                            <div class="header-content">
+                                <h4 class="alert-info">Mediante il form seguente potrai modificare il Punto Vendita</h4>
+                            </div>
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.pvID)
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.pvName, "Pv", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="">
+                                    @Html.EditorFor(model => model.pvName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.pvName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.pvFlagId, "Compagnia", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="">
+                                    @Html.DropDownList("pvFlagId", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.pvFlagId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-pull-12">
+                                    <input type="submit" value="Save" class="btn btn-default" />
+                                </div>
+                                <hr/>
+                                <div class="col-xs-pull-0">
+                                    @Html.ActionLink("Torna Indietro", "Pv", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </section>
+}                         @section Scripts {
+                            @Scripts.Render("~/bundles/jqueryval")
+                        }

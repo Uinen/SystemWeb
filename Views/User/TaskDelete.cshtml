@@ -1,0 +1,53 @@
+﻿@model SystemWeb.Models.CompanyTask
+
+@{
+    ViewBag.Title = "Delete";
+}
+<h3>Sicuro di voler cancellare l'utente seguente?</h3>
+<div>
+    <h4>CompanyTask</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationUser.UserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FieldChiusura)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FieldChiusura)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FieldDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FieldDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FieldResult)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FieldResult)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Cancella" class="btn btn-default" /> |
+            @Html.ActionLink("Torna Indietro", "Task")
+        </div>
+    }
+</div>

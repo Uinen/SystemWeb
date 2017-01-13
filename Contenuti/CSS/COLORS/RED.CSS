@@ -1,0 +1,52 @@
+/* main Color #E94B35 */
+
+
+.fixed, 
+#sidebar-wrapper,
+.banner-overlay, 
+#footer, 
+.contact-submit:hover, 
+.btn-custom {
+    background-color: #E94B35;
+}
+
+#bigfeatures i, 
+.feature-box i, 
+.feature-list li i, 
+.gallery-nav, 
+.contact-submit {
+    color: #E94B35;
+}
+
+.btn-custom, 
+.mailchimp input[type="email"], 
+.contact-submit, 
+#contactForm input:active, 
+#contactForm textarea:active, 
+#contactForm input:hover, 
+#contactForm textarea:hover {
+    border-color: #E94B35;
+}
+
+.back-to-top {
+    background: #dadada;
+    border-color: #ccc;
+}
+
+.back-to-top:hover {
+    background: gray;
+    border-color: #888;
+}
+
+
+
+.bg-color-grad{
+	background: #ea8b1d; /* Old browsers */
+	background: -moz-linear-gradient(top,  #ea8b1d 0%, #e94b35 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ea8b1d), color-stop(100%,#e94b35)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #ea8b1d 0%,#e94b35 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #ea8b1d 0%,#e94b35 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #ea8b1d 0%,#e94b35 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #ea8b1d 0%,#e94b35 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ea8b1d', endColorstr='#e94b35',GradientType=0 ); /* IE6-9 */
+}

@@ -1,0 +1,38 @@
+@model SystemWeb.Models.LoginViewModel
+
+<section id="login" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-4 col-md-offset-4">
+                <h2 class="text-center login-title">Accedi per continuare con Gestionidirette</h2>
+                <div class="account-wall">
+                    <img class="profile-img" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="">
+                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-signin", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+                        @Html.LabelFor(m => m.UserName)
+                        <br/>
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.UserName)
+                        <br/>
+                        @Html.LabelFor(m => m.Password)
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        <br/>
+                        @Html.ValidationMessageFor(m => m.Password)
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Accedi</button>
+                        <label class="checkbox pull-left">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </label>
+                        <a href="#" class="pull-right need-help">Hai bisogno d'aiuto? </a><span class="clearfix"></span>
+                    }
+                </div>
+                <!--<a href="#" class="text-center new-account">Create an account </a>-->
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,45 @@
+﻿@model SystemWeb.Models.EditUserViewModel
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+    @Html.HiddenFor(model => model.Id)
+
+    <section id="testimonial" class="block">
+        <div class="container">
+            <div class="row">
+                <div class="center-block">
+                    <div class="header-content">
+                        <h4 class="alert-info">Modifica l'utente selezionato</h4>
+                    </div>
+                    <fieldset class="form-horizontal">
+                        <div class="control-group">
+                            @Html.LabelFor(m => m.Username, new { @class = "control-label" })
+                            <div class="controls">
+                                @Html.TextBoxFor(m => m.Username)
+                            </div>
+                        </div>
+
+                        <h4 class="alert-info">Modifica il ruolo utente</h4>
+                        <div class="form-group">
+                            @Html.Label("Ruoli", new { @class = "control-label col-md-2" })
+                            <span class=" col-md-10">
+                                @foreach (var item in Model.RolesList)
+                                {
+                                    <input type="checkbox" name="SelectedRole" value="@item.Value" checked="@item.Selected" class="checkbox-inline" />
+                                    @Html.Label(item.Value, new { @class = "control-label" })
+                                }
+                            </span>
+                        </div>
+                        <div class="form-actions no-color">
+                            <input type="submit" value="Modifica" class="btn" />
+                        </div>
+                    </fieldset>
+                    @section Scripts {
+                        @Scripts.Render("~/Bundle/jqueryval")
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}

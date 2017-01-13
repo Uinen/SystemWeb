@@ -1,0 +1,108 @@
+﻿@model SystemWeb.Models.Carico
+
+@{
+    ViewBag.Title = "Dettagli";
+}
+<section id="testimonial" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="header-content">
+                <h4 class="alert-info">Ordine in Dettaglio</h4>
+            </div>
+            <dl class="center-block" style="color:black; border-color:#d8cfcf">
+                <dt>
+                    Codice punto vendita
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Pv.pvName)
+                </dd>
+
+                <dt>
+                    Anno Finanziario
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Year.yearId)
+                </dd>
+
+                <dt>
+                    Numero Ordine
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Ordine)
+                </dd>
+
+                <dt>
+                    Data ricezione merce
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.cData)
+                </dd>
+
+                <dt>
+                    Documento
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Documento)
+                </dd>
+
+                <dt>
+                    Numero
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Numero)
+                </dd>
+
+                <dt>
+                    Data emissione
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.rData)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Emittente)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Emittente)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Benzina)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Benzina)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Gasolio)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Gasolio)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Note)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Note)
+                </dd>
+
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Modifica", "CaricoEdit", routeValues: null, htmlAttributes: new { id = Model.pvID, @class = "btn btn-danger" })&nbsp&nbsp&nbsp&nbsp&nbsp
+            @Html.ActionLink("Torna Indietro", "Carico", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" })
+        </p>
+        </div>
+    </section>

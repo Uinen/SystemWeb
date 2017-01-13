@@ -1,0 +1,60 @@
+﻿@model IEnumerable<SystemWeb.Models.Pv>
+
+@{
+    ViewBag.Title = "Index";
+}
+<section id="pv" class="block">
+    <div class="container">
+            <div class="row">
+                <div class="center-block">
+                    <div class="header-content">
+                        <h4 class="alert alert-info">Lista di tutti i punti vendita registrati sul Database</h4>
+                    </div>
+                    <p>
+                        @Html.ActionLink("Crea nuovo punto vendita", "PvCreate")
+                    </p>
+                    <div id="no-more-tables">
+                        <table class="col-md-12 table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Bandiera
+                                    </th>
+                                    <th>
+                                        ID Punto Vendita
+                                    </th>
+                                    <th>
+                                        Punto Vendita
+                                    </th>
+                                    <th>
+                                    </th>
+                                </tr>
+                            </thead>
+                            @foreach (var item in Model)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td data-title="Bandiera">
+                                            @Html.DisplayFor(modelItem => item.Flag.Nome)
+                                        </td>
+                                        <td data-title="ID Punto Vendita">
+                                            @Html.DisplayFor(modelItem => item.pvID)
+                                        </td>
+                                        <td data-title="Punto Vendita">
+                                            @Html.DisplayFor(modelItem => item.pvName)
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Modifica", "PvEdit", new { id = item.pvID }) |
+                                            @Html.ActionLink("Dettagli", "PvDetails", new { id = item.pvID }) |
+                                            @Html.ActionLink("Cancella", "PvDelete", new { id = item.pvID })
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            }
+
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>

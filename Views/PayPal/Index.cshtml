@@ -1,0 +1,35 @@
+﻿@{
+ViewBag.Title = " Home Page ";
+}
+@using (Html.BeginForm("ValidateCommand", "PayPal"))
+{
+    <section id="gold">
+    <div>
+        <table>
+            <tr>
+                <td>
+                    Nome prodotto
+                </td>
+                <td>
+                    <input type="text" name="product" value="Pacchetto Gold" readonly />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Prezzo Totale:
+                </td>
+                <td>
+                    €<input type="text" name="totalPrice" value="10" readonly />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" name="btnConfirm" value="Conferma ordine" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    </section>
+}
+

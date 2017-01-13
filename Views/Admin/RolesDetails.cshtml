@@ -1,0 +1,40 @@
+﻿@model SystemWeb.Models.ApplicationRole
+<section id="testimonial" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="header-content">
+                <h4 class="alert-info">Ruolo in dettaglio</h4>
+            </div>
+            <dl class="center-block" style="color:black; border-color:#d8cfcf">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+            </dl>
+        </div>
+        <h4 class="alert-info">Utenti nel ruolo seguente</h4>
+        <div id="no-more-tables">
+            @if (ViewBag.UserCount == 0)
+            {
+                <hr />
+                <p>Non è presente nessun utente in questo ruolo.</p>
+            }
+            <table class="col-md-12 table-bordered table-striped table-condensed">
+                @foreach (var item in ViewBag.Users)
+                {
+                    <tr>
+                        <td>
+                            @item.UserName
+                        </td>
+                    </tr>
+                }
+            </table>
+            <p>
+                @Html.ActionLink("Modifica", "RolesEdit", new { id = Model.Id }) |
+                @Html.ActionLink("Torna Indietro", "Roles")
+            </p>
+        </div>
+    </div>
+</section>

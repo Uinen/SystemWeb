@@ -1,0 +1,36 @@
+﻿@model SystemWeb.Models.Pv
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<section id="testimonial" class="block">
+    <div class="container">
+            <div class="row">
+                <div class="header-content">
+                    <h4 class="alert-info">Punto Vendita in Dettaglio</h4>
+                </div>
+                <dl class="center-block" style="color:black; border-color:#d8cfcf">
+                    <dt>
+                        Compagnia
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Flag.Nome)
+                    </dd>
+                    <dt>
+                        Codice Punto vendita
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.pvName)
+                    </dd>
+                </dl>
+                <p>
+                    @Html.ActionLink("Modifica", "PvEdit", routeValues: null, htmlAttributes: new { id = Model.pvID, @class = "btn btn-danger" })&nbsp&nbsp&nbsp&nbsp&nbsp
+                    @Html.ActionLink("Torna Indietro", "Pv", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" })
+                </p>
+            </div>
+    </div>
+</section>
+                

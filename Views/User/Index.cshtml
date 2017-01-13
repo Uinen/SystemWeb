@@ -1,0 +1,326 @@
+﻿@using SystemWeb.Models
+@using Microsoft.AspNet.Identity
+
+@model UserIndexViewModel
+
+<section id="user" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                <div class="header-content">
+                    <h3 class="alert alert-info"><strong>Dashboard Utente</strong></h3>
+                    @if (Request.IsAuthenticated)
+                    {
+                        <div class="bounceOutDown">
+                            <p class="text-primary">Benvenuto <strong>@User.Identity.GetUserName()</strong></p>
+
+                            @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+                            {
+                            <p class="text-center text-danger">
+                                Il Sistema ha rilevato che appartieni al ruolo <strong>Amministratori</strong> se vuoi puoi amministrare
+                                il sito web navigando a questo @Html.ActionLink("Indirizzo", "Index", "Admin")
+                            </p>
+                            }
+                            <p class="text-center">L'impianto ha venduto un totale di <strong>@ViewBag.SSPBTotalAmount</strong> Lt di Benzina Super Senza Piombo, ed un totale di <strong>@ViewBag.DieselTotalAmount</strong> Lt di Gasolio, per un totale di <strong>@ViewBag.TotalAmount</strong>Lt.</p>
+                            <p class="text-center">L'impianto è tutt'ora in appalto a <strong>@ViewBag.CompanyId</strong> con Operatore <strong>@ViewBag.ProfileSurname @ViewBag.ProfileName</strong></p>
+                        </div>
+                    }
+                    <div id="no-more-tables">
+                        <table class="col-md-12 table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Link Utili</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                  @*<td data-title="1">@Html.ActionLink("Inserimento Password", "Area")</td>*@
+                                    <td data-title="1">@Html.ActionLink("Lista Ordini", "Carico")</td>
+                                  @*<td data-title="2">@Html.ActionLink("Gestione Azienda", "Companies")</td>*@
+                                    <td data-title="2">@Html.ActionLink("Inserimento Totalizzatori", "PvErogatoriCreate", "User")</td>
+                                  @*<td data-title="5">@Html.ActionLink("Consistenza Cassa", "Task")</td>*@
+                                    <td data-title="3">@Html.ActionLink("Inserimento Deficienze", "PvDeficienzeCreate")</td>
+                                    <td data-title="4">@Html.ActionLink("Lista Deficienze", "PvDeficienze")</td>
+                                    <td data-title="5">@Html.ActionLink("Inserimento Cali", "PvCaliCreate")</td>
+                                    <td data-title="6">@Html.ActionLink("Lista Cali", "PvCali")</td>
+                                    <td data-title="7">@Html.ActionLink("Lista Contatori", "PvErogatori")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="features">
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+                {
+                    <div class="header-content">
+                        <h4 class="alert alert-info">Lista di tutti i punti vendita registrati sul Database</h4>
+                    </div>
+                    <div id="no-more-tables">
+                        <table class="col-md-12 table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Bandiera
+                                    </th>
+                                    <th>
+                                        ID Punto Vendita
+                                    </th>
+                                    <th>
+                                        Punto Vendita
+                                    </th>
+                                </tr>
+                            </thead>
+                            @foreach (var item in Model.pv)
+                            {
+                            <tbody>
+                                <tr>
+                                    <td data-title="Bandiera">
+                                        @Html.DisplayFor(modelItem => item.Flag.Nome)
+                                    </td>
+                                    <td data-title="ID Punto Vendita">
+                                        @Html.DisplayFor(modelItem => item.pvID)
+                                    </td>
+                                    <td data-title="Punto Vendita">
+                                        @Html.DisplayFor(modelItem => item.pvName)
+                                    </td>
+                                </tr>
+                            </tbody>
+                            }
+
+                        </table>
+                    </div>
+                }
+                <br />
+                <div class="header-content">
+                    <h4 class="alert alert-info">
+                        Dati Punto Vendita
+                    </h4>
+                </div>
+                <br />
+                <div id="no-more-tables">
+                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Codice punto vendita
+                                </th>
+                                <th>
+                                    Indirizzo
+                                </th>
+                                <th>
+                                    Città
+                                </th>
+                                <th>
+                                    Nazione
+                                </th>
+                                <th>
+                                    Cap
+                                </th>
+                                <th>
+                                    @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+                                    {
+
+                                    @Html.ActionLink("Crea nuovo profilo", "PvProfilesCreate")
+                                    }
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model.pvprofile)
+                        {
+                        <tbody>
+                            <tr>
+                                <td data-title="Codice punto vendita">
+                                    @Html.DisplayFor(modelItem => item.Pv.pvName)
+                                </td>
+                                <td data-title="Indirizzo">
+                                    @Html.DisplayFor(modelItem => item.Indirizzo)
+                                </td>
+                                <td data-title="Città">
+                                    @Html.DisplayFor(modelItem => item.Città)
+                                </td>
+                                <td data-title="Nazione">
+                                    @Html.DisplayFor(modelItem => item.Nazione)
+                                </td>
+                                <td data-title="Cap">
+                                    @Html.DisplayFor(modelItem => item.Cap)
+                                </td>
+                            </tr>
+                        </tbody>
+                        }
+                    </table>
+                </div>
+                <br/>
+                <div class="header-content">
+                    <h4 class="alert alert-info">Trend Ordini</h4>
+                </div>
+                <br />
+                <div>
+                    @Html.Partial("CaricoChart")
+                </div>
+                <br />
+                <div class="header-content">
+                    <h4 class="alert alert-info">Registra Ordine</h4>
+                </div>
+                <br />
+                <div>
+                    @Html.Partial("CaricoCreate", new SystemWeb.Models.Carico { })
+                </div>
+                <br />
+                    @using (Html.BeginForm("Dispenser", "User", FormMethod.Get))
+                    {
+                        <div class="header-content">
+                            <h4 class="alert alert-info">
+                                Dispenser Assegnati
+                            </h4>
+                            <p class="text-primary">
+                                Trova il Modello: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                                <input type="submit" value="Cerca" />
+                            </p>
+                        </div>
+                    }
+                <br />
+                <div id="no-more-table">
+                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Cisterna collegata al Dispenser
+                                </th>
+                                <th>
+                                    @Html.ActionLink("Modello Dispenser", "Dispenser", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+                                </th>
+                                <th>
+                                    ID Punto Vendita
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model.dispenser)
+                        {
+                        <tbody>
+                            <tr>
+                                <td data-title="Cisterna">
+                                    @Html.DisplayFor(modelItem => item.PvTank.Modello)
+                                </td>
+                                <td data-title="Modello">
+                                    @Html.DisplayFor(modelItem => item.Modello)
+                                </td>
+                                <td data-title="ID Punto vendita">
+                                    @Html.DisplayFor(modelItem => item.PvTank.pvID)
+                                </td>
+                            </tr>
+                        </tbody>
+                        }
+                    </table>
+                </div>
+                <br />
+                <div class="header-content">
+                    <h4 class="alert alert-info">
+                        Cisterne Assegnate
+                    </h4>
+                </div>
+                <br />
+                <div id="no-more-tables">
+                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Prodotto
+                                </th>
+                                <th>
+                                    Punto Vendita
+                                </th>
+                                <th>
+                                    Modello
+                                </th>
+                                <th>
+                                    Ultima Riconciliazione
+                                </th>
+                                <th>
+                                    Giacenza
+                                </th>
+                                <th>
+                                    Capienza
+                                </th>
+                                <th>
+                                    Descrizione
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (SystemWeb.Models.PvTank item in Model.pvtank)
+                        {
+                        <tbody>
+                            <tr>
+                                <td data-title="Prodotto">
+                                    @Html.DisplayFor(modelItem => item.Product.Nome)
+                                </td>
+                                <td data-title="Punto Vendita">
+                                    @Html.DisplayFor(modelItem => item.Pv.pvName)
+                                </td>
+                                <td data-title="Modello">
+                                    @Html.DisplayFor(modelItem => item.Modello)
+                                </td>
+                                <td data-title="Ultima Riconciliazione">
+                                    @Html.DisplayFor(modelItem => item.LastDate)
+                                </td>
+                                <td data-title="Giacenza">
+                                    @Html.DisplayFor(modelItem => item.Giacenza)
+                                </td>
+                                <td data-title="Capienza">
+                                    @Html.DisplayFor(modelItem => item.Capienza)
+                                </td>
+                                <td data-title="Descrizione">
+                                    @Html.DisplayFor(modelItem => item.Descrizione)
+                                </td>
+                            </tr>
+                        </tbody>
+                        }
+                    </table>
+                </div>
+                <!--
+                <div class="item">
+                    <canvas id="myCanvas" width="144" height="50"></canvas>
+                </div>
+                <script>
+                        var canvas = document.getElementById('myCanvas');
+                        var context = canvas.getContext('2d');
+                        context.canvas.width = window.innerWidth;
+                        context.canvas.height = window.innerHeight;
+
+                        var width = Math.ceil(window.innerWidth / 16);
+                        var height = Math.ceil(window.innerHeight / 16);
+                        var imgs = [];
+                        var imgIndex = 0;
+                        for (var x = 0; x < width; x++) {
+                            for (var y = 0; y < height; y++) {
+                                var rand = Math.floor(Math.random() * 11);
+                                var texLoc = "http://4vector.com/i/free-vector-gas-pump-clip-art_110105_Gas_Pump_clip_art_hight.png";
+
+                                imgs[imgIndex] = new Image();
+                                
+                                imgs[imgIndex].onload = $.getJSON("Url.Action("MapDesigner", "User")", null, function (mapData) {
+                                    $.each(mapData, function (i, item) {
+                                        var thisX = x * 16;
+                                        var thisY = y * 16;
+                                        return function () {
+                                            context.drawImage(this, thisX, thisY);
+                                        };
+                                    });
+                                });
+                                imgs[imgIndex].src = texLoc;
+                                imgIndex += 1;
+                            }
+                        }
+                </script>-->
+
+            </div>
+        </div>
+    </div>
+</section>
+

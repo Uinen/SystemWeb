@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SystemWeb.Models.PvTankDesc>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PvTank.Modello)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PvTankCM)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PvTankLT)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.PvTank.Modello)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PvTankCM)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PvTankLT)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.PvTankDescId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.PvTankDescId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.PvTankDescId })
+        </td>
+    </tr>
+}
+
+</table>

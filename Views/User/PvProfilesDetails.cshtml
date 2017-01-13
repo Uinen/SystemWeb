@@ -1,0 +1,58 @@
+﻿@model SystemWeb.Models.PvProfile
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>PvProfile</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Pv.ApplicationUser)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pv.ApplicationUser)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Indirizzo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Indirizzo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Città)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Città)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nazione)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nazione)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Cap)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cap)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "PvProfilesEdit", new { id = Model.PvProfileId }) |
+    @Html.ActionLink("Back to List", "PvProfiles")
+</p>

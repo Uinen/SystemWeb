@@ -1,0 +1,42 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+<section id="bigfeatures" class="img-block-3col block">
+    <div class="container">
+        <div class="title-box">
+            <h1 class="block-title wow animated zoomIn">
+                <span class="bb-top-left"></span>
+                <span class="bb-bottom-left"></span>
+                Pagina non trovata
+                <span class="bb-top-right"></span>
+                <span class="bb-bottom-right"></span>
+            </h1>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4">
+                <ul class="item-list-big">
+                    <li class="wow fadeInLeft animated">
+                        <h3>Possibili cause</h3>
+                        <p>L'Url richiesto non è presente nei nostri server. Di seguito alcune informazioni</p>
+                        @if (Model != null && HttpContext.Current.IsDebuggingEnabled)
+                        {
+                            <div class="item">
+                                <p>
+                                    <b>Eccezzione:</b> @Model.Exception.Message<br />
+                                    <b>Controller:</b> @Model.ControllerName<br />
+                                    <b>Azione:</b> @Model.ActionName
+                                </p>
+                                <div style="overflow:scroll">
+                                    <pre>@Model.Exception.StackTrace</pre>
+                                </div>
+                            </div>
+                        }
+                    </li>
+                    <li class="wow fadeInLeft animated">
+                        @Html.ActionLink("Torna Indietro", "Index","Home")
+                    </li>
+                </ul>
+            </div>
+         </div>
+    </div>
+</section>

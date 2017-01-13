@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SystemWeb.Models.ApplicationRole>
+<section id="testimonial" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                <div class="header-content">
+                    <h4 class="alert-info">Lista di tutti i ruoli presenti sul sito</h4>
+                    <h5 class="alert-info">
+                        @Html.ActionLink("Nuovo", "RolesCreate")
+                    </h5>
+                </div>
+                <div id="no-more-tables">
+                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Name)
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td data-title="Name">
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Modifica", "RolesEdit", new { id = item.Id }) |
+                                        @Html.ActionLink("Dettagli", "RolesDetails", new { id = item.Id }) |
+                                        @Html.ActionLink("Cancella", "RolesDelete", new { id = item.Id })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

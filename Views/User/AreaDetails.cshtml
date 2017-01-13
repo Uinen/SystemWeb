@@ -1,0 +1,56 @@
+﻿@model SystemWeb.Models.UserArea
+
+@{
+    ViewBag.Title = "Details";
+}
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Utente
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationUser.UserName)
+        </dd>
+
+        <dt>Account
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserFieldAccount)
+        </dd>
+
+        <dt>
+            Codice cliente
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserFieldUsername)
+        </dd>
+
+        <dt>
+            Password
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserFieldPassword)
+        </dd>
+
+        <dt>
+            Data inserimento
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+@if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+{ 
+    @Html.ActionLink("Modifica", "AreaEdit", new { id = Model.UserAreaId })
+}
+    @Html.ActionLink("Torna Indietro", "Area")
+</p>

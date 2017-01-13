@@ -1,0 +1,53 @@
+﻿@using SystemWeb.Models
+@model IEnumerable<Notice>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "NoticesCreate")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NoticeName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TextBox)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model ) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NoticeName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreateDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TextBox)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "NoticesEdit", new { id = item.NoticeId }) |
+            @Html.ActionLink("Details", "NoticesDetails", new { id = item.NoticeId }) |
+            @Html.ActionLink("Delete", "NoticesDelete", new { id = item.NoticeId })
+            @Html.ActionLink("RSS", "RssFeed", new { NoticeName = item.NoticeName, CreateDate = item.CreateDate, TextBox = item.TextBox, UsersId = item.ApplicationUser.UserName, Description = item.Description }, new { target = "_blank" })
+        </td>
+    </tr>
+}
+
+</table>

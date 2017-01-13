@@ -1,0 +1,57 @@
+﻿@model SystemWeb.Models.PvErogatori
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>PvErogatori</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Dispenser.Modello)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dispenser.Modello)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Product.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Product.Nome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Pv.pvName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pv.pvName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Value)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Value)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FieldDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FieldDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "PvErogatoriEdit", new { id = Model.PvErogatoriId }) |
+    @Html.ActionLink("Back to List", "PvErogatori")
+</p>

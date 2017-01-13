@@ -1,0 +1,58 @@
+﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+
+    // Carica l'API di visualizzazione e il pacchetto annotationchart.
+    google.charts.load('current', { 'packages': ['annotationchart'] });
+
+    // Imposta un callback da eseguire quando l'API di visualizzazione di Google viene caricata.
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = new google.visualization.DataTable();
+
+        //Inizializzo le colonne
+        data.addColumn('date', 'Data');
+        data.addColumn('number', 'Benzina');
+        data.addColumn('number', 'Gasolio');
+        data.addColumn('string', 'Ordine');
+
+        //Richiesta Json..
+        $.getJSON("@Url.Action("CaricoGetChart")", null, function (chartData) {
+            $.each(chartData, function (i, item) {
+                data.addRow([new Date(item.dty, item.dtm, item.dtd), item.sspb, item.dsl, item.ord]);
+            });
+
+            var options = {
+                title: 'Carico',
+                curveType: "function",
+                displayAnnotations: true,
+                dateFormat: "yyyy, MMM dd",
+                hAxis:{
+                    format: "yyyy, MMM dd"
+                },
+                vAxis:
+                    {
+                        minValue: 1,
+                        maxValue: 10000
+                    }
+            };
+
+            function resize() {
+                chart.draw(data, options);
+            }
+            if (window.addEventListener) {
+                window.addEventListener('resize', resize);
+            }
+            else {
+                window.attachEvent('onresize', resize);
+            }
+
+            var chart = new google.visualization.AnnotationChart(document.getElementById('curve_chart'));
+            chart.draw(data, options);
+        });
+    }
+    </script>
+<div id="curve_chart"></div>
+

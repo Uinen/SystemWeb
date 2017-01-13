@@ -1,0 +1,61 @@
+﻿@model PagedList.IPagedList<SystemWeb.Models.Dispenser>
+@using PagedList.Mvc;
+<link href="~/Contenuti/css/PagedList.min.css" rel="stylesheet" type="text/css" />
+
+<section id="testimonial" class="block">
+    <div class="container">
+        <div id="review" class="owl-carousel owl-theme wow animated bounceInUp">
+            <div class="item">
+                <div class="center-block">
+                    @using (Html.BeginForm("Dispenser", "User", FormMethod.Get))
+                    {
+                        <p class="text-primary">
+                            Trova il Modello: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                            <input type="submit" value="Cerca" />
+                        </p>
+                    }
+                    <table class="table-condensed table-bordered table-responsive" style="color:black; border-color:#d8cfcf">
+                        <tr>
+                            <th>
+                                Cisterna collegata al Dispenser
+                            </th>
+                            <th>
+                                @Html.ActionLink("Modello Dispenser", "Dispenser", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+                            </th>
+                            <th>
+                                ID Punto Vendita
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PvTank.Modello)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Modello)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PvTank.pvID)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Crea Nuovo", "DispenserCreate")
+                                    @Html.ActionLink("Modifica", "DispenserEdit", new { id = item.DispenserId }) |
+                                    @Html.ActionLink("Dettagli", "DispenserDetails", new { id = item.DispenserId }) |
+                                    @Html.ActionLink("Cancella", "DispenserDelete", new { id = item.DispenserId })
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
+                    <br />
+                    Pagina @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) di @Model.PageCount
+
+                    @Html.PagedListPager(Model, page => Url.Action("Dispenser",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

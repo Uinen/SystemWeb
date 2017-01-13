@@ -1,0 +1,46 @@
+﻿
+    @model IEnumerable<SystemWeb.Models.Product>
+
+    @{
+        ViewBag.Title = "Index";
+    }
+
+    <h2>Index</h2>
+
+    <p>
+        @Html.ActionLink("Create New", "ProductsCreate")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Peso)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prezzo)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Peso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prezzo)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "ProductsEdit", new { id = item.ProductId }) |
+                @Html.ActionLink("Details", "ProductsDetails", new { id = item.ProductId }) |
+                @Html.ActionLink("Delete", "ProductsDelete", new { id = item.ProductId })
+            </td>
+        </tr>
+    }
+
+    </table>

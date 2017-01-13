@@ -1,0 +1,58 @@
+﻿@model IEnumerable<SystemWeb.Models.UserArea>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<p>
+    @Html.ActionLink("Crea nuovo", "AreaCreate")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Utente
+        </th>
+        <th>
+            Account
+        </th>
+        <th>
+            Codice cliente
+        </th>
+        <th>
+            Password
+        </th>
+        <th>
+            Data inserimento
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserFieldAccount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserFieldUsername)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserFieldPassword)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreateDate)
+        </td>
+        <td>
+            @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+            {
+                @Html.ActionLink("Modifica", "AreaEdit", new { id = item.UserAreaId }) 
+                @Html.ActionLink("Cancella", "AreaDelete", new { id = item.UserAreaId })
+            }
+            @Html.ActionLink("Dettagli", "AreaDetails", new { id = item.UserAreaId }) 
+        </td>
+    </tr>
+}
+
+</table>

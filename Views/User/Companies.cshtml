@@ -1,0 +1,39 @@
+﻿@model IEnumerable<SystemWeb.Models.Company>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Nuova azienda", "CompaniesCreate")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Azienda
+        </th>
+        <th>
+            Partita Iva
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name) @Html.DisplayFor(modelItem => item.RagioneSociale.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PartitaIva)
+        </td>
+        <td>
+            @Html.ActionLink("Modifica", "CompaniesEdit", new { id = item.CompanyId }) |
+            @Html.ActionLink("Dettagli", "CompaniesDetails", new { id = item.CompanyId }) |
+            @Html.ActionLink("Cancella", "CompaniesDelete", new { id = item.CompanyId })
+        </td>
+    </tr>
+}
+
+</table>

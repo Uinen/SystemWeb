@@ -1,0 +1,30 @@
+﻿@model SystemWeb.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Strumento elimina utenti";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>Utenti</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Torna Indietro", "UserAdmin")
+        </div>
+    }
+</div>

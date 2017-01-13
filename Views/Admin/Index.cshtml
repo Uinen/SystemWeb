@@ -1,0 +1,163 @@
+﻿@using SystemWeb.Models
+@model AdminIndexViewModel
+
+<section id="testimonial" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                <div class="header-content-inner">
+                    <h3 class="alert-info">Lista di tutte le azioni sul sito</h3>
+                    <h4 class="alert-info">
+                        Prodotti registrati 
+                    </h4>
+                    <div id="no-more-tables">
+                        <table class="col-md-12 table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th><small>Link Utili</small></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-title="Link Utili">
+                                        <a href="#" data-reveal-id="myModal" data-animation="fadeAndPop" data-animationspeed="300" data-closeonbackgroundclick="true" data-dismissmodalclass="close-reveal-modal">Click for a modal</a>	
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="no-more-tables">
+                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Nome
+                                </th>
+                                <th>
+                                    Peso
+                                </th>
+                                <th>
+                                    Prezzo
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (Product item in Model.prodotto)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td data-title="Nome">
+                                        @Html.DisplayFor(modelItem => item.Nome)
+                                    </td>
+                                    <td data-title="Peso">
+                                        @Html.DisplayFor(modelItem => item.Peso)
+                                    </td>
+                                    <td data-title="Prezzo">
+                                        @Html.DisplayFor(modelItem => item.Prezzo)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Dettagli", "ProductsDetails", new { id = item.ProductId }) |
+                                        @Html.ActionLink("Modifica", "ProductsEdit", new { id = item.ProductId }) |
+                                        @Html.ActionLink("Cancella", "ProductsDelete", new { id = item.ProductId })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        }
+                    </table>
+                </div>
+                <hr />
+                <div id="no-more-tables">
+                    <div class="header-content-inner">
+                        <h4 class="alert-info">
+                            Bandiere registrate
+                        </h4>
+                        <div id="no-more-tables">
+                            <table class="col-md-12 table-bordered table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th><small>Link Utili</small></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-title="Link Utili">
+                                            @Html.ActionLink("Nuova", "FlagsCreate")
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Nome
+                                </th>
+                                <th>
+                                    Descrizione
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (Flag item in Model.flag)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td data-title="Nome">
+                                        @Html.DisplayFor(modelItem => item.Nome)
+                                    </td>
+                                    <td data-title="Descrizione">
+                                        @Html.DisplayFor(modelItem => item.Descrizione)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Dettagli", "FlagsDetails", new { id = item.pvFlagId })
+                                        @Html.ActionLink("Modifica", "FlagsEdit", new { id = item.pvFlagId })
+                                        @Html.ActionLink("Cancella", "FlagsDelete", new { id = item.pvFlagId })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        }
+                    </table>
+                </div>
+                <hr />
+                <div id="no-more-tables">
+                    <div class="header-content-inner">
+                        <h4 class="alert-info">
+                            Utenti registrati
+                        </h4>
+                        @using (Html.BeginForm("UserAdmin", "Admin", FormMethod.Get))
+                        {
+                            <p>
+                                Trova il nome utente: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                                <input type="submit" value="Cerca" />
+                            </p>
+                        }
+                    </div>
+                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.ActionLink("Utenti", "UserAdmin", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (ApplicationUser item in Model.utente)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td data-title="Utenti">
+                                        @Html.DisplayFor(modelItem => item.UserName)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

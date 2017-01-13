@@ -1,0 +1,48 @@
+﻿@model SystemWeb.Models.CompanyTask
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div>
+    <h4>CompanyTask</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationUser.UserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FieldChiusura)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FieldChiusura)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FieldDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FieldDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FieldResult)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FieldResult)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Modifica", "TaskEdit", new { id = Model.CompanyTaskId }) |
+    @Html.ActionLink("Torna Indietro", "Task")
+</p>

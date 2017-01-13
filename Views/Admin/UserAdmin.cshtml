@@ -1,0 +1,53 @@
+﻿@model PagedList.IPagedList<SystemWeb.Models.ApplicationUser>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Amministrazione Utenti";
+}
+<section id="testimonial" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                <div class="header-content">
+                    <h4 class="alert-info">Lista di tutti gli utenti registrati sul sito</h4>
+                </div>
+                @using (Html.BeginForm("UserAdmin", "Admin", FormMethod.Get))
+                {
+                    <p>
+                        Trova il nome utente: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                        <input type="submit" value="Cerca" />
+                    </p>
+                }
+                    <p>
+                        @Html.ActionLink("Crea nuovo", "UserAdminCreate")
+                    </p>
+                <div id="no-more-tables">
+                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.ActionLink("Utenti", "UserAdmin", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model)
+                        {
+                            <tbody>
+                            <tr>
+                                <td data-title="Utenti">
+                                    @Html.DisplayFor(modelItem => item.UserName)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Modifica", "UserAdminEdit", new { id = item.Id }) |
+                                    @Html.ActionLink("Dettagli", "UserAdminDetails", new { id = item.Id }) |
+                                    @Html.ActionLink("Cancella", "UserAdminDelete", new { id = item.Id })
+                                </td>
+                            </tr>
+                            </tbody>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

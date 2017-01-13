@@ -1,0 +1,76 @@
+﻿@model PagedList.IPagedList<SystemWeb.Models.CompanyTask>
+@using PagedList.Mvc;
+<link href="~/Contenuti/css/PagedList.min.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Index";
+}
+<section id="testimonial" class="block">
+    <div class="container">
+            <div class="row">
+                <div class="center-block">
+                    @using (Html.BeginForm("Task", "User", FormMethod.Get))
+                    {
+                        <p class="text-primary">
+                            Cerca per data: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                            <input type="submit" value="Cerca" />
+                        </p>
+                    }
+                    <p>
+                        @Html.ActionLink("Crea nuovo", "TaskCreate")
+                    </p>
+                    <div id="no-more-tables">
+                        <table class="col-md-12 table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Codice Cliente
+                                    </th>
+                                    <th>
+                                        Numero chiusura
+                                    </th>
+                                    <th>
+                                        @Html.ActionLink("Data (dd/mm/aaaa)", "Task", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+                                    </th>
+                                    <th>
+                                        Risultato
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                                @foreach (var item in Model)
+                                {
+                                    <tbody>
+                                    <tr>
+                                        <td data-title="Codice Cliente">
+                                            @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
+                                        </td>
+                                        <td data-title="Numero Chiusura">
+                                            @Html.DisplayFor(modelItem => item.FieldChiusura)
+                                        </td>
+                                        <td data-title="Data Chiusura">
+                                            @Html.DisplayFor(modelItem => item.FieldDate)
+                                        </td>
+                                        <td data-title="Risultato">
+                                            @Html.DisplayFor(modelItem => item.FieldResult)
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Modifica", "TaskEdit", new { id = item.CompanyTaskId }) |
+                                            @Html.ActionLink("Dettagli", "TaskDetails", new { id = item.CompanyTaskId }) |
+                                            @Html.ActionLink("Cancella", "TaskDelete", new { id = item.CompanyTaskId })
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                }
+
+                        </table>
+                        <br />
+                        <p>Pagina</p>@(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) di @Model.PageCount
+
+                        @Html.PagedListPager(Model, page => Url.Action("Task",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                    </div>
+                </div>
+        </div>
+    </div>
+</section>

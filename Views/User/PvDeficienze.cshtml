@@ -1,0 +1,138 @@
+﻿@model PagedList.IPagedList<SystemWeb.Models.PvDeficienze>
+@using PagedList.Mvc;
+<link href="~/Contenuti/css/PagedList.min.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Index";
+}
+<section id="pvdeficienze" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                <div class="header-content">
+                    <h4 class="alert-info">Lista di tutte le deficienze del punto vendita</h4>
+                </div>
+                @using (Html.BeginForm("PvDeficienze", "User", FormMethod.Get))
+                {
+                    <div class="grid-filter">
+                        <div class="inner">
+                            <div class="item">
+                                <p class="text-primary">
+                                    Cerca per data: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                                    <input type="submit" value="Cerca" />
+                                </p>
+                            </div>
+                        </div>
+                        <form id="date-range-form" action="@Url.Action("PvDeficienze", "User")" method="post">
+                            <h5 class="alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma del erogatoi sul impianto in funzione del range selezionato.</h5>
+                            <h5 class="alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
+                            <div class="item">
+                                <label for="from">Data 1</label>
+                                <input type="text" id="from" name="dateFrom">
+                            </div>
+                            <div class="item">
+                                <label for="to">Data 2</label>
+                                <input type="text" id="to" name="dateTo">
+                            </div>
+                            <input type='submit' value='Ricerca' />
+                        </form>
+                    </div>
+                }
+                <div id="no-more-tables">
+                    <h4 class="alert-info">Statistiche sul erogato</h4>
+                    <div id="totali">
+                        <table class="col-md-12 table-bordered table-striped table-condensed">
+                            @Html.Partial("_TotalPartialDef")
+                        </table>
+                    </div>
+                </div>
+                <div><h4 class="alert-info">@Html.ActionLink("Crea nuovo", "PvDeficienzeCreate")</h4></div>
+                <div id="no-more-tables">
+                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Modello
+                                </th>
+                                <th>
+                                    Valore
+                                </th>
+                                <th>
+                                    @Html.ActionLink("Data", "PvDeficienze", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td data-title="Modello">
+                                        @Html.DisplayFor(modelItem => item.PvTank.Modello)
+                                    </td>
+                                    <td data-title="Valore">
+                                        @Html.DisplayFor(modelItem => item.Value)
+                                    </td>
+                                    <td data-title="Data contabile">
+                                        @Html.DisplayFor(modelItem => item.FieldDate)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Modifica", "PvDeficienzeEdit", new { id = item.PvDefId }) |
+                                        @Html.ActionLink("Dettagli", "PvDeficienzeDetails", new { id = item.PvDefId }) |
+                                        @Html.ActionLink("Cancella", "PvDeficienzeDelete", new { id = item.PvDefId })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        }
+                    </table>
+                    <br />
+                    Pagina @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) di @Model.PageCount
+                    @Html.PagedListPager(Model, page => Url.Action("PvDeficienze",
+                       new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+@section Scripts{
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+
+    <script type="text/javascript">
+
+    $(function () {
+        $("#from").datepicker({
+            duration:'fast',
+            showAnim:'drop',
+            dateFormat: "mm/dd/yy", @*yy/mm/dd - Localhost*@
+            maxDate:  '0',
+            showOn: 'button',
+            buttonImage: '/Content/img/calendar.png',
+            buttonImageOnly: true,
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#to").datepicker("option", "minDate", selectedDate);
+
+            }
+        });
+        $("#to").datepicker({
+            duration: 'fast',
+            showAnim: 'drop',
+            dateFormat: "mm/dd/yy", @*yy/mm/dd - Localhost*@
+            maxDate: '0',
+            showOn: 'button',
+            buttonImage: '/Content/img/calendar.png',
+            buttonImageOnly: true,
+            changeMonth: true,
+            changeYear: true,
+            onClose: function (selectedDate) {
+                $("#from").datepicker("option", "maxDate", selectedDate);
+
+            },
+        });
+    });
+    </script>
+}
+
+

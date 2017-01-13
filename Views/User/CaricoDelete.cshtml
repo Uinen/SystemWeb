@@ -1,0 +1,110 @@
+﻿@model SystemWeb.Models.Carico
+
+@{
+    ViewBag.Title = "Cancella riga";
+}
+
+<h3>Sicuro di voler cancellare la riga?</h3>
+<div>
+    <h4>Carico</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Pv.pvID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pv.pvID)
+        </dd>
+
+        <dt>
+            Anno Finanziario
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Year.yearId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ordine)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ordine)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.cData)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cData)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Documento)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Documento)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Numero)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Numero)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.rData)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.rData)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Emittente)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Emittente)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Benzina)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Benzina)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Gasolio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Gasolio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Cancella" class="btn btn-default" /> |
+            @Html.ActionLink("Torna Indietro", "Carico")
+        </div>
+    }
+</div>

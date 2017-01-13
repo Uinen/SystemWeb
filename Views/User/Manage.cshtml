@@ -1,0 +1,106 @@
+﻿@model SystemWeb.Models.IndexViewModel
+@if (Model.HasPassword == true  )
+{
+
+}
+else 
+{
+    <div class="container">
+        <div class="item">
+            <div class="row">
+                <div class="col-sm-6 col-md-offset-3">
+                    <p class="client-name" style="color:green">@ViewBag.StatusMessage</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="container">
+    <div id="review" class="owl-carousel owl-theme wow animated">
+        <div class="item">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                    <!-- TODO: Profile Pic <div class="client-pic"><img class="img_res" src="img/client-two.png" alt=""></div>-->
+                    <p class="client-name">
+                        @if (Model.HasPassword)
+                        {
+                            @Html.ActionLink("Modifica la tua password", "ChangePassword")
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Crea la tua password", "SetPassword")
+                        }
+                            </p>
+                            <hr />
+                            <p class="client-name">
+                                Numero di telefono:
+                            </p><p>
+                                @(Model.PhoneNumber ?? "Nessuno")
+                            </p>
+                            <p class="client-name">
+                                @if (Model.PhoneNumber != null)
+                                {
+                                    @Html.ActionLink("Cambia", "ManageAddPhoneNumber")
+                                    @: &nbsp;
+
+                                    @Html.ActionLink("Rimuovi", "ManageRemovePhoneNumber")
+                                    @: &nbsp;
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Aggiungi", "ManageAddPhoneNumber")
+
+                                }
+                                <hr />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-offset-3">
+                            <p class="client-name">
+                                @*Provider esterni: @Model.Logins.Count*@
+                                @Html.ActionLink("[Gestisci]", "ManageLogins")
+                            </p>
+                            @if (Model.TwoFactor)
+                            {
+                                <form method="post" action="ManageDisableTFA">
+                                    <p class="client-name">
+                                        Autenticazione a due fattori:
+                                        <input type="submit" value="Disattiva" class="btn-primary btn-group-xs" />
+                                    </p>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" action="ManageEnableTFA">
+                                    <p class="client-name">
+                                        Disattivata:
+                                        <input type="submit" value="Attiva" class="btn-primary btn-group-xs" />
+                                    </p>
+                                </form>
+                            }
+                            @if (Model.BrowserRemembered)
+                            {
+                                <form method="post" action="ManageForgetBrowser">
+                                    <p class="client-name">
+                                        Il browser è stato aggiunto:
+                                        <input type="submit" value="Cancella" class="btn-primary btn-group-xs" />
+                                    </p>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" action="ManageRememberBrowser">
+                                    <p class="client-name">
+                                        Il browser non è stato aggiunto:
+                                        <input type="submit" value="Aggiungi" class="btn-primary btn-group-xs" />
+                                    </p>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

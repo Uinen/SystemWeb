@@ -1,0 +1,345 @@
+﻿
+    @model PagedList.IPagedList<SystemWeb.Models.Carico>
+    @using PagedList.Mvc;
+    <link href="~/Contenuti/css/PagedList.min.css" rel="stylesheet" type="text/css" />
+
+    @{
+        ViewBag.Title = "Carico carburante";
+    }
+    <section id="carico" class="block">
+        <div class="container">
+                <div class="row">
+                    <div class="center-block">
+        <div class="header-content">
+            <h4 class="alert alert-info">Lista di tutti gli ordini registrati sul impianto</h4>
+            <strong>Genera</strong>
+            @Html.ActionLink("Diagramma", "CaricoChart")
+        </div>
+        @using (Html.BeginForm("Carico", "User", FormMethod.Get))
+        {
+            <div class="grid-filter">
+                <div class="inner">
+                    <div class="item">
+                        <p class="text-primary">Trova il numero d'ordine: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                            <input type="submit" value="Cerca" />
+                        </p>
+                    </div>
+                </div>
+                    <form id="date-range-form" action="@Url.Action("Carico", "User")" method="post">
+                        <h5 class="alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma degli ordini registrati sul impianto in funzione del range selezionato.</h5>
+                        <h5 class="alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
+                        <div class="item">
+                            <label for="from">Data 1</label>
+                            <input type="text" id="from" name="dateFrom">
+                        </div>
+                        <div class="item">
+                            <label for="to">Data 2</label>
+                            <input type="text" id="to" name="dateTo">
+                        </div>
+                            <input type='submit' value='Ricerca' />
+                    </form>
+            </div>
+        <div id="no-more-tables">
+            <h4 class="alert-info">Totale di tutti gli ordini registrati sul impianto</h4>
+            <div id="totali">
+                <table class="col-md-12 table-bordered table-striped table-condensed">
+                    @Html.Partial("_TotalPartial")
+                </table>
+            </div>
+        </div>
+                        <div><h4 class="alert-info">@Html.ActionLink("Nuovo", "CaricoCreate")</h4></div>
+                        }
+                        <div id="no-more-tables">
+                            <table class="col-md-12 table-bordered table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Punto Vendita
+                                        </th>
+                                        <th>
+                                            @Html.ActionLink("Anno Finanziario", "Carico", new { sortOrder = ViewBag.YearSortParm, currentFilter = ViewBag.CurrentFilter })
+                                        </th>
+                                        <th>
+                                            @Html.ActionLink("N° Ordine", "Carico", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+                                        </th>
+                                        <th>
+                                            Ricezione Merce
+                                        </th>
+                                        <th>
+                                            Tipo
+                                        </th>
+                                        <th>
+                                            Numero
+                                        </th>
+                                        <th>
+                                            Data Documento
+                                        </th>
+                                        <th>
+                                            Emittente
+                                        </th>
+                                        <th>
+                                            Benzina (In Litri)
+                                        </th>
+                                        <th>
+                                            Gasolio (In Litri)
+                                        </th>
+                                        <th>
+                                            Note
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in Model)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td data-title="Punto vendita">
+                                                @Html.DisplayFor(modelItem => item.Pv.pvName)
+                                            </td>
+                                            <td data-title="Anno Finanziario">
+                                                @Html.DisplayFor(modelItem => item.Year.Anno.Year)
+                                            </td>
+                                            <td data-title="Ordine">
+                                                @Html.DisplayFor(modelItem => item.Ordine)
+                                            </td>
+                                            <td data-title="Ricezione Merce">
+                                                @Html.DisplayFor(modelItem => item.cData)
+                                            </td>
+                                            <td data-title="Tipo">
+                                                @Html.DisplayFor(modelItem => item.Documento)
+                                            </td>
+                                            <td data-title="Numero">
+                                                @Html.DisplayFor(modelItem => item.Numero)
+                                            </td>
+                                            <td data-title="Data Documento">
+                                                @Html.DisplayFor(modelItem => item.rData)
+                                            </td>
+                                            <td data-title="Emittente">
+                                                @Html.DisplayFor(modelItem => item.Emittente)
+                                            </td>
+                                            <td data-title="Benzina">
+                                                @Html.DisplayFor(modelItem => item.Benzina)
+                                            </td>
+                                            <td data-title="Gasolio">
+                                                @Html.DisplayFor(modelItem => item.Gasolio)
+                                            </td>
+                                            <td data-title="Note">
+                                                @Html.DisplayFor(modelItem => item.Note)
+                                            </td>
+                                            <td>
+                                                @Html.ActionLink("Modifica", "CaricoEdit", new { id = item.Id }) |
+                                                @Html.ActionLink("Dettagli", "CaricoDetails", new { id = item.Id }) |
+                                                @Html.ActionLink("Cancella", "CaricoDelete", new { id = item.Id }) |
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+
+                            </table>
+                                <br />
+                                Pagina @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) di @Model.PageCount
+
+                                @Html.PagedListPager(Model, page => Url.Action("Carico",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </section>
+    @section Scripts{
+        @Scripts.Render("~/bundles/jqueryval")
+
+        <script type ="text/javascript">
+
+        $(function () {
+            $("#from").datepicker({
+                duration: 'fast',
+                showAnim: 'drop',
+                dateFormat: "mm/dd/yy", @*yy/mm/dd - Localhost *@
+                maxDate: '0',
+                showOn: 'button',
+                buttonImage: '/img/calendar.png',
+                buttonImageOnly: true,
+                changeMonth: true,
+                changeYear: true,
+                onClose: function (selectedDate) {
+                    $("#to").datepicker("option", "minDate", selectedDate);
+
+                }
+            });
+            $("#to").datepicker({
+                duration: 'fast',
+                showAnim: 'drop',
+                dateFormat: "mm/dd/yy", @*yy/mm/dd - Localhost*@
+                maxDate: '0',
+                showOn: 'button',
+                buttonImage: 'img/calendar.png',
+                buttonImageOnly: true,
+                changeMonth: true,
+                changeYear: true,
+                onClose: function (selectedDate) {
+                    $("#from").datepicker("option", "maxDate", selectedDate);
+
+                },
+            });
+        });
+        </script>
+    }
+@*
+@using Syncfusion.MVC.EJ
+@model IEnumerable<SystemWeb.Models.Carico>
+
+<script type="text/javascript">
+    $(function () {
+        var browserDetails = ej.browserInfo();
+        if (!(browserDetails.name == "msie" && parseInt(browserDetails.version, 10) < 9)) {
+            window.addEventListener('message', function (e) {
+                if (typeof e.data == "boolean") {
+                    var gridObj = $("#FlatGrid").data('ejGrid');
+                    $("#FlatGrid").ejGrid("model.enableResponsiveRow", e.data);
+                    var obj = $("#FlatGrid").ejGrid("instance");
+                    if (obj.model.isEdit)
+                        obj.cancelEdit();
+                    $("#FlatGrid").ejGrid("model.enableResponsiveRow", e.data);
+                }
+                else {
+                    var links = $(document.head || document.getElementsByTagName('head')[0]).find("link");
+                    for (var i = 0; i < links.length; i++) {
+                        if (links[i].href.indexOf("ej.theme.min.css") != -1) {
+                            var cssref = links[i].href,
+                                serverconfig = cssref.substr(0, cssref.indexOf("Content") - 1),
+                                fileref = $('<link rel="stylesheet" type="text/css" href="' + serverconfig + window.parent.themes[e.data.split('_')[1]] + '" />');
+                            $(fileref).insertAfter(links[i]);
+                            $(links[i]).remove();
+                            break;
+                        }
+                    }
+
+                }
+            });
+        }
+    });
+    function ActionComplete() {
+        var gridObj = $("#FlatGrid").ejGrid("instance");
+        this.getContent().addClass("e-widget");
+        var browserDetails = gridObj.getBrowserDetails();
+        if (browserDetails.browser == "msie" && parseInt(browserDetails.version, 10) <= 9)
+            $("#FlatGrid").ejGrid("model.enableResponsiveRow", false);
+    }
+</script>
+
+<div class="row">
+
+    @(Html.EJ().Grid<SystemWeb.Models.Carico>("FlatGrid")
+
+        .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.datasource).UpdateURL("User/Carico")
+
+            .InsertURL("User/CaricoCreate").RemoveURL("User/CaricoDelete").Adaptor("remoteSaveAdaptor"))
+
+        .AllowSorting()
+
+        .AllowPaging()
+
+        .EditSettings(edit => { edit.AllowAdding().AllowDeleting().AllowEditing(); })
+
+        .ToolbarSettings(toolbar =>
+        {
+
+            toolbar.ShowToolbar().ToolbarItems(items =>
+            {
+
+                items.AddTool(ToolBarItems.Add);
+
+                items.AddTool(ToolBarItems.Edit);
+
+                items.AddTool(ToolBarItems.Delete);
+
+                items.AddTool(ToolBarItems.Update);
+
+                items.AddTool(ToolBarItems.Cancel);
+
+            });
+
+        })
+
+        .Columns(col =>
+        {
+
+            col.Field(p => p.Id).HeaderText("GUID").IsPrimaryKey(true).TextAlign(TextAlign.Right).Width(90).ValidationRules(v => v.AddRule("required", true)).Add();
+
+            col.Field(p => p.Pv.pvName).HeaderText("Punto vendita").TextAlign(TextAlign.Right).Width(90).ValidationRules(v => v.AddRule("required", true)).Add();
+
+            col.Field(p => p.Year.Anno).HeaderText("Anno").TextAlign(TextAlign.Right).Width(80).Add();
+
+            col.Field(p => p.Ordine).HeaderText("Ordine").Width(75).Add();
+
+            col.Field(p => p.cData).HeaderText("Data").Width(75).Add();
+
+            col.Field(p => p.Documento).HeaderText("Documento").Width(75).Add();
+
+            col.Field(p => p.Numero).HeaderText("Numero").Width(75).Add();
+
+            col.Field(p => p.rData).HeaderText("Data").Width(75).Add();
+
+            col.Field(p => p.Emittente).HeaderText("Emittente").Width(75).Add();
+
+            col.Field(p => p.Benzina).HeaderText("Benzina").Width(75).Add();
+
+            col.Field(p => p.Gasolio).HeaderText("Gasolio").Width(75).Add();
+
+            col.Field(p => p.Note).HeaderText("Note").Width(75).Add();
+
+        })
+
+        .ClientSideEvents(eve => eve.Load("load"))
+
+    )
+
+    <script type="text/javascript">
+        var adaptor = new ej.remoteSaveAdaptor().extend({
+
+            insert: function (dm, data, tableName) {
+
+                return {
+
+                    url: dm.dataSource.insertUrl,
+
+                    dataType: 'json',
+
+                    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+
+                    data: $("#GridEditForm").serialize()
+
+                };
+
+            },
+
+            update: function (dm, keyField, value, tableName) {
+
+                return {
+
+                    type: "POST",
+
+                    url: dm.dataSource.updateUrl + "?id=" + value.OrderID,
+
+                    dataType: 'json',
+
+                    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+
+                    data: $("#GridEditForm").serialize()
+
+                };
+
+            },
+
+        })
+
+
+
+        function load(args) {
+
+            this.model.dataSource.adaptor = new adaptor();
+
+        }
+    </script>
+</div>
+*@

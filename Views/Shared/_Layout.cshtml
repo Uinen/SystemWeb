@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@ViewBag.Title</title>
+
+    <!-- meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Gestioni Dirette nasce con l'intento di facilitare la gestione di una stazione di servizio in comodato o in commissione.'">
+    <meta name="keywords" content="Distributori, Benzina, Gasolio, Kuwait, Petrolio, Stazione di Servizio, Stazioni, Carburante, Carburanti">
+    <meta name="author" content="Valentino Fabbri">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--favicon-->
+    <link rel="shortcut icon" href="~/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="~/img/favicon.ico" type="image/x-icon">
+
+    @Styles.Render("~/Content/bootstrap")
+    @Styles.Render("~/Content/bootstrap-theme")
+    @Styles.Render("~/Content/ejBootstrap-Themes")
+    @Styles.Render("~/Content/style")
+    @Styles.Render("~/Content/custom")
+    @Styles.Render("~/Content/ionicons")
+    @Styles.Render("~/Content/animate")
+    @Styles.Render("~/Content/owlcarousel")
+    @Styles.Render("~/Content/owlcarousel-theme")
+    @Styles.Render("~/Content/pagedlist")
+    @Styles.Render("~/Content/nivolightbox")
+    @Styles.Render("~/Content/fontawesome")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquerybrowser")
+    @Scripts.Render("~/bundles/jqueryajaxchimp")
+    @Scripts.Render("~/bundles/bootstrap")
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+    @Scripts.Render("~/bundles/microsoft")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/theme")
+    @Scripts.Render("~/bundles/sorting")
+
+</head>
+<body>
+    <!-- ****************************** Preloader ************************** -->
+    <div id="preloader"></div>
+
+    <!-- ****************************** Sidebar ************************** -->
+    <nav id="sidebar-wrapper">
+        <a id="menu-close" href="#" class="close-btn toggle">Chiudi<i class="ion-log-in"></i></a>
+        <ul class="sidebar-nav">
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @Html.Partial("_LoginPartial")
+            @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+            {
+                @*<li>@Html.ActionLink("Impostazioni Avanzate", "Index", "Admin")</li>*@
+                @*<li>@Html.ActionLink("Log", "Index", "Logging")</li>*@
+                @*<li>@Html.ActionLink("Amministrazione Dati", "Area", "User")</li>*@
+                @*<li>@Html.ActionLink("Task", "Task", "User")</li>*@
+            }
+            @if (ViewContext.HttpContext.User.IsInRole("User"))
+            {
+                <li>@Html.ActionLink("Invio Dati", "Area", "User")</li>
+            }
+        </ul>
+    </nav>
+
+    <!-- ****************************** Header ************************** -->
+    <header class="sticky" id="header">
+        <div class="container">
+            <div class="row" id="logo_menu">
+                <div class="col-xs-6"><a class="logo" href="@Url.Action("Index", "Home")">Home</a></div>
+                <div class="col-xs-6"><a id="menu-toggle" class="toggle" role="button" title="Menu" data-toggle="tooltip" data-placement="left"><i class="ion-navicon"></i></a></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ****************************** Banner ************************** -->
+    <section id="banner">
+        <div class="banner-overlay"></div>
+        <div class="container">
+            <a class="slidedown wow animated zoomIn" data-wow-delay="1s" href="#testimonial"><i class="ion-ios-download-outline"></i></a>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="headings">
+                        <h1 class="wow animated fadeInLeft">Gestioni Dirette</h1>
+                        <h2 class="wow animated bounceInUp">SystemWeb 2.2</h2>
+                        <p class="wow animated fadeInRight">Tool progettato per gestire in modo intuitivo e dinamico una stazione di servizio.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 hidden-xs hidden-sm">
+                    <div class="hand-container">
+                        <img class="iphone-hand img_res wow animated bounceInUp" data-wow-duration="1.2s" src="@Url.Content("~/img/2-iphone-right.png")" alt="">
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ****************************** Scripts ****************************** -->
+    @RenderSection("Scripts", false)
+    @RenderBody()
+
+
+    <section id="footer" class="block">
+        <div class="container text-center">
+            <div class="footer-logo">
+                <h1>G E S T I O N I</h1>
+                <h2> D I R E T T E</h2>
+            </div>
+            <ul class="social-icons">
+                <li class="wow animated fadeInLeft facebook"><a href="#"><i class="ion-social-facebook"></i></a></li>
+                <li class="wow animated fadeInRight twitter"><a href="#"><i class="ion-social-twitter"></i></a>
+                <li class="wow animated fadeInLeft linkedin"><a href="#"><i class="ion-social-linkedin"></i></a></li>
+                <li class="wow animated fadeInRight googleplus"><a href="#"><i class="ion-social-googleplus-outline"></i></a></li>
+                <li class="wow animated fadeInRight github"><a href="#"><i class="ion-social-github"></i></a>
+            </ul>
+            <div class="copyright">
+                <div class="credits">
+                    Versione: @ViewContext.Controller.GetType().Assembly.GetName().Version |
+                    Ultimo Aggiornamento: @File.GetCreationTime(ViewContext.Controller.GetType().Assembly.Location)
+                </div>
+                <div class="credits">@DateTime.Now - Gestioni Dirette&trade; Tutti i diritti riservati</div>
+            </div>
+        </div><!-- container -->
+    </section>
+    <!-- ****************************** Back to top ************************** -->
+    <a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" data-toggle="tooltip" data-placement="left"><span class="glyphicon glyphicon-chevron-up"></span></a>
+</body>
+</html>

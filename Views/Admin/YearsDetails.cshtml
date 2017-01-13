@@ -1,0 +1,26 @@
+﻿@model SystemWeb.Models.Year
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Year</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Anno)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Anno)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "YearsEdit", new { id = Model.yearId }) |
+    @Html.ActionLink("Back to List", "Years")
+</p>
