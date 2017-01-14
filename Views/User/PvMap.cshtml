@@ -1,0 +1,54 @@
+﻿@model SystemWeb.Models.MapDesignerViewModel
+<canvas id="myCanvas" width="57" height="40"></canvas>
+<script type=text/javascript>
+        $(document).ready(function () {
+            canvas = document.getElementById("myCanvas");
+            ctx = canvas.getContext("2d");
+
+            var images = new Object();
+            images.r = document.createElement("img");
+            var nextFrame = 0;
+            var m;
+
+            foo(function (item) {
+                var draw = function () {
+                    images.r.onload = function () {
+
+                        ctx.drawImage(images['r'], 0, 0);
+
+                    }
+
+                    images.r.src = "https://dl.dropboxusercontent.com/u/139992952/stackoverflow/house-icon.png";
+
+                    if (nextFrame = 0) {
+                        for (m = 0; m <= 10; m++)
+                        {
+                            ctx.drawImage(images[item], images[item], images[item]);
+                        }
+                    } else {
+                        clearTimeout(draw);
+                    }
+                    nextFrame++;
+                }
+                setInterval(draw, 1000);
+
+            });
+
+            function foo(callback) {
+                $.ajax({
+                    type: "GET",
+                    url: "MapDesigner",
+                    success: function (item) {
+
+                        for (var i = 0, len = item.mod; i < len; i++) {
+                            for (h = 0, len2 = item.mod[i]; h < len2; h++) {
+                                
+                            }
+                        }
+                        callback(item);
+                    }
+                });
+            }
+
+        });
+</script>

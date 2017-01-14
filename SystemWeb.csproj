@@ -47,20 +47,12 @@
     <Reference Include="DotNetOpenAuth">
       <HintPath>..\packages\DotNetOpenAuth.dll</HintPath>
     </Reference>
-    <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=3.11.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -94,10 +86,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.5.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NLog, Version=1.0.0.505, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.1.0.0.505\lib\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NuGet.Core, Version=2.8.60318.667, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -241,6 +229,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="ViewModels\MapDesignerViewModel.cs" />
     <Compile Include="Controllers\PayPalController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
@@ -818,6 +807,7 @@
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\IONICONS.SVG" />
+    <Content Include="img\bg.jpg" />
     <Content Include="MainFont\font-awesome.css" />
     <Content Include="MainFont\css\font-awesome.min.css" />
     <Content Include="MainFont\fonts\fontawesome-webfont.svg" />
@@ -945,133 +935,7 @@
     <None Include="Properties\PublishProfiles\arvixe.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\ej\properties.min.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\ej\COMMON\ej.core.min.js" />
-    <Content Include="Scripts\ej\COMMON\ej.data.min.js" />
-    <Content Include="Scripts\ej\COMMON\ej.draggable.min.js" />
-    <Content Include="Scripts\ej\COMMON\ej.globalize.min.js" />
-    <Content Include="Scripts\ej\COMMON\ej.scroller.min.js" />
-    <Content Include="Scripts\ej\COMMON\ej.touch.min.js" />
-    <Content Include="Scripts\ej\COMMON\ej.unobtrusive.min.js" />
-    <Content Include="Scripts\ej\COMMON\ej.web.react.min.js" />
-    <Content Include="Scripts\ej\COMMON\ej.widget.angular.min.js" />
-    <Content Include="Scripts\ej\COMMON\ej.widget.ko.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.barcode.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.bulletgraph.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.chart.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.circulargauge.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.diagram.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.digitalgauge.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.gauge.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.heatmap.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.lineargauge.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.map.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.rangenavigator.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.sparkline.min.js" />
-    <Content Include="Scripts\ej\datavisualization\ej.treemap.min.js" />
-    <Content Include="Scripts\ej\I18N\ej.culture.ar-AE.min.js" />
-    <Content Include="Scripts\ej\I18N\ej.culture.de-DE.min.js" />
-    <Content Include="Scripts\ej\I18N\ej.culture.en-US.min.js" />
-    <Content Include="Scripts\ej\I18N\ej.culture.es-ES.min.js" />
-    <Content Include="Scripts\ej\I18N\ej.culture.fr-FR.min.js" />
-    <Content Include="Scripts\ej\I18N\ej.culture.vi-VN.min.js" />
-    <Content Include="Scripts\ej\I18N\ej.culture.zh-CN.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.accordion.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.all.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.application.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.autocomplete.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.button.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.core.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.datepicker.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.dialog.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.dropdownlist.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.editor.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.groupbutton.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.inputbutton.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.listview.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.menu.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.navigationbar.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.progressbar.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.radialmenu.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.radialslider.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.rating.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.rotator.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.scrollpanel.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.slider.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.splitpane.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.tab.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.tile.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.timepicker.min.js" />
-    <Content Include="Scripts\ej\MOBILE\ej.mobile.togglebutton.min.js" />
-    <Content Include="Scripts\ej\properties.js" />
-    <Content Include="Scripts\ej\properties.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.accordion.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.autocomplete.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.button.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.calculate.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.captcha.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.checkbox.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.colorpicker.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.datepicker.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.datetimepicker.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.dialog.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.documenteditor.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.dropdownlist.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.editor.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.excelfilter.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.fileexplorer.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.gantt.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.grid.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.groupbutton.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.kanban.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.listbox.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.listview.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.maskedit.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.menu.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.navigationdrawer.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.olap.base.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pager.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pdfviewer.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pivot.common.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pivotanalysis.base.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pivotchart.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pivotclient.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pivotgauge.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pivotgrid.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pivotpager.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pivotschemadesigner.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.pivottreemap.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.print.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.progressbar.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.radialmenu.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.radialslider.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.radiobutton.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.rating.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.recurrenceeditor.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.reportviewer.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.ribbon.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.rotator.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.rte.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.schedule.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.signature.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.slider.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.spellcheck.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.splitbutton.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.splitter.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.spreadsheet.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.tab.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.tagcloud.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.tile.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.timepicker.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.togglebutton.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.toolbar.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.tooltip.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.treegrid.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.treeview.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.uploadbox.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.waitingpopup.min.js" />
-    <Content Include="Scripts\ej\WEB\ej.web.all.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery.ajaxchimp.min.js" />
@@ -1264,6 +1128,7 @@
     <Content Include="Scripts\smoothscroll.min.js.map" />
     <Content Include="Scripts\WOW.min.js.map" />
     <Content Include="Scripts\sortable.min.js.map" />
+    <Content Include="Views\User\PvMap.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

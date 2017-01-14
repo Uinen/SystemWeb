@@ -136,7 +136,10 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region Map Designer
-
+        public ActionResult PvMap()
+        {
+            return View(new MapDesignerViewModel { X = 0, Y = 200 });
+        }
         public ActionResult MapDesigner()
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -144,10 +147,10 @@ namespace SystemWeb.Controllers
 
             return Json(db.Dispenser.ToList()
                 .Where(c => currentUser.pvID == c.PvTank.pvID)
-                .OrderBy(c => c.PvTank.Product.Nome)
+                .OrderBy(c => c.Modello)
                 .Select(c => new
                 {
-                    erog = c.Modello
+                    mod = c.Modello
                 }),
             JsonRequestBehavior.AllowGet);
         }
