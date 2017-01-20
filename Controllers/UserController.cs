@@ -287,10 +287,15 @@ namespace SystemWeb.Controllers
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
+
+            int thisYear;
+            thisYear = DateTime.Now.Year;
+
             IQueryable<Pv> pv = db.Pv
                 .Where(c => currentUser.pvID == c.pvID);
             var sql = pv.ToList();
-            IQueryable<Year> year = db.Year;
+            IQueryable<Year> year = db.Year
+                .Where(c => c.Anno.Year == thisYear);
             var sql2 = year.ToList();
             ViewBag.pvID = new SelectList(pv, "pvID", "pvName");
             ViewBag.yearId = new SelectList(year, "yearId", "Anno");
