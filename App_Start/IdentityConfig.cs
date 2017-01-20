@@ -36,6 +36,7 @@ namespace SystemWeb
                 RequireLowercase = false,
                 RequireUppercase = false,
             };
+            manager.PasswordHasher = new PasswordHasher();
             // Configure user lockout defaults
             manager.UserLockoutEnabledByDefault = true;
             manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -60,7 +61,7 @@ namespace SystemWeb
             {
                 manager.UserTokenProvider =
                    new DataProtectorTokenProvider<ApplicationUser>
-                      (dataProtectionProvider.Create("ASP.NET Identity"))
+                      (dataProtectionProvider.Create("Gestioni Dirette -  powered by SystemWeb"))
                    {
                        TokenLifespan = TimeSpan.FromHours(3)
                    };
@@ -142,6 +143,8 @@ namespace SystemWeb
         }
 
     }
+
+    #region Deprecated - DB Initializer
     /*
     public class MyDbInitializer : CreateDatabaseIfNotExists<MyDbContext>
     {
@@ -187,4 +190,5 @@ namespace SystemWeb
         }
     }
      * */
+    #endregion
 }

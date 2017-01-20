@@ -1,54 +1,32 @@
 ﻿@model SystemWeb.Models.MapDesignerViewModel
 <canvas id="myCanvas" width="57" height="40"></canvas>
 <script type=text/javascript>
-        $(document).ready(function () {
-            canvas = document.getElementById("myCanvas");
-            ctx = canvas.getContext("2d");
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+    //context.canvas.width = window.innerWidth;
+    //context.canvas.height = window.innerHeight;
+    context.font = 'italic 20pt Calibri';
 
-            var images = new Object();
-            images.r = document.createElement("img");
-            var nextFrame = 0;
-            var m;
+    //var width = Math.ceil(window.innerWidth / 16);
+    //var height = Math.ceil(window.innerHeight / 16);
+    var imgs = [];
+    var imgIndex;
+    //for (var x = 0; x < width; x++) {
+        //for (var y = 0; y < height; y++) {
+            var texLoc = "http://4vector.com/i/free-vector-gas-pump-clip-art_110105_Gas_Pump_clip_art_hight.png";
 
-            foo(function (item) {
-                var draw = function () {
-                    images.r.onload = function () {
-
-                        ctx.drawImage(images['r'], 0, 0);
-
-                    }
-
-                    images.r.src = "https://dl.dropboxusercontent.com/u/139992952/stackoverflow/house-icon.png";
-
-                    if (nextFrame = 0) {
-                        for (m = 0; m <= 10; m++)
-                        {
-                            ctx.drawImage(images[item], images[item], images[item]);
-                        }
-                    } else {
-                        clearTimeout(draw);
-                    }
-                    nextFrame++;
-                }
-                setInterval(draw, 1000);
-
-            });
-
-            function foo(callback) {
-                $.ajax({
-                    type: "GET",
-                    url: "MapDesigner",
-                    success: function (item) {
-
-                        for (var i = 0, len = item.mod; i < len; i++) {
-                            for (h = 0, len2 = item.mod[i]; h < len2; h++) {
-                                
-                            }
-                        }
-                        callback(item);
-                    }
+            imgs[imgIndex] = new Object();
+            imgs[imgIndex].src = texLoc;
+            /*imgs[imgIndex].onload =*/ $.getJSON("@Url.Action("MapDesigner")",null, function (mapData) {
+                $.each(mapData, function (i, item) {
+                    //var thisX = x * 2;
+                    //var thisY = y * 2;
+                    //return function () {
+                        context.fillText([item.mod, 50, 50/* + context.drawImage(this, thisX, thisY)*/])
+                    //};
                 });
-            }
-
-        });
+            });
+            //imgIndex += 1;
+        //}
+    //}
 </script>

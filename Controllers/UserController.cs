@@ -138,7 +138,7 @@ namespace SystemWeb.Controllers
         #region Map Designer
         public ActionResult PvMap()
         {
-            return View(new MapDesignerViewModel { X = 0, Y = 200 });
+            return View(new MapDesignerViewModel { X = 20, Y = 20 });
         }
         public ActionResult MapDesigner()
         {
@@ -147,7 +147,6 @@ namespace SystemWeb.Controllers
 
             return Json(db.Dispenser.ToList()
                 .Where(c => currentUser.pvID == c.PvTank.pvID)
-                .OrderBy(c => c.Modello)
                 .Select(c => new
                 {
                     mod = c.Modello

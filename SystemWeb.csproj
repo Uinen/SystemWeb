@@ -229,6 +229,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Models\AppModel.cs" />
     <Compile Include="ViewModels\MapDesignerViewModel.cs" />
     <Compile Include="Controllers\PayPalController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -333,7 +334,6 @@
     <Compile Include="ViewModels\AccountBindingModels.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
     <Compile Include="ViewModels\AdminViewModel.cs" />
-    <Compile Include="Models\AppModel.cs" />
     <Compile Include="ViewModels\LoadViewModels.cs" />
     <Compile Include="ViewModels\ManageViewModels.cs" />
     <Compile Include="Models\PayPalModels.cs" />
@@ -342,7 +342,6 @@
     <Compile Include="ViewModels\UserIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Contenuti\bootstrap-theme.css" />
     <Content Include="Contenuti\bootstrap-theme.min.css" />
     <Content Include="Contenuti\bootstrap.css" />

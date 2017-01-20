@@ -166,7 +166,7 @@ namespace SystemWeb.Controllers
                 var user = new ApplicationUser() { UserName = model.Username, Email = model.Email };
                 user.TwoFactorEnabled = false;
                 user.CreateDate = DateTime.Now;
-                user.UserProfiles = new SystemWeb.Models.UserProfiles()
+                user.UserProfiles = new UserProfiles()
                 {
                     ProfileName = model.mProfileName,
                     ProfileSurname = model.mProfileSurname,

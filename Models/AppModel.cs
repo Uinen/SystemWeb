@@ -28,11 +28,11 @@ namespace SystemWeb.Models
         [DataMember] 
         public virtual UserProfiles UserProfiles { get; set; }
         [DataMember] 
-        public virtual System.Nullable<Guid> pvID { get; set; }
+        public virtual Guid? pvID { get; set; }
         [DataMember] 
         public virtual Pv Pv { get; set; }
         [DataMember] 
-        public virtual System.Nullable<Guid> CompanyId { get; set; }
+        public virtual Guid? CompanyId { get; set; }
         public DateTime CreateDate { get; set; }
         [DataMember] 
         public virtual Company Company { get; set; }
@@ -87,10 +87,10 @@ namespace SystemWeb.Models
             this.Id = Guid.NewGuid();
         }
         [Key]
-        public System.Guid Id { get; set; }
-        public System.Guid pvID { get; set; }
+        public Guid Id { get; set; }
+        public Guid pvID { get; set; }
         public Nullable <System.Guid> yearId { get; set; }
-        public Int32 Ordine { get; set; }
+        public int Ordine { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public System.DateTime cData { get; set; }
         [MaxLength(4)]
