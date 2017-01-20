@@ -14,7 +14,7 @@ namespace SystemWeb
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            Application["Version"] = string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
+            Application["Version"] = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build/*, version.Revision */);
         }
     }
 }
