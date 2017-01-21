@@ -401,6 +401,7 @@ namespace SystemWeb.Controllers
                 al = DateTime.Now;
 
                 ViewBag.ShowLastYear = da.ToString();
+                lastYear = DateTime.Today.Year;
                 ly = lastYear.ToString();
 
                 var getByKnownDate = from a in db.PvErogatori.ToList()

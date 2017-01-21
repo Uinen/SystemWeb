@@ -6,9 +6,9 @@ namespace SystemWeb.Controllers
     {
         // GET: Error
 
-        public ActionResult Index()
+        public ActionResult Unknown()
         {
-            return View("Error");
+            return View("Unknown");
         }
 
         public ActionResult NotFound()
@@ -19,7 +19,7 @@ namespace SystemWeb.Controllers
 
         public ActionResult InternalServer()
         {
-            Response.StatusCode = 200;
+            Response.StatusCode = 500;
             return View("InternalServer");
         }
     }

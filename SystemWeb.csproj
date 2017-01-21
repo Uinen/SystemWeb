@@ -1103,7 +1103,7 @@
     <Content Include="Views\User\PvTanksDesc.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Error\InternalServer.cshtml" />
-    <Content Include="Views\Error\Error.cshtml" />
+    <Content Include="Views\Error\Unknown.cshtml" />
     <Content Include="Views\User\PvDeficienzeCreate.cshtml" />
     <Content Include="Views\User\PvDeficienzeDelete.cshtml" />
     <Content Include="Views\User\PvDeficienzeDetails.cshtml" />
