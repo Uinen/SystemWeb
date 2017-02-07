@@ -1,0 +1,25 @@
+﻿@model SystemWeb.ViewModels.RegistrationViewModel
+<h4>Sottoscrivi il tuo punto vendita.</h4>
+<hr />
+@using (Html.BeginForm("RegisterStep4", "Account", FormMethod.Post))
+{
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.MinHiddenFor(m => m.WizardID)
+    @Html.MinHiddenFor(m => m.WizardType)
+    @Html.HiddenClassFor(m => m.step1)
+    @Html.HiddenClassFor(m => m.step2)
+    @Html.HiddenClassFor(m => m.step3)
+<div class="form-group">
+    @Html.LabelFor(model => model.step4.Pv.pvID, "Punto Vendita", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.step4.PvName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(model => model.step4.Pv.Flag, "Compagnia", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.step4.PvFlagId, new SelectList("PvFlagId", "Nome"))
+    </div>
+</div>
+<button type="submit">Salva</button>
+}

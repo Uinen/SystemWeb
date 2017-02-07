@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using Microsoft.Owin.Security;
 using System;
 using System.Web.Security;
+using SystemWeb.ViewModels;
 
 namespace SystemWeb.Controllers
 {
@@ -127,92 +128,156 @@ namespace SystemWeb.Controllers
                     return View(model);
             }
         }
+
         private MyDbContext db = new MyDbContext();
-        //
-        // GET: /Account/Register
-        [AllowAnonymous] 
-        //[Authorize(Roles = "Administrator")]
-        public ActionResult Register()
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("Account/new")]
+        public ActionResult New()
+        {
+            RegistrationViewModel _model = new RegistrationViewModel()
+            {
+                WizardID = null,
+                WizardType = "UserInfo"
+            };
+
+            return View("RegisterStep1", _model);
+        }
+        
+        /*
+        [HttpGet]
+        [Route("Account/edit/{wizardID:int}")]
+        public ActionResult Edit(int wizardID)
+        {
+            RegistrationViewModel _model = db.GetData(wizardID);
+
+            return View("Step1", _model);
+        }
+        */
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [Route("Account/RegisterStep1")]
+        public ActionResult RegisterStep1(RegistrationViewModel model)
+        {
+            if (ModelState.IsValidField("RegisterStep1"))
+            {
+                return View("RegisterStep2", model);
+            }
+            return View("RegisterStep1", model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("Account/RegisterStep2")]
+        public ActionResult RegisterStep2(RegistrationViewModel model)
+        {
+            if (ModelState.IsValidField("RegisterStep2"))
+            {
+                return View("RegisterStep3", model);
+            }
+            return View("RegisterStep2", model);
+        }
+
+        [AllowAnonymous]
+        public ActionResult RegisterStep3()
         {
             var company = db.Company.Include(c => c.RagioneSociale);
             var pv = db.Pv.Include(p => p.Flag);
             ViewBag.pvFlagId = new SelectList(db.Flag, "pvFlagId", "Nome");
             ViewBag.CompanyId = new SelectList(db.Company, "CompanyId", "Name");
             ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
+            ViewBag.RagioneSocialeId = new SelectList(db.RagioneSociale, "RagioneSocialeId", "Nome");
             return View();
         }
-      
-        //
-        // POST: /Account/Register
+
         [HttpPost]
         [AllowAnonymous]
-        //[Authorize(Roles = "Administrator")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(Company comp, Pv pv, RegisterBindingModel model)
+        [Route("Account/RegisterStep3")]
+        public ActionResult RegisterStep3(RegistrationViewModel model)
         {
+            if (ModelState.IsValidField("RegisterStep3"))
+            {
+                return View("RegisterStep4", model);
+            }
+            return View("RegisterStep3", model);
+        }
 
+        [AllowAnonymous]
+        public ActionResult RegisterStep4()
+        {
+            var company = db.Company.Include(c => c.RagioneSociale);
+            var pv = db.Pv.Include(p => p.Flag);
+            ViewBag.pvFlagId = new SelectList(db.Flag, "pvFlagId", "Nome");
+            ViewBag.CompanyId = new SelectList(db.Company, "CompanyId", "Name");
+            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
+            ViewBag.RagioneSocialeId = new SelectList(db.RagioneSociale, "RagioneSocialeId", "Nome");
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> RegisterStep4(RegistrationViewModel model)
+        {
             if (ModelState.IsValid)
             {
+
+                //Save the data
                 var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
                 var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+
                 const string roleName = "Administrator";
-                //Create Role Admin if it does not exist
+
                 var role = roleManager.FindByName(roleName);
+
                 if (role == null)
                 {
                     role = new ApplicationRole(roleName);
                     var roleresult = roleManager.Create(role);
                 }
-                var user = new ApplicationUser() { UserName = model.Username, Email = model.Email };
+
+                var user = new ApplicationUser()
+                {
+                    UserName = model.step1.Username,
+                    Email = model.step1.Email
+                };
+
                 user.TwoFactorEnabled = false;
+
                 user.CreateDate = DateTime.Now;
+
                 user.UserProfiles = new UserProfiles()
                 {
-                    ProfileName = model.mProfileName,
-                    ProfileSurname = model.mProfileSurname,
-                    ProfileAdress = model.mProfileAdress, ProfileCity = model.mProfileCity, ProfileZipCode = model.mProfilezipCode,
-                    ProfileNation = model.mProfileNation, ProfileInfo = model.mProfileInfo};
-                    /*
-                    user.Company = new Company()
-                    {
-                        Name = model.name,
-                        PartitaIva = model.iva,
-                        RagioneSocialeId = model.RagioneSocialeId
-                    };*/
-                /*    
-                ViewBag.CompanyId = new SelectList(db.Company, "CompanyId", "Name", comp.CompanyId);
-                ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName", pv.pvID);*/
+                    ProfileName = model.step2.mProfileName,
+                    ProfileSurname = model.step2.mProfileSurname,
+                    ProfileAdress = model.step2.mProfileAdress,
+                    ProfileCity = model.step2.mProfileCity,
+                    ProfileZipCode = model.step2.mProfilezipCode,
+                    ProfileNation = model.step2.mProfileNation,
+                    ProfileInfo = model.step2.mProfileInfo
+                };
 
                 user.Company = new Company()
                 {
-                    Name = model.name,
-                    PartitaIva = model.iva
+                    Name = model.step3.name,
+                    PartitaIva = model.step3.iva,
+                    RagioneSocialeId = model.step3.RagioneSocialeId
                 };
 
                 user.Pv = new Pv()
                 {
-                   pvName = model.PvName
+                    pvName = model.step4.PvName,
+                    pvFlagId = model.step4.PvFlagId
                 };
-                 
-                //ViewBag.pvFlagId = new SelectList(db.Flag, "pvFlagId", "Nome", pv.pvFlagId);
-                // Store Gender as Claim
-                //user.Claims.Add(new IdentityUserClaim() { ClaimType = ClaimTypes.Gender, ClaimValue = "Maschio" });
 
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var result = await UserManager.CreateAsync(user, model.step1.Password);
 
                 if (result.Succeeded)
                 {
-                    string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
-                    /*
-                    var code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    
-                    var callbackUrl =
-                        Url.Action("ConfirmEmail", "Account",
-                            new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-
-                    await UserManager.SendEmailAsync(user.Id, "Conferma il tuo Account",
-                        "Confermando il link seguente potrai attivare con successo il tuo nuovo account su Gestionidirette: <a href=\"" + callbackUrl + "\">Conferma</a>");
-                    */
+                    string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Conferma il tuo account");
                     var rolesForUser = UserManager.GetRoles(user.Id);
                     if (!rolesForUser.Contains(role.Name))
                     {
@@ -221,14 +286,10 @@ namespace SystemWeb.Controllers
                     await SignInAsync(user, isPersistent: false);
                     return View("Confirm");
                 }
-                else
-                {
-                    AddErrors(result);
-                }
             }
-
-            return View();
+            return RedirectToAction("Index", "User");
         }
+
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]

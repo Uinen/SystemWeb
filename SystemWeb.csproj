@@ -229,7 +229,13 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Helpers\CHTML.cs" />
+    <Compile Include="Migrations\201702011308111_24.cs" />
+    <Compile Include="Migrations\201702011308111_24.Designer.cs">
+      <DependentUpon>201702011308111_24.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AppModel.cs" />
+    <Compile Include="ViewModels\IRegistrationViewModel.cs" />
     <Compile Include="ViewModels\MapDesignerViewModel.cs" />
     <Compile Include="Controllers\PayPalController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -339,6 +345,8 @@
     <Compile Include="Models\PayPalModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\RegistrationViewModel.cs" />
+    <Compile Include="ViewModels\RegistrationViewModelBinder.cs" />
     <Compile Include="ViewModels\UserIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -987,12 +995,11 @@
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\SendCode.cshtml" />
     <Content Include="Views\Account\VerifyCode.cshtml" />
-    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
+    <Content Include="Views\Account\EditorTemplates\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\User\CaricoCreate.cshtml" />
     <Content Include="Views\User\CaricoDelete.cshtml" />
     <Content Include="Views\User\CaricoDetails.cshtml" />
@@ -1128,6 +1135,10 @@
     <Content Include="Scripts\WOW.min.js.map" />
     <Content Include="Scripts\sortable.min.js.map" />
     <Content Include="Views\User\PvMap.cshtml" />
+    <Content Include="Views\Account\RegisterStep1.cshtml" />
+    <Content Include="Views\Account\RegisterStep2.cshtml" />
+    <Content Include="Views\Account\RegisterStep3.cshtml" />
+    <Content Include="Views\Account\RegisterStep4.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1205,6 +1216,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608031818178_23.resx">
       <DependentUpon>201608031818178_23.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702011308111_24.resx">
+      <DependentUpon>201702011308111_24.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

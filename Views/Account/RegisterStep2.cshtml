@@ -1,0 +1,52 @@
+﻿@model SystemWeb.ViewModels.RegistrationViewModel
+<h4>Inserisci i tuoi Dati anagrafici.</h4>
+<hr />
+@using (Html.BeginForm("RegisterStep2", "Account", FormMethod.Post))
+{
+    @Html.MinHiddenFor(m => m.WizardID)
+    @Html.MinHiddenFor(m => m.WizardType)
+    @Html.HiddenClassFor(m => m.step1)
+<div class="form-group">
+    @Html.LabelFor(m => m.step2.mProfileName, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.step2.mProfileName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.step2.mProfileSurname, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.step2.mProfileSurname, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.step2.mProfileAdress, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.step2.mProfileAdress, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.step2.mProfileCity, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.step2.mProfileCity, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.step2.mProfilezipCode, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.step2.mProfilezipCode, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.step2.mProfileNation, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.step2.mProfileNation, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.step2.mProfileInfo, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.step2.mProfileInfo, new { @class = "form-control" })
+    </div>
+</div>
+<button type="submit">Avanti</button>
+}

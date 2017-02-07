@@ -71,14 +71,6 @@ namespace SystemWeb.Models
         }
     }
 
-    public class Test
-    {
-        [Key]
-        public int Id { get; set; }
-        public string offerta { get; set; }
-        public string domanda { get; set; }
-    }
-
     [DataContract(IsReference = true)]
     public class Carico
     {
@@ -118,7 +110,6 @@ namespace SystemWeb.Models
         [NotMapped]
         public string date { get; set; }
     }
-
     [JsonObject(IsReference = true)]
     [DataContract(IsReference = true)]
     public class Company
@@ -311,7 +302,7 @@ namespace SystemWeb.Models
         }
         [Key]
         public System.Guid PvTankId { get; set; }
-        public System.Guid pvID { get; set; }
+        public Guid pvID { get; set; }
         public System.Guid ProductId { get; set; }
         [MaxLength(14)]
         public string Modello { get; set; }
@@ -416,19 +407,20 @@ namespace SystemWeb.Models
     {
         public Dispenser()
         {
-            this.DispenserId = Guid.NewGuid();
-            this.PvErogatori = new HashSet<PvErogatori>();
+            DispenserId = Guid.NewGuid();
+            PvErogatori = new HashSet<PvErogatori>();
         }
         [Key]
         public Guid DispenserId { get; set; }
         [MaxLength(32)]
         public string Modello { get; set; }
-        public Nullable <Guid> PvTankId { get; set; }
+        public Guid? PvTankId { get; set; }
         [DataMember]
         public virtual PvTank PvTank { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
         public virtual ICollection<PvErogatori> PvErogatori { get; set; }
+        public bool? isActive { get; set; }
     }
 
     [DataContract(IsReference = true)]
@@ -550,7 +542,6 @@ namespace SystemWeb.Models
                 .WithMany(b => b.CompanyTask)
                 .HasForeignKey(p => p.UsersId);
         }
-        public virtual DbSet<Test> Test { get; set; }
         public virtual DbSet<Pv> Pv { get; set; }
         public virtual DbSet<PvProfile> PvProfile { get; set; }
         public virtual DbSet<PvTank> PvTank { get; set; }

@@ -14,48 +14,57 @@
                             <input type="submit" value="Cerca" />
                         </p>
                     }
-                    <table class="table-condensed table-bordered table-responsive" style="color:black; border-color:#d8cfcf">
-                        <tr>
-                            <th>
-                                Cisterna collegata al Dispenser
-                            </th>
-                            <th>
-                                @Html.ActionLink("Modello Dispenser", "Dispenser", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
-                            </th>
-                            <th>
-                                ID Punto Vendita
-                            </th>
-                        </tr>
-
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PvTank.Modello)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Modello)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PvTank.pvID)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Crea Nuovo", "DispenserCreate")
-                                    @Html.ActionLink("Modifica", "DispenserEdit", new { id = item.DispenserId }) |
-                                    @Html.ActionLink("Dettagli", "DispenserDetails", new { id = item.DispenserId }) |
-                                    @Html.ActionLink("Cancella", "DispenserDelete", new { id = item.DispenserId })
-                                </td>
-                            </tr>
-                        }
-
-                    </table>
+                    <div id="no-more-tables">
+                        <table class="col-md-12 table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Cisterna collegata al Dispenser
+                                    </th>
+                                    <th>
+                                        @Html.ActionLink("Modello Dispenser", "Dispenser", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+                                    </th>
+                                    <th>
+                                        Punto Vendita
+                                    </th>
+                                    <th>
+                                        Attivo
+                                    </th>
+                                </tr>
+                            </thead>
+                            @foreach (var item in Model)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td data-title="Cisterna collegata al Dispenser">
+                                            @Html.DisplayFor(modelItem => item.PvTank.Modello)
+                                        </td>
+                                        <td data-title="Modello Dispenser">
+                                            @Html.DisplayFor(modelItem => item.Modello)
+                                        </td>
+                                        <td data-title="Punto Vendita">
+                                            @Html.DisplayFor(modelItem => item.PvTank.pvID)
+                                        </td>
+                                        <td data-title="Attivo">
+                                            @Html.DisplayFor(modelItem => item.isActive)
+                                        </td>
+                                        <td>
+                                            @Html.ActionLink("Crea Nuovo", "DispenserCreate")
+                                            @Html.ActionLink("Modifica", "DispenserEdit", new { id = item.DispenserId }) |
+                                            @Html.ActionLink("Dettagli", "DispenserDetails", new { id = item.DispenserId }) |
+                                            @Html.ActionLink("Cancella", "DispenserDelete", new { id = item.DispenserId })
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            }
+                        </table>
+                    </div>
                     <br />
                     Pagina @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) di @Model.PageCount
-
                     @Html.PagedListPager(Model, page => Url.Action("Dispenser",
-    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
-                    </div>
+                   new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>

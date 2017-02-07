@@ -167,7 +167,7 @@ namespace SystemWeb.Controllers
             var currentUser = userManager.FindById(User.Identity.GetUserId());
             
             ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Ordine_Desc" : "";
+            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "Ordine_Desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.YearSortParm = sortOrder == "Year" ? "year_desc" : "Year";
             ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
@@ -304,7 +304,7 @@ namespace SystemWeb.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CaricoCreate([Bind(Include = "Id,pvID,yearId,Ordine,cData,Documento,Numero,rData,Emittente,Benzina,Gasolio,Note")] SystemWeb.Models.Carico carico)
+        public ActionResult CaricoCreate([Bind(Include = "Id,pvID,yearId,Ordine,cData,Documento,Numero,rData,Emittente,Benzina,Gasolio,Note")] Carico carico)
         {
             if (ModelState.IsValid)
             {
@@ -314,8 +314,20 @@ namespace SystemWeb.Controllers
                 return RedirectToAction("Carico");
             }
 
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName", carico.pvID);
-            ViewBag.yearId = new SelectList(db.Year, "yearId", "Anno", carico.yearId);
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+
+            int thisYear;
+            thisYear = DateTime.Now.Year;
+
+            IQueryable<Pv> pv = db.Pv
+                .Where(c => currentUser.pvID == c.pvID);
+            var sql = pv.ToList();
+            IQueryable<Year> year = db.Year
+                .Where(c => c.Anno.Year == thisYear);
+            var sql2 = year.ToList();
+            ViewBag.pvID = new SelectList(pv, "pvID", "pvName");
+            ViewBag.yearId = new SelectList(year, "yearId", "Anno");
             return View(carico);
         }
         
@@ -1884,7 +1896,7 @@ namespace SystemWeb.Controllers
         public ActionResult Dispenser(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Dispenser_Desc" : "";
+            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "Dispenser_Desc" : "";
             ViewBag.PvTankId = new SelectList(db.PvTank, "pvTankId", "Modello");
             if (searchString != null)
             {
@@ -1898,12 +1910,12 @@ namespace SystemWeb.Controllers
             ViewBag.CurrentFilter = searchString;
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<SystemWeb.Models.Dispenser> dispenser = (from r in db.Dispenser
+            IQueryable<Dispenser> dispenser = (from r in db.Dispenser
                                                select r)
                 .Where(c => currentUser.pvID == c.PvTank.pvID)
                 .Include(c => c.PvTank)
                 .OrderBy(q => (q.Modello));
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 dispenser = dispenser.Where(s => s.Modello.ToString().Contains(searchString.ToUpper()));
             }
@@ -1943,11 +1955,12 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DispenserCreate([Bind(Include = "DispenserId,Modello,PvTankId")] SystemWeb.Models.Dispenser dispenser)
+        public ActionResult DispenserCreate([Bind(Include = "DispenserId,Modello,PvTankId")] Dispenser dispenser)
         {
             if (ModelState.IsValid)
             {
                 dispenser.DispenserId = Guid.NewGuid();
+                dispenser.isActive = true;
                 db.Dispenser.Add(dispenser);
                 db.SaveChanges();
                 return RedirectToAction("Dispenser");
@@ -1963,7 +1976,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Dispenser dispenser = db.Dispenser.Find(id);
+            Dispenser dispenser = db.Dispenser.Find(id);
             if (dispenser == null)
             {
                 return HttpNotFound();
