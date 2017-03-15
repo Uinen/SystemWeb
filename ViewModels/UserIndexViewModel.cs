@@ -1,5 +1,6 @@
 ﻿using PagedList;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SystemWeb.Models
 {
@@ -15,7 +16,9 @@ namespace SystemWeb.Models
         public IEnumerable<Company> company { get; set; }
         public IEnumerable<CompanyTask> companytask { get; set; }
         public IEnumerable<UserArea> userarea { get; set; }
-
+        public IEnumerable<ApplicationUser> applicationuser { get; set; }
+        public List<UsersImage> createuserimage { get; set; }
+        public List<UsersImage> showuserimage { get; set; }
 
         public int FirstItemOnPage
         {

@@ -1,48 +1,57 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
-using System.ComponentModel.DataAnnotations;
-using System.Data.Entity;
+﻿
+#region Direttive 
 using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration.Conventions;
-using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNet.Identity;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration.Conventions;
+#endregion
 
 namespace SystemWeb.Models
 {
+    #region Interfacce
     public class ApplicationUserLogin : IdentityUserLogin<string> { }
     public class ApplicationUserClaim : IdentityUserClaim<string> { }
-    public class ApplicationUserRole : IdentityUserRole<string> 
+    public class ApplicationUserRole : IdentityUserRole<string>
     {
 
     }
+    #endregion
 
+    #region User
     [JsonObject(IsReference = true)]
     [DataContract(IsReference = true)]
     public class ApplicationUser : IdentityUser<string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
         public Guid ProfileId { get; set; }
-        [DataMember] 
+        [DataMember]
         public virtual UserProfiles UserProfiles { get; set; }
-        [DataMember] 
+        [DataMember]
         public virtual Guid? pvID { get; set; }
-        [DataMember] 
+        [DataMember]
         public virtual Pv Pv { get; set; }
-        [DataMember] 
+        [DataMember]
         public virtual Guid? CompanyId { get; set; }
+        public Guid? UsersImageId { get; set; }
+        [DataMember]
+        public virtual UsersImage UsersImage { get; set; }
         public DateTime CreateDate { get; set; }
-        [DataMember] 
+        [DataMember]
         public virtual Company Company { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ApplicationUser()
         {
-            this.Id = Guid.NewGuid().ToString();
-            this.Notice = new HashSet<Notice>();
-            this.UserArea = new HashSet<UserArea>();
-            this.CompanyTask = new HashSet<CompanyTask>();
+            Id = Guid.NewGuid().ToString();
+            Notice = new HashSet<Notice>();
+            UserArea = new HashSet<UserArea>();
+            CompanyTask = new HashSet<CompanyTask>();
         }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(ApplicationUserManager manager)
         {
@@ -50,41 +59,62 @@ namespace SystemWeb.Models
                 .CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             return userIdentity;
         }
-        [JsonIgnore] 
+        [JsonIgnore]
         public ICollection<Notice> Notice { get; set; }
-        [JsonIgnore] 
+        [JsonIgnore]
         public ICollection<UserArea> UserArea { get; set; }
-        [JsonIgnore] 
+        [JsonIgnore]
         public ICollection<CompanyTask> CompanyTask { get; set; }
     }
+    #endregion
+
+    #region Role
     public class ApplicationRole : IdentityRole<string, ApplicationUserRole>
     {
         public ApplicationRole()
         {
-            this.Id = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid().ToString();
         }
 
         public ApplicationRole(string name)
             : this()
         {
-            this.Name = name;
+            Name = name;
         }
     }
+    #endregion
 
+    #region User Image
+    public class UsersImage
+    {
+        public UsersImage()
+        {
+            UsersImageId = Guid.NewGuid();
+            ApplicationUser = new HashSet<ApplicationUser>();
+        }
+        [Key]
+        public Guid? UsersImageId { get; set; }
+        public string ImagePath { get; set; }
+        public DateTime? UploadDate { get; set; }
+        public virtual ICollection<ApplicationUser> ApplicationUser { get; set; }
+    }
+    #endregion
+
+    #region Carico
     [DataContract(IsReference = true)]
     public class Carico
     {
         public Carico()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
         [Key]
         public Guid Id { get; set; }
         public Guid pvID { get; set; }
-        public Nullable <System.Guid> yearId { get; set; }
+        public Guid? yearId { get; set; }
         public int Ordine { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
-        public System.DateTime cData { get; set; }
+        public DateTime cData { get; set; }
         [MaxLength(4)]
         public string Documento { get; set; }
         [MaxLength(18)]
@@ -96,9 +126,9 @@ namespace SystemWeb.Models
         public int Benzina { get; set; }
         public int Gasolio { get; set; }
         public string Note { get; set; }
-        [DataMember] 
+        [DataMember]
         public virtual Pv Pv { get; set; }
-        [DataMember] 
+        [DataMember]
         public virtual Year Year { get; set; }
 
         [NotMapped]
@@ -110,14 +140,17 @@ namespace SystemWeb.Models
         [NotMapped]
         public string date { get; set; }
     }
+    #endregion
+
+    #region Company
     [JsonObject(IsReference = true)]
     [DataContract(IsReference = true)]
     public class Company
     {
         public Company()
         {
-            this.CompanyId = Guid.NewGuid();
-            this.ApplicationUser = new HashSet<ApplicationUser>();
+            CompanyId = Guid.NewGuid();
+            ApplicationUser = new HashSet<ApplicationUser>();
         }
         [Key]
         public Guid CompanyId { get; set; }
@@ -125,57 +158,63 @@ namespace SystemWeb.Models
         public string Name { get; set; }
         public int PartitaIva { get; set; }
         [DataMember]
-        public virtual Nullable <Guid> RagioneSocialeId { get; set; }
+        public virtual Guid? RagioneSocialeId { get; set; }
         [DataMember]
         public virtual RagioneSociale RagioneSociale { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
         public virtual ICollection<ApplicationUser> ApplicationUser { get; set; }
     }
+    #endregion
 
+    #region Company Task
     [DataContract(IsReference = true)]
     public class CompanyTask
     {
         public CompanyTask()
         {
-            this.CompanyTaskId = Guid.NewGuid();
+            CompanyTaskId = Guid.NewGuid();
         }
         [Key]
         public Guid CompanyTaskId { get; set; }
         [MaxLength(128)]
         public string UsersId { get; set; }
-        public string FieldChiusura { get; set;}
+        public string FieldChiusura { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
-        public Nullable<DateTime> FieldDate { get; set; }
+        public DateTime? FieldDate { get; set; }
         public float FieldResult { get; set; }
         [DataMember]
         public virtual ApplicationUser ApplicationUser { get; set; }
     }
+    #endregion
 
+    #region Ragione Sociale
     public class RagioneSociale
     {
         public RagioneSociale()
         {
-            this.RagioneSocialeId = Guid.NewGuid();
+            RagioneSocialeId = Guid.NewGuid();
         }
         [Key]
         public Guid RagioneSocialeId { get; set; }
         [MaxLength(10)]
         public string Nome { get; set; }
     }
+    #endregion
 
+    #region Pv Erogatori
     [DataContract(IsReference = true)]
     public class PvErogatori
     {
         public PvErogatori()
         {
-            this.PvErogatoriId = Guid.NewGuid();
+            PvErogatoriId = Guid.NewGuid();
         }
         [Key]
         public Guid PvErogatoriId { get; set; }
-        public System.Guid pvID { get; set; }
-        public System.Guid ProductId { get; set; }
-        public System.Guid DispenserId { get; set; }
+        public Guid pvID { get; set; }
+        public Guid ProductId { get; set; }
+        public Guid DispenserId { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime FieldDate { get; set; }
         public int Value { get; set; }
@@ -190,18 +229,20 @@ namespace SystemWeb.Models
         [NotMapped]
         public string dsl { get; set; }
     }
+    #endregion
 
+    #region Flag
     [JsonObject(IsReference = true)]
     public class Flag
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Flag()
         {
-            this.Pv = new HashSet<Pv>();
-            this.pvFlagId = Guid.NewGuid();
+            Pv = new HashSet<Pv>();
+            pvFlagId = Guid.NewGuid();
         }
         [Key]
-        public System.Guid pvFlagId { get; set; }
+        public Guid pvFlagId { get; set; }
         [MaxLength(10)]
         public string Nome { get; set; }
         [MaxLength(64)]
@@ -211,18 +252,20 @@ namespace SystemWeb.Models
         [JsonIgnore]
         public virtual ICollection<Pv> Pv { get; set; }
     }
+    #endregion
 
+    #region Product
     [JsonObject(IsReference = true)]
     public class Product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
-            this.PvTank = new HashSet<PvTank>();
-            this.ProductId = Guid.NewGuid();
+            PvTank = new HashSet<PvTank>();
+            ProductId = Guid.NewGuid();
         }
         [Key]
-        public System.Guid ProductId { get; set; }
+        public Guid ProductId { get; set; }
         [MaxLength(14)]
         public string Nome { get; set; }
         public float Peso { get; set; }
@@ -232,7 +275,9 @@ namespace SystemWeb.Models
         [JsonIgnore]
         public virtual ICollection<PvTank> PvTank { get; set; }
     }
+    #endregion
 
+    #region Pv
     [JsonObject(IsReference = true)]
     [DataContract(IsReference = true)]
     public class Pv
@@ -240,18 +285,18 @@ namespace SystemWeb.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Pv()
         {
-            this.PvTank = new HashSet<PvTank>();
-            this.Carico = new HashSet<Carico>();
-            this.PvProfile = new HashSet<PvProfile>();
-            this.ApplicationUser = new HashSet<ApplicationUser>();
-            this.pvID = Guid.NewGuid();
+            PvTank = new HashSet<PvTank>();
+            Carico = new HashSet<Carico>();
+            PvProfile = new HashSet<PvProfile>();
+            ApplicationUser = new HashSet<ApplicationUser>();
+            pvID = Guid.NewGuid();
         }
 
         [Key]
-        public System.Guid pvID { get; set; }
+        public Guid pvID { get; set; }
         [MaxLength(8)]
         public string pvName { get; set; }
-        public Nullable <System.Guid> pvFlagId { get; set; }
+        public Guid? pvFlagId { get; set; }
         [DataMember]
         public virtual Flag Flag { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -265,19 +310,21 @@ namespace SystemWeb.Models
         public virtual ICollection<PvProfile> PvProfile { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection <ApplicationUser> ApplicationUser { get; set; }
+        public virtual ICollection<ApplicationUser> ApplicationUser { get; set; }
     }
+    #endregion
 
+    #region Pv Profile
     [DataContract(IsReference = true)]
     public class PvProfile
     {
         public PvProfile()
         {
-            this.PvProfileId = Guid.NewGuid();
+            PvProfileId = Guid.NewGuid();
         }
         [Key]
-        public System.Guid PvProfileId { get; set; }
-        public System.Guid pvID { get; set; }
+        public Guid PvProfileId { get; set; }
+        public Guid pvID { get; set; }
         [MaxLength(32)]
         public string Indirizzo { get; set; }
         [MaxLength(24)]
@@ -288,25 +335,27 @@ namespace SystemWeb.Models
         [DataMember]
         public virtual Pv Pv { get; set; }
     }
+    #endregion
 
+    #region Pv Tank
     [JsonObject(IsReference = true)]
     [DataContract(IsReference = true)]
     public class PvTank
     {
         public PvTank()
         {
-            this.PvTankId = Guid.NewGuid();
-            this.PvTankDesc = new HashSet<PvTankDesc>();
-            this.PvDeficienze = new HashSet<PvDeficienze>();
-            this.PvCali = new HashSet<PvCali>();
+            PvTankId = Guid.NewGuid();
+            PvTankDesc = new HashSet<PvTankDesc>();
+            PvDeficienze = new HashSet<PvDeficienze>();
+            PvCali = new HashSet<PvCali>();
         }
         [Key]
-        public System.Guid PvTankId { get; set; }
+        public Guid PvTankId { get; set; }
         public Guid pvID { get; set; }
-        public System.Guid ProductId { get; set; }
+        public Guid ProductId { get; set; }
         [MaxLength(14)]
         public string Modello { get; set; }
-        public System.DateTime LastDate { get; set; }
+        public DateTime LastDate { get; set; }
         public int Capienza { get; set; }
         public int Giacenza { get; set; }
         public string Descrizione { get; set; }
@@ -321,13 +370,15 @@ namespace SystemWeb.Models
         [JsonIgnore]
         public virtual ICollection<PvCali> PvCali { get; set; }
     }
+    #endregion
 
+    #region Pv Deficienze
     [DataContract(IsReference = true)]
     public class PvDeficienze
     {
         public PvDeficienze()
         {
-            this.PvDefId = Guid.NewGuid();
+            PvDefId = Guid.NewGuid();
         }
 
         [Key]
@@ -339,13 +390,15 @@ namespace SystemWeb.Models
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime FieldDate { get; set; }
     }
+    #endregion
 
+    #region Pv Cali
     [DataContract(IsReference = true)]
     public class PvCali
     {
         public PvCali()
         {
-            this.PvCaliId = Guid.NewGuid();
+            PvCaliId = Guid.NewGuid();
         }
 
         [Key]
@@ -357,31 +410,35 @@ namespace SystemWeb.Models
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime FieldDate { get; set; }
     }
+    #endregion
 
+    #region Pv Tank Desc
     [DataContract(IsReference = true)]
     public class PvTankDesc
     {
         public PvTankDesc()
         {
-            this.PvTankDescId = Guid.NewGuid();
+            PvTankDescId = Guid.NewGuid();
         }
 
         [Key]
-        public System.Guid PvTankDescId { get; set; }
-        public System.Guid PvTankId { get; set; }
+        public Guid PvTankDescId { get; set; }
+        public Guid PvTankId { get; set; }
         public float PvTankCM { get; set; }
         public float PvTankLT { get; set; }
         [DataMember]
         public virtual PvTank PvTank { get; set; }
     }
+    #endregion
 
+    #region User Profile
     [JsonObject(IsReference = true)]
     public class UserProfiles
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UserProfiles()
         {
-            this.ProfileId = Guid.NewGuid();
+            ProfileId = Guid.NewGuid();
         }
         [Key]
         public Guid ProfileId { get; set; }
@@ -400,10 +457,12 @@ namespace SystemWeb.Models
         [JsonIgnore]
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
     }
+    #endregion
 
+    #region Dispenser
     [JsonObject(IsReference = true)]
     [DataContract(IsReference = true)]
-    public class Dispenser 
+    public class Dispenser
     {
         public Dispenser()
         {
@@ -422,13 +481,15 @@ namespace SystemWeb.Models
         public virtual ICollection<PvErogatori> PvErogatori { get; set; }
         public bool? isActive { get; set; }
     }
+    #endregion
 
+    #region Notice
     [DataContract(IsReference = true)]
     public class Notice
     {
-        public Notice ()
+        public Notice()
         {
-            this.NoticeId = Guid.NewGuid();
+            NoticeId = Guid.NewGuid();
         }
         [Key]
         public Guid NoticeId { get; set; }
@@ -449,13 +510,15 @@ namespace SystemWeb.Models
         }
 
     }
+    #endregion
 
+    #region User Area
     [DataContract(IsReference = true)]
     public class UserArea
     {
-        public UserArea ()
+        public UserArea()
         {
-            this.UserAreaId = Guid.NewGuid();
+            UserAreaId = Guid.NewGuid();
         }
         [Key]
         public Guid UserAreaId { get; set; }
@@ -472,14 +535,16 @@ namespace SystemWeb.Models
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime CreateDate { get; set; }
     }
+    #endregion
 
+    #region Year
     [JsonObject(IsReference = true)]
     public class Year
     {
-        public Year ()
+        public Year()
         {
-            this.yearId = Guid.NewGuid();
-            this.Carico = new HashSet<Carico>();
+            yearId = Guid.NewGuid();
+            Carico = new HashSet<Carico>();
         }
         [Key]
         public Guid yearId { get; set; }
@@ -492,25 +557,33 @@ namespace SystemWeb.Models
         [JsonIgnore]
         public virtual ICollection<Carico> Carico { get; set; }
     }
+    #endregion
 
+    #region MyDbContext: IdentityDbContext
     public class MyDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
         public MyDbContext()
             : base("DefaultConnection")
         {
-            this.Configuration.LazyLoadingEnabled = true;
-            this.Configuration.ProxyCreationEnabled = true; 
+            Configuration.LazyLoadingEnabled = true;
+            Configuration.ProxyCreationEnabled = true;
         }
+
+        #region Db Intializer
         /*
         static MyDbContext()
         {
             Database.SetInitializer<MyDbContext>(new MyDbInitializer());
         }
         */
+        #endregion
+
         public static MyDbContext Create()
         {
             return new MyDbContext();
         }
+
+        #region Foreign Key
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -531,7 +604,10 @@ namespace SystemWeb.Models
                 .HasForeignKey(p => p.pvID);
             modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Company)
                 .WithMany(b => b.ApplicationUser)
-                .HasForeignKey(p => p.CompanyId);
+                .HasForeignKey(p => p.CompanyId);/*
+            modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.UsersImage)
+                .WithMany(b => b.ApplicationUser)
+                .HasForeignKey(p => p.UsersImageId);*/
             modelBuilder.Entity<Notice>().HasRequired(p => p.ApplicationUser)
                 .WithMany(b => b.Notice)
                 .HasForeignKey(p => p.UsersId);
@@ -542,6 +618,10 @@ namespace SystemWeb.Models
                 .WithMany(b => b.CompanyTask)
                 .HasForeignKey(p => p.UsersId);
         }
+        #endregion
+
+        #region Db Set
+
         public virtual DbSet<Pv> Pv { get; set; }
         public virtual DbSet<PvProfile> PvProfile { get; set; }
         public virtual DbSet<PvTank> PvTank { get; set; }
@@ -560,13 +640,19 @@ namespace SystemWeb.Models
         public virtual DbSet<UserArea> UserArea { get; set; }
         public virtual DbSet<CompanyTask> CompanyTask { get; set; }
         public virtual DbSet<Year> Year { get; set; }
+        public virtual DbSet<UsersImage> UsersImage { get; set; }
+
+        #endregion
     }
+    #endregion
+
+    #region User Store
     public class ApplicationUserStore : UserStore<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>, IUserStore<ApplicationUser, string>, IDisposable
     {
         public ApplicationUserStore()
             : this(new IdentityDbContext())
         {
-            base.DisposeContext = true;
+            DisposeContext = true;
         }
 
         public ApplicationUserStore(DbContext context)
@@ -574,12 +660,15 @@ namespace SystemWeb.Models
         {
         }
     }
+    #endregion
+
+    #region Role Store
     public class ApplicationRoleStore : RoleStore<ApplicationRole, string, ApplicationUserRole>, IQueryableRoleStore<ApplicationRole, string>, IRoleStore<ApplicationRole, string>, IDisposable
     {
         public ApplicationRoleStore()
             : base(new IdentityDbContext())
         {
-            base.DisposeContext = true;
+            DisposeContext = true;
         }
 
         public ApplicationRoleStore(DbContext context)
@@ -587,4 +676,5 @@ namespace SystemWeb.Models
         {
         }
     }
+    #endregion
 }

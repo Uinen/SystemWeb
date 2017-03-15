@@ -13,6 +13,7 @@
                     {
                         <div class="list-group-item">
                             <div class="bounceOutDown">
+                                @*@Html.Partial("showUserImage")*@
                                 <p class="text-primary">Benvenuto <strong>@User.Identity.GetUserName()</strong></p>
                                 @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
                                 {

@@ -12,6 +12,7 @@ using Microsoft.Owin.Security;
 using System;
 using System.Web.Security;
 using SystemWeb.ViewModels;
+using System.IO;
 
 namespace SystemWeb.Controllers
 {
@@ -133,7 +134,7 @@ namespace SystemWeb.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [Route("Account/new")]
+        [Route("Account/New")]
         public ActionResult New()
         {
             RegistrationViewModel _model = new RegistrationViewModel()
@@ -219,7 +220,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> RegisterStep4(RegistrationViewModel model)
+        public async Task<ActionResult> RegisterStep4(RegistrationViewModel model, HttpPostedFileBase file)
         {
             if (ModelState.IsValid)
             {
@@ -228,6 +229,8 @@ namespace SystemWeb.Controllers
                 var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
                 var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+
+                var currentUser = userManager.FindById(User.Identity.GetUserId());
 
                 const string roleName = "Administrator";
 
@@ -244,7 +247,7 @@ namespace SystemWeb.Controllers
                     UserName = model.step1.Username,
                     Email = model.step1.Email
                 };
-
+                
                 user.TwoFactorEnabled = false;
 
                 user.CreateDate = DateTime.Now;
@@ -272,6 +275,20 @@ namespace SystemWeb.Controllers
                     pvName = model.step4.PvName,
                     pvFlagId = model.step4.PvFlagId
                 };
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    var FileName = string.Format("{0}.{1}", Guid.NewGuid(), Path.GetFileName(file.FileName));
+                    var path = Path.Combine(Server.MapPath("~/Uploads/Profile/"), FileName);
+                    file.SaveAs(path);
+
+                    user.UsersImage = new UsersImage()
+                    {
+                        //UsersImageId = currentUser.UsersImageId,
+                        ImagePath = file.FileName,
+                        UploadDate = DateTime.Today.Date
+                    };
+                }
 
                 var result = await UserManager.CreateAsync(user, model.step1.Password);
 

@@ -10,6 +10,9 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
 using Microsoft.Owin.Security;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
+using System.IO;
+using SystemWeb.ViewModels;
 
 namespace SystemWeb.Controllers
 {
@@ -69,6 +72,12 @@ namespace SystemWeb.Controllers
 
             list.userarea = db.UserArea.ToList();
 
+            list.applicationuser = db.Users.ToList();
+
+            list.createuserimage = db.UsersImage.ToList();
+
+            list.showuserimage = db.UsersImage.ToList();
+
             #endregion
 
             #region CaricoCreate
@@ -76,13 +85,15 @@ namespace SystemWeb.Controllers
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
 
-            IQueryable<SystemWeb.Models.Pv> pv = db.Pv
-                .Where(c => currentUser.pvID == c.pvID);
+            int thisYear;
+            thisYear = DateTime.Now.Year;
 
+            IQueryable<Pv> pv = db.Pv
+                .Where(c => currentUser.pvID == c.pvID);
             var sql = pv.ToList();
 
-            IQueryable<SystemWeb.Models.Year> year = db.Year;
-
+            IQueryable<Year> year = db.Year
+                .Where(c => c.Anno.Year == thisYear);
             var sql2 = year.ToList();
 
             ViewBag.pvID = new SelectList(pv, "pvID", "pvName");
@@ -131,6 +142,89 @@ namespace SystemWeb.Controllers
             #endregion
 
             return View(list);
+        }
+
+        #endregion
+
+        #region createUserImage
+        [HttpGet]
+        public ActionResult createUserImage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult createUserImage([Bind(Include = "UsersImageId, ImagePath, UploadDate")] UsersImage img, HttpPostedFileBase file)
+        {
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+
+            if (ModelState.IsValid)
+            {
+                if (file != null && file.ContentLength > 0)
+                {
+                    string filename = Path.GetFileName(file.FileName);
+
+                    var filepath = Path.Combine(Server.MapPath("~/Uploads/Profile/"), filename);
+
+                    file.SaveAs(filepath);
+
+                    var path = "~/Uploads/Profile/" + filename;
+
+                    var FileImagePath = string.Format("{0}",path);
+
+                    var gid = img.UsersImageId;
+                    gid = Guid.NewGuid();
+                    currentUser.UsersImageId = gid;
+                    img.ImagePath = FileImagePath;
+                    img.UploadDate = DateTime.Today.Date;
+                    
+                }
+
+                db.UsersImage.Add(img);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(img);
+        }
+
+        #endregion
+
+        #region showUserImage
+
+        public ActionResult showUserImage()
+        {
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+
+            if (User.Identity.IsAuthenticated)
+            {
+                string ipath;
+
+                IQueryable<ProfileImageViewModel> UIq = (from a in db.UsersImage
+                                              where (a.UsersImageId == currentUser.UsersImageId)
+                                              select new ProfileImageViewModel
+                                              {
+                                                  IMAGEPATH = a.ImagePath
+                                              });
+
+                if (UIq.Count() > 0)
+                {
+                    foreach (var imgpath in UIq)
+                    {
+                        ipath = imgpath.IMAGEPATH;
+                        ViewBag.Imagepath = ipath;
+                    }
+                }
+
+                else
+                {
+                    ViewBag.Imagepath = "https://ssl.gstatic.com/accounts/ui/avatar_2x.png";
+                }
+            }
+
+            return View();
         }
 
         #endregion
@@ -395,6 +489,61 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvErogatori
+
+        /*
+        public IList<PvErogatoriViewModel> GetPvErogatoriList()
+        {
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+
+            DateTime da;
+            DateTime al;
+
+            da = new DateTime(2016, 12, 31);
+            al = DateTime.Now;
+
+            MyDbContext db = new MyDbContext();
+
+            var getByKnownDate = from a in db.PvErogatori.ToList()
+
+                                 where (currentUser.pvID == a.pvID && (Convert.ToDateTime(a.FieldDate) >= da)
+                                       && (Convert.ToDateTime(a.FieldDate) <= al))
+                                 select a;
+
+            int maxB = getByKnownDate
+                .Where(z => (z.Product.Nome.Contains("B")))
+                .Max(row => row.Value);
+            int minB = getByKnownDate
+                .Where(z => (z.Product.Nome.Contains("B")))
+                .Min(row => row.Value);
+
+            int maxG = getByKnownDate
+                .Where(z => (z.Product.Nome.Contains("G")))
+                .Max(row => row.Value);
+            int minG = getByKnownDate
+                .Where(z => (z.Product.Nome.Contains("G")))
+                .Min(row => row.Value);
+
+            var pverogatoriList = (from e in db.PvErogatori
+                                   join a in db.Product on e.ProductId equals a.ProductId
+                                   join b in db.Pv on e.pvID equals b.pvID
+                                   join c in db.Dispenser on e.DispenserId equals c.DispenserId
+                                   where (currentUser.pvID == e.pvID && (Convert.ToDateTime(e.FieldDate) >= da)
+                                      && (Convert.ToDateTime(e.FieldDate) <= al))
+                                   select new PvErogatoriViewModel
+                                   {
+                                       PVEROGATORIID = e.PvErogatoriId,
+                                       PV = b.pvName,
+                                       PRODUCT = a.Nome,
+                                       DISPENSER = c.Modello,
+                                       DATE = e.FieldDate,
+                                       VALUE = e.Value,
+                                       TOTSSPB = (maxB - minB),
+                                       TOTDSL = (maxG - minG)
+                                   }).ToList();
+            return pverogatoriList;
+        }
+        */
         public ActionResult PvErogatori(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo, [Bind(Include = "DispenserId")] PvErogatori pvEr)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -559,13 +708,13 @@ namespace SystemWeb.Controllers
             }
 
             ViewBag.CurrentFilter = searchString;
-            IQueryable<SystemWeb.Models.PvErogatori> pvErogatori = (from r in db.PvErogatori
+            IQueryable<PvErogatori> pvErogatori = (from r in db.PvErogatori
                                                    select r)
                 .Where(a => currentUser.pvID == a.pvID && a.FieldDate.Year.ToString().Contains(ly))
                 .Include(c => c.Dispenser)
                 .Include(c => c.Product)
                 .Include(c => c.Pv);
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 pvErogatori = pvErogatori.Where(s => s.FieldDate.ToString().Contains(searchString.ToUpper()));
                 //pvErogatori = pvErogatori.Where(s => s.Value.ToString().Contains(searchString.ToUpper()));
@@ -584,10 +733,71 @@ namespace SystemWeb.Controllers
             }
             int pageSize = 10;
             int pageNumber = (page ?? 1);
+            /*
+            DateTime fromm;
+            DateTime to;
+
+            fromm = new DateTime(2016, 12, 31);
+            to = DateTime.Now;
+            var exportExcell = from a in db.PvErogatori.ToList()
+
+                                 where (currentUser.pvID == a.pvID && (Convert.ToDateTime(a.FieldDate) >= fromm)
+                                       && (Convert.ToDateTime(a.FieldDate) <= to))
+                                 select a;
+
+            int maxxB = exportExcell
+                .Where(z => (z.Product.Nome.Contains("B")))
+                .Max(row => row.Value);
+            int minnB = exportExcell
+                .Where(z => (z.Product.Nome.Contains("B")))
+                .Min(row => row.Value);
+
+            int maxxG = exportExcell
+                .Where(z => (z.Product.Nome.Contains("G")))
+                .Max(row => row.Value);
+            int minnG = exportExcell
+                .Where(z => (z.Product.Nome.Contains("G")))
+                .Min(row => row.Value);
+
+            var gv = new GridView();
+            gv.DataSource = exportExcell;
+            gv.DataBind();
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=Totalizzatori.xls");
+            Response.ContentType = "application/ms-excel";
+            Response.Charset = "";
+            StringWriter objStringWriter = new StringWriter();
+            HtmlTextWriter objHtmlTextWriter = new HtmlTextWriter(objStringWriter);
+            gv.RenderControl(objHtmlTextWriter);
+            Response.Output.Write(objStringWriter.ToString());
+            Response.Flush();
+            Response.End();
+            */
 
             return View(pvErogatori.ToPagedList(pageNumber, pageSize));
         }
 
+        /*
+        public ActionResult PvErogatoriExportToExcel()
+        {
+            var gv = new GridView();
+            gv.DataSource = this.GetPvErogatoriList();
+            gv.DataBind();
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=Totalizzatori.xls");
+            Response.ContentType = "application/ms-excel";
+            Response.Charset = "";
+            StringWriter objStringWriter = new StringWriter();
+            HtmlTextWriter objHtmlTextWriter = new HtmlTextWriter(objStringWriter);
+            gv.RenderControl(objHtmlTextWriter);
+            Response.Output.Write(objStringWriter.ToString());
+            Response.Flush();
+            Response.End();
+            return View("PvErogatori");
+        }
+        */
         public ActionResult PvErogatoriChart()
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();

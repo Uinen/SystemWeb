@@ -1,6 +1,6 @@
 ﻿@model SystemWeb.ViewModels.RegistrationViewModel
 
-@using (Html.BeginForm("RegisterStep1", "Account", FormMethod.Post))
+@using (Html.BeginForm("RegisterStep1", "Account", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <h4 class="block-title wow animated zoomIn" style="color:black">Crea un nuovo Account</h4>
@@ -30,6 +30,12 @@
     @Html.LabelFor(m => m.step1.ConfirmPassword, new { @class = "col-md-2 control-label" })
     <div class="col-md-10">
         @Html.PasswordFor(m => m.step1.ConfirmPassword, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.step1.Picture, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        <input type="file" name="Picture" id="fileUpload" accept=".png,.jpg,.jpeg" />
     </div>
 </div>
 <button type="submit">Avanti</button>

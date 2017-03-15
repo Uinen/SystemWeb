@@ -1,0 +1,30 @@
+﻿@model SystemWeb.Models.UsersImage
+
+@{
+    ViewBag.Title = "Create";
+}
+
+@using (Html.BeginForm("createUserImage", "User", null, FormMethod.Post,
+                                          new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Image</legend>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ImagePath)
+        </div>
+        <div class="editor-field">
+            <input id="ImagePath" title="Upload immagine del profilo"
+                   type="file" name="file" />
+        </div>
+        <p><input type="submit" value="Create" /></p>
+    </fieldset>
+}
+<div>
+    @Html.ActionLink("Torna Indietro", "Index")
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
