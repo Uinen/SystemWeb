@@ -39,9 +39,6 @@ namespace SystemWeb.Models
         public virtual Pv Pv { get; set; }
         [DataMember]
         public virtual Guid? CompanyId { get; set; }
-        public Guid? UsersImageId { get; set; }
-        [DataMember]
-        public virtual UsersImage UsersImage { get; set; }
         public DateTime CreateDate { get; set; }
         [DataMember]
         public virtual Company Company { get; set; }
@@ -52,6 +49,7 @@ namespace SystemWeb.Models
             Notice = new HashSet<Notice>();
             UserArea = new HashSet<UserArea>();
             CompanyTask = new HashSet<CompanyTask>();
+            FilePaths = new HashSet<FilePath>();
         }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(ApplicationUserManager manager)
         {
@@ -65,6 +63,8 @@ namespace SystemWeb.Models
         public ICollection<UserArea> UserArea { get; set; }
         [JsonIgnore]
         public ICollection<CompanyTask> CompanyTask { get; set; }
+
+        public virtual ICollection<FilePath> FilePaths { get; set; }
     }
     #endregion
 
@@ -89,14 +89,19 @@ namespace SystemWeb.Models
     {
         public UsersImage()
         {
-            UsersImageId = Guid.NewGuid();
-            ApplicationUser = new HashSet<ApplicationUser>();
+            UsersImageID = Guid.NewGuid();
         }
         [Key]
-        public Guid? UsersImageId { get; set; }
-        public string ImagePath { get; set; }
-        public DateTime? UploadDate { get; set; }
-        public virtual ICollection<ApplicationUser> ApplicationUser { get; set; }
+        public Guid UsersImageID { get; set; }
+        [StringLength(255)]
+        public string UsersImageName { get; set; }
+        [StringLength(100)]
+        public string ContentType { get; set; }
+        public byte[] Content { get; set; }
+        public FileType FileType { get; set; }
+        public DateTime UploadDate { get; set; }
+        public Guid ProfileID { get; set; }
+        public virtual UserProfiles UserProfiles { get; set; }
     }
     #endregion
 
@@ -439,6 +444,7 @@ namespace SystemWeb.Models
         public UserProfiles()
         {
             ProfileId = Guid.NewGuid();
+            UsersImage = new HashSet<UsersImage>();
         }
         [Key]
         public Guid ProfileId { get; set; }
@@ -454,8 +460,17 @@ namespace SystemWeb.Models
         [MaxLength(14)]
         public string ProfileNation { get; set; }
         public string ProfileInfo { get; set; }
+        [Display(Name = "Nome completo")]
+        public string FullName
+        {
+            get
+            {
+                return ProfileSurname + ", " + ProfileName;
+            }
+        }
         [JsonIgnore]
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
+        public ICollection<UsersImage> UsersImage { get; set; }
     }
     #endregion
 
@@ -559,6 +574,26 @@ namespace SystemWeb.Models
     }
     #endregion
 
+    #region FilesPath
+
+    public class FilePath
+    {
+        public FilePath()
+        {
+            FilePathID = Guid.NewGuid();
+        }
+        [Key]
+        public Guid FilePathID { get; set; }
+        [StringLength(255)]
+        public string FileName { get; set; }
+        public FileType FileType { get; set; }
+        public DateTime UploadDate { get; set; }
+        public string UserID { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
+    }
+
+    #endregion
+
     #region MyDbContext: IdentityDbContext
     public class MyDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
@@ -604,10 +639,10 @@ namespace SystemWeb.Models
                 .HasForeignKey(p => p.pvID);
             modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Company)
                 .WithMany(b => b.ApplicationUser)
-                .HasForeignKey(p => p.CompanyId);/*
-            modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.UsersImage)
-                .WithMany(b => b.ApplicationUser)
-                .HasForeignKey(p => p.UsersImageId);*/
+                .HasForeignKey(p => p.CompanyId);
+            modelBuilder.Entity<UsersImage>().HasRequired(p => p.UserProfiles)
+                .WithMany(b => b.UsersImage)
+                .HasForeignKey(p => p.ProfileID);
             modelBuilder.Entity<Notice>().HasRequired(p => p.ApplicationUser)
                 .WithMany(b => b.Notice)
                 .HasForeignKey(p => p.UsersId);
@@ -617,6 +652,9 @@ namespace SystemWeb.Models
             modelBuilder.Entity<CompanyTask>().HasRequired(p => p.ApplicationUser)
                 .WithMany(b => b.CompanyTask)
                 .HasForeignKey(p => p.UsersId);
+            modelBuilder.Entity<FilePath>().HasRequired(p => p.ApplicationUser)
+                .WithMany(b => b.FilePaths)
+                .HasForeignKey(p => p.UserID);
         }
         #endregion
 
@@ -641,6 +679,7 @@ namespace SystemWeb.Models
         public virtual DbSet<CompanyTask> CompanyTask { get; set; }
         public virtual DbSet<Year> Year { get; set; }
         public virtual DbSet<UsersImage> UsersImage { get; set; }
+        public virtual DbSet<FilePath> FilePaths { get; set; }
 
         #endregion
     }

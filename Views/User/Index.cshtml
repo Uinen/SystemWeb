@@ -13,8 +13,20 @@
                     {
                         <div class="list-group-item">
                             <div class="bounceOutDown">
-                                @*@Html.Partial("showUserImage")*@
                                 <p class="text-primary">Benvenuto <strong>@User.Identity.GetUserName()</strong></p>
+                                @if (Model.usersimage.Any(f => f.FileType == FileType.Avatar))
+                                {
+
+                                    <div>
+                                        <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:100px;height:100px;background: #FFFFFF;margin: auto;-moz-border-radius: 10px;border-radius: 10px;padding: 6px;box-shadow: 0px 0px 20px #888;" />
+                                    </div>
+                                    @*
+                                        Return System.NullReferenceException
+                                         <p>
+                                        @Html.ActionLink("Modifica profilo", "EditProfiles", new { id = Model.userprofiles.ProfileId })
+                                        </p>
+                                     *@
+                                }
                                 @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
                                 {
                                     <p class="text-center text-danger">
@@ -38,6 +50,7 @@
                                     <th></th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,6 +65,7 @@
                                     <td data-title="5">@Html.ActionLink("Inserimento Cali", "PvCaliCreate")</td>
                                     <td data-title="6">@Html.ActionLink("Lista Cali", "PvCali")</td>
                                     <td data-title="7">@Html.ActionLink("Lista Contatori", "PvErogatori")</td>
+                                    <td data-title="8">@Html.ActionLink("Upload Documenti", "File")</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -17,6 +17,7 @@ namespace SystemWeb
             routes.IgnoreRoute("{folder}/{*pathInfo}", new { folder = "MainFont" });
             routes.IgnoreRoute("{folder}/{*pathInfo}", new { folder = "fonts" });
             */
+            routes.MapRoute("UserIndex", "Index", new { controller = "User", action = "Index", id = UrlParameter.Optional });
             routes.MapRoute("UserCarico", "Carico", new { controller = "User", action = "Carico", dateFrom = UrlParameter.Optional, dateTo = UrlParameter.Optional });
             routes.MapRoute("UserPvErogatori", "PvErogatori", new { controller = "User", action = "PvErogatori", dateFrom = UrlParameter.Optional, dateTo = UrlParameter.Optional });
         }

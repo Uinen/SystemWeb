@@ -1,0 +1,79 @@
+﻿@model SystemWeb.Models.UserProfiles
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Profile</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProfileName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProfileName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProfileSurname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProfileSurname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProfileAdress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProfileAdress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProfileCity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProfileCity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProfileZipCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProfileZipCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProfileNation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProfileNation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProfileInfo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProfileInfo)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

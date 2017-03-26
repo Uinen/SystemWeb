@@ -1,0 +1,32 @@
+﻿@model SystemWeb.Models.UserProfiles
+    <dlv class="dl-horizontal">
+        @if (Model.UsersImage.Any(f => f.FileType == FileType.Avatar))
+        {
+            <dt>
+                Avatar
+            </dt>
+            <dd>
+                <img src="~/UsersImage?id=@Model.UsersImage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:100px;height:100px;background: #FFFFFF;margin: auto;-moz-border-radius: 60px;border-radius: 100px;padding: 6px;box-shadow: 0px 0px 20px #888;" />
+            </dd>
+        }
+        <dt>
+            Nome e Cognome
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+
+        <dt>
+            Indirizzo
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProfileAdress)
+        </dd>
+
+    </dlv>
+<p>
+    @Html.ActionLink("Edit", "EditProfiles", new { id = Model.ProfileId })
+</p>
+

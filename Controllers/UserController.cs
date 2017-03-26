@@ -11,8 +11,9 @@ using System.Data.Entity;
 using Microsoft.Owin.Security;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.IO;
-using SystemWeb.ViewModels;
 
 namespace SystemWeb.Controllers
 {
@@ -48,7 +49,7 @@ namespace SystemWeb.Controllers
 
         #region Index 
 
-        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo)
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo, Guid? id)
         {
             #region List
 
@@ -74,16 +75,23 @@ namespace SystemWeb.Controllers
 
             list.applicationuser = db.Users.ToList();
 
-            list.createuserimage = db.UsersImage.ToList();
-
-            list.showuserimage = db.UsersImage.ToList();
+            list.usersimage = db.UsersImage.ToList();
 
             #endregion
 
-            #region CaricoCreate
-
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
+
+            var getPId = from a in db.UserProfiles
+                         where a.ProfileId == currentUser.ProfileId
+                         select a;
+
+            ViewBag.profileId = getPId;
+
+            UserProfiles profile = db.UserProfiles.Include(s => s.UsersImage).SingleOrDefault(s => s.ProfileId == id);
+            list.userprofiles = profile;
+
+            #region CaricoCreate
 
             int thisYear;
             thisYear = DateTime.Now.Year;
@@ -146,87 +154,142 @@ namespace SystemWeb.Controllers
 
         #endregion
 
-        #region createUserImage
-        [HttpGet]
-        public ActionResult createUserImage()
+        #region FilePaths
+
+        // GET: FilePaths
+        public ActionResult File()
         {
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+
+            var myBoard = from a in db.FilePaths.Include(f => f.ApplicationUser)
+                          where currentUser.Id == a.UserID
+                          select a;
+
+            return View(myBoard.ToList());
+        }
+
+        // GET: FilePaths/Details/5
+        public ActionResult FileDetails(Guid? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            FilePath filePath = db.FilePaths.Find(id);
+            if (filePath == null)
+            {
+                return HttpNotFound();
+            }
+            return View(filePath);
+        }
+
+        // GET: FilePaths/Create
+        public ActionResult FileCreate()
+        {
+            ViewBag.UserID = new SelectList(db.Users, "Id", "UserName");
             return View();
         }
 
+        // POST: FilePaths/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult createUserImage([Bind(Include = "UsersImageId, ImagePath, UploadDate")] UsersImage img, HttpPostedFileBase file)
+        public ActionResult FileCreate([Bind(Include = "FilePathID,FileName,FileType,UploadDate,UserID")] FilePath filePath, ApplicationUser user, HttpPostedFileBase upload)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-
             if (ModelState.IsValid)
             {
-                if (file != null && file.ContentLength > 0)
+                if (upload != null && upload.ContentLength > 0)
                 {
-                    string filename = Path.GetFileName(file.FileName);
+                    string filename = Path.GetFileName(Guid.NewGuid() + "." + upload.FileName);
+                    var filepath = Path.Combine(Server.MapPath("~/Uploads/Documents/"), filename);
+                    upload.SaveAs(filepath);
 
-                    var filepath = Path.Combine(Server.MapPath("~/Uploads/Profile/"), filename);
+                    var path = "/Uploads/Documents/" + filename;
+                    var FileDocumentPath = string.Format("{0}", path);
 
-                    file.SaveAs(filepath);
-
-                    var path = "~/Uploads/Profile/" + filename;
-
-                    var FileImagePath = string.Format("{0}",path);
-
-                    var gid = img.UsersImageId;
-                    gid = Guid.NewGuid();
-                    currentUser.UsersImageId = gid;
-                    img.ImagePath = FileImagePath;
-                    img.UploadDate = DateTime.Today.Date;
-                    
+                    var document = new FilePath
+                    {
+                        FileName = FileDocumentPath,
+                        FileType = FileType.Document,
+                        UploadDate = DateTime.Now.Date,
+                        UserID = currentUser.Id
+                    };
+                    db.FilePaths.Add(document);
+                    db.SaveChanges();
                 }
 
-                db.UsersImage.Add(img);
+                return RedirectToAction("File");
+            }
+
+            ViewBag.UserID = new SelectList(db.Users, "Id", "UserName", filePath.UserID);
+            return View(filePath);
+        }
+
+        // GET: FilePaths/Edit/5
+        public ActionResult FileEdit(Guid? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            FilePath filePath = db.FilePaths.Find(id);
+            if (filePath == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.UserID = new SelectList(db.Users, "Id", "UserName", filePath.UserID);
+            return View(filePath);
+        }
+
+        // POST: FilePaths/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult FileEdit([Bind(Include = "FilePathID,FileName,FileType,UploadDate,UserID")] FilePath filePath)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(filePath).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(img);
+            ViewBag.UserID = new SelectList(db.Users, "Id", "UserName", filePath.UserID);
+            return View(filePath);
         }
 
-        #endregion
-
-        #region showUserImage
-
-        public ActionResult showUserImage()
+        // GET: FilePaths/Delete/5
+        public ActionResult FileDelete(Guid? id)
         {
-            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = userManager.FindById(User.Identity.GetUserId());
-
-            if (User.Identity.IsAuthenticated)
+            if (id == null)
             {
-                string ipath;
-
-                IQueryable<ProfileImageViewModel> UIq = (from a in db.UsersImage
-                                              where (a.UsersImageId == currentUser.UsersImageId)
-                                              select new ProfileImageViewModel
-                                              {
-                                                  IMAGEPATH = a.ImagePath
-                                              });
-
-                if (UIq.Count() > 0)
-                {
-                    foreach (var imgpath in UIq)
-                    {
-                        ipath = imgpath.IMAGEPATH;
-                        ViewBag.Imagepath = ipath;
-                    }
-                }
-
-                else
-                {
-                    ViewBag.Imagepath = "https://ssl.gstatic.com/accounts/ui/avatar_2x.png";
-                }
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            return View();
+            FilePath filePath = db.FilePaths.Find(id);
+            if (filePath == null)
+            {
+                return HttpNotFound();
+            }
+            return View(filePath);
         }
 
+        // POST: FilePaths/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult FileDeleteConfirmed(Guid id)
+        {
+            FilePath filePath = db.FilePaths.Find(id);
+            db.FilePaths.Remove(filePath);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        
         #endregion
 
         #region Map Designer
@@ -2571,6 +2634,183 @@ namespace SystemWeb.Controllers
         }
         #endregion
 
+        #region UserProfiles
+        /*
+        public ActionResult Index()
+        {
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+
+            var myProfile = from a in db.UserProfiles
+                            where currentUser.ProfileId == a.ProfileId
+                            select a;
+
+            return View(myProfile.ToList());
+        }
+        */
+        // GET: Profiles/Details/5
+        public ActionResult Profiles(Guid? id)
+        {
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            UserProfiles profile = db.UserProfiles.Include(s => s.UsersImage).SingleOrDefault(s => s.ProfileId == id);
+
+            if (profile == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(profile);
+        }
+
+            /*
+            // GET: Profiles/Create
+            public ActionResult Create()
+            {
+                return View();
+            }
+
+            // POST: Profiles/Create
+            // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+            // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public ActionResult Create([Bind(Include = "ProfileID,ProfileName,ProfileSurname,ProfileCF")] Profile profile, HttpPostedFileBase upload)
+            {
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        if (upload != null && upload.ContentLength > 0)
+                        {
+                            var avatar = new File
+                            {
+                                FileName = string.Format(Guid.NewGuid() + "-" + System.IO.Path.GetFileName(upload.FileName)),
+                                FileType = FileType.Avatar,
+                                ContentType = upload.ContentType,
+                                UploadDate = DateTime.Now.Date
+                            };
+                            using (var reader = new System.IO.BinaryReader(upload.InputStream))
+                            {
+                                avatar.Content = reader.ReadBytes(upload.ContentLength);
+                            }
+                            profile.File = new List<File> { avatar };
+                        }
+                        db.Profiles.Add(profile);
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
+                    }
+                }
+                catch (RetryLimitExceededException)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+                return View(profile);
+            }
+            */
+            // GET: Profiles/Edit/5
+            public ActionResult EditProfiles(Guid? id)
+            {
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                UserProfiles profile = db.UserProfiles.Include(s => s.UsersImage).SingleOrDefault(s => s.ProfileId == id);
+                if (profile == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(profile);
+            }
+
+            // POST: Profiles/Edit/5
+            // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+            // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+            [HttpPost, ActionName("EditProfiles")]
+            [ValidateAntiForgeryToken]
+            public ActionResult EditPost(Guid? id, HttpPostedFileBase upload)
+            {
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                var profileToUpdate = db.UserProfiles.Find(id);
+                if (TryUpdateModel(profileToUpdate, "",
+                    new string[] { "ProfileName", "ProfileSurname", "ProfileAdress", "ProfileCity", "ProfileZipCode", "ProfileNation", "ProfileInfo" }))
+                {
+                    try
+                    {
+                        if (upload != null && upload.ContentLength > 0)
+                        {
+                            if (profileToUpdate.UsersImage.Any(f => f.FileType == FileType.Avatar))
+                            {
+                                db.UsersImage.Remove(profileToUpdate.UsersImage.First(f => f.FileType == FileType.Avatar));
+                            }
+                            var avatar = new UsersImage
+                            {
+                                UsersImageName = string.Format(Guid.NewGuid() + "-" + System.IO.Path.GetFileName(upload.FileName)),
+                                FileType = FileType.Avatar,
+                                ContentType = upload.ContentType,
+                                UploadDate = DateTime.Now.Date
+                            };
+                            using (var reader = new System.IO.BinaryReader(upload.InputStream))
+                            {
+                                avatar.Content = reader.ReadBytes(upload.ContentLength);
+                            }
+                            profileToUpdate.UsersImage = new List<UsersImage> { avatar };
+                        }
+                        db.Entry(profileToUpdate).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        return RedirectToAction("Index");
+                    }
+                    catch (RetryLimitExceededException /* dex */)
+                    {
+                        //Log the error (uncomment dex variable name and add a line here to write a log.
+                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                    }
+                }
+                return View(profileToUpdate);
+            }
+
+            [Authorize(Roles = "Administrators")]
+            // GET: Profiles/Delete/5
+            public ActionResult DeleteProfiles(Guid? id)
+            {
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                UserProfiles profile = db.UserProfiles.Find(id);
+                if (profile == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(profile);
+            }
+
+            // POST: Profiles/Delete/5
+            [Authorize(Roles = "Administrators")]
+            [HttpPost, ActionName("DeleteProfiles")]
+            [ValidateAntiForgeryToken]
+            public ActionResult DeleteProfilesConfirmed(Guid id)
+            {
+                UserProfiles profile = db.UserProfiles.Find(id);
+                db.UserProfiles.Remove(profile);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+        #endregion
+
         protected override void Dispose(bool disposing)
         {
             MyDbContext db = new MyDbContext();
@@ -2579,6 +2819,7 @@ namespace SystemWeb.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+
         }
     }
 }

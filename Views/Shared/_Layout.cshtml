@@ -47,18 +47,28 @@
         <a id="menu-close" href="#" class="close-btn toggle">Chiudi<i class="ion-log-in"></i></a>
         <ul class="sidebar-nav">
             <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            @using (Html.BeginForm("Index", "User", FormMethod.Get))
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    <li>@Html.ActionLink("Dashboard", "Index", "User", null , new { id = ViewBag.profileId })</li>
+                    
+                }
+            }
             @Html.Partial("_LoginPartial")
+            @*
             @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
             {
-                @*<li>@Html.ActionLink("Impostazioni Avanzate", "Index", "Admin")</li>*@
-                @*<li>@Html.ActionLink("Log", "Index", "Logging")</li>*@
-                @*<li>@Html.ActionLink("Amministrazione Dati", "Area", "User")</li>*@
-                @*<li>@Html.ActionLink("Task", "Task", "User")</li>*@
+                <li>@Html.ActionLink("Impostazioni Avanzate", "Index", "Admin")</l
+                <li>@Html.ActionLink("Log", "Index", "Logging")</li>
+                <li>@Html.ActionLink("Amministrazione Dati", "Area", "User")</li>
+                <li>@Html.ActionLink("Task", "Task", "User")</li>
             }
+            
             @if (ViewContext.HttpContext.User.IsInRole("User"))
             {
                 <li>@Html.ActionLink("Invio Dati", "Area", "User")</li>
-            }
+            }*@
         </ul>
     </nav>
 

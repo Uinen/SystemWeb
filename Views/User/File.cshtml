@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SystemWeb.Models.FilePath>
+
+<p>
+    @Html.ActionLink("Upload", "FileCreate")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FileName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FileType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UploadDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FileName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FileType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UploadDate)
+        </td>
+        <td>
+            @Html.ActionLink("Modifica", "FileEdit", new { id=item.FilePathID }) |
+            @Html.ActionLink("Dettagli", "FileDetails", new { id=item.FilePathID }) |
+            @Html.ActionLink("Cancella", "FileDelete", new { id=item.FilePathID })
+        </td>
+    </tr>
+}
+
+</table>

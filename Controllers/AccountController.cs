@@ -13,6 +13,8 @@ using System;
 using System.Web.Security;
 using SystemWeb.ViewModels;
 using System.IO;
+using System.Collections.Generic;
+using System.Net;
 
 namespace SystemWeb.Controllers
 {
@@ -71,9 +73,11 @@ namespace SystemWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View();
             }
+
             var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
+
             switch (result)
             {
                 case SignInStatus.Success:
@@ -83,6 +87,7 @@ namespace SystemWeb.Controllers
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl });
                 case SignInStatus.Failure:
+
                 default:
                     ModelState.AddModelError("", "Tentativo di login errato.");
                     return View(model);
@@ -220,7 +225,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> RegisterStep4(RegistrationViewModel model, HttpPostedFileBase file)
+        public async Task<ActionResult> RegisterStep4(RegistrationViewModel model, HttpPostedFileBase upload)
         {
             if (ModelState.IsValid)
             {
@@ -252,17 +257,6 @@ namespace SystemWeb.Controllers
 
                 user.CreateDate = DateTime.Now;
 
-                user.UserProfiles = new UserProfiles()
-                {
-                    ProfileName = model.step2.mProfileName,
-                    ProfileSurname = model.step2.mProfileSurname,
-                    ProfileAdress = model.step2.mProfileAdress,
-                    ProfileCity = model.step2.mProfileCity,
-                    ProfileZipCode = model.step2.mProfilezipCode,
-                    ProfileNation = model.step2.mProfileNation,
-                    ProfileInfo = model.step2.mProfileInfo
-                };
-
                 user.Company = new Company()
                 {
                     Name = model.step3.name,
@@ -276,18 +270,33 @@ namespace SystemWeb.Controllers
                     pvFlagId = model.step4.PvFlagId
                 };
 
-                if (file != null && file.ContentLength > 0)
+                if (upload != null && upload.ContentLength > 0)
                 {
-                    var FileName = string.Format("{0}.{1}", Guid.NewGuid(), Path.GetFileName(file.FileName));
-                    var path = Path.Combine(Server.MapPath("~/Uploads/Profile/"), FileName);
-                    file.SaveAs(path);
-
-                    user.UsersImage = new UsersImage()
+                    var avatar = new UsersImage
                     {
-                        //UsersImageId = currentUser.UsersImageId,
-                        ImagePath = file.FileName,
-                        UploadDate = DateTime.Today.Date
+                        UsersImageName = string.Format(Guid.NewGuid() + "-" + System.IO.Path.GetFileName(upload.FileName)),
+                        FileType = FileType.Avatar,
+                        ContentType = upload.ContentType,
+                        UploadDate = DateTime.Now.Date
                     };
+
+                    using (var reader = new System.IO.BinaryReader(upload.InputStream))
+                    {
+                        avatar.Content = reader.ReadBytes(upload.ContentLength);
+                    }
+
+                    user.UserProfiles = new UserProfiles()
+                    {
+                        ProfileName = model.step2.mProfileName,
+                        ProfileSurname = model.step2.mProfileSurname,
+                        ProfileAdress = model.step2.mProfileAdress,
+                        ProfileCity = model.step2.mProfileCity,
+                        ProfileZipCode = model.step2.mProfilezipCode,
+                        ProfileNation = model.step2.mProfileNation,
+                        ProfileInfo = model.step2.mProfileInfo
+                    };
+
+                    user.UserProfiles.UsersImage = new List<UsersImage> { avatar };
                 }
 
                 var result = await UserManager.CreateAsync(user, model.step1.Password);

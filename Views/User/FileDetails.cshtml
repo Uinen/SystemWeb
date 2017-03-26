@@ -1,0 +1,35 @@
+﻿@model SystemWeb.Models.FilePath
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+@{ 
+    string localUrl = "http://localhost:27430";
+}
+
+    <li><a href="@localUrl@Model.FileName">Documento</a></li>
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.FileType)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.FileType)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.UploadDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.UploadDate)
+            </dd>
+        </dl>
+    </div>
+<p>
+    @Html.ActionLink("Modifica", "FileEdit", new { id = Model.FilePathID }) |
+    @Html.ActionLink("Torna indietro", "File")
+</p>

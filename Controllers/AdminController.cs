@@ -580,7 +580,7 @@ namespace SystemWeb.Controllers
         {
             MyDbContext db = new MyDbContext();
             ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Ordine_Desc" : "";
+            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "Ordine_Desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             if (searchString != null)
             {
@@ -594,7 +594,7 @@ namespace SystemWeb.Controllers
             ViewBag.CurrentFilter = searchString;
             var utenti = from s in db.Users
                          select s;
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 utenti = utenti.Where(s => s.UserName.Contains(searchString));
             }

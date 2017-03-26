@@ -3,10 +3,10 @@
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
     {
-        @Html.AntiForgeryToken()
+             @Html.AntiForgeryToken()
 
             <li class="text-success">
-                @Html.ActionLink("Benvenuto " + User.Identity.GetUserName() + "", "Index", "User", routeValues: null, htmlAttributes: new { title = "Impostazioni" })
+                @Html.Display("Benvenuto " + User.Identity.GetUserName())
             </li>
             <li><a class="text-warning" href="javascript:document.getElementById('logoutForm').submit()">Disconnettiti</a></li>
     }
