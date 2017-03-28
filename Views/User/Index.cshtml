@@ -17,7 +17,7 @@
                                 @if (Model.usersimage.Any(f => f.FileType == FileType.Avatar))
                                 {
 
-                                    <div>
+                                    <div class="account-wall">
                                         <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:100px;height:100px;background: #FFFFFF;margin: auto;-moz-border-radius: 10px;border-radius: 10px;padding: 6px;box-shadow: 0px 0px 20px #888;" />
                                     </div>
                                     @*
@@ -27,6 +27,7 @@
                                         </p>
                                      *@
                                 }
+                                <hr />
                                 @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
                                 {
                                     <p class="text-center text-danger">
