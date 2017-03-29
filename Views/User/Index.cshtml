@@ -8,7 +8,7 @@
         <div class="row">
             <div class="center-block">
                 <div class="header-content">
-                    <h3 class="alert alert-info"><strong>Dashboard Utente</strong></h3>
+                    <h3 class="alert alert-info"><strong>Documents Cloud</strong></h3>
                     @if (Request.IsAuthenticated)
                     {
                         <div class="list-group-item">
@@ -16,28 +16,35 @@
                                 <p class="text-primary">Benvenuto <strong>@User.Identity.GetUserName()</strong></p>
                                 @if (Model.usersimage.Any(f => f.FileType == FileType.Avatar))
                                 {
-
-                                    <div class="account-wall">
-                                        <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:100px;height:100px;background: #FFFFFF;margin: auto;-moz-border-radius: 10px;border-radius: 10px;padding: 6px;box-shadow: 0px 0px 20px #888;" />
+                                    <div class="col-sm-6 col-md-4">
+                                        <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:100px;height:100px;background: #FFFFFF;margin: auto;-moz-border-radius: 60px;border-radius: 100px;padding: 6px;box-shadow: 0px 0px 20px #888;" />
                                     </div>
-                                    @*
-                                        Return System.NullReferenceException
-                                         <p>
-                                        @Html.ActionLink("Modifica profilo", "EditProfiles", new { id = Model.userprofiles.ProfileId })
-                                        </p>
-                                     *@
                                 }
-                                <hr />
-                                @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
-                                {
-                                    <p class="text-center text-danger">
-                                        Il Sistema ha rilevato che appartieni al ruolo <strong>Amministratori</strong> se vuoi puoi amministrare 
-                                        il sito web navigando a questo @Html.ActionLink("Indirizzo", "Index", "Admin")
-                                    </p>
-                                }
-                                <p class="text-center">L'impianto ha venduto un totale di <strong>@ViewBag.SSPBTotalAmount</strong> Lt di Benzina Super Senza Piombo, ed un totale di <strong>@ViewBag.DieselTotalAmount</strong> Lt di Gasolio, per un totale di <strong>@ViewBag.TotalAmount</strong>Lt.</p>
-                                <p class="text-center">L'impianto è tutt'ora in appalto a <strong>@ViewBag.CompanyId</strong> con Operatore <strong>@ViewBag.ProfileSurname @ViewBag.ProfileName</strong></p>
-                            </div>
+
+                                <div class="col-sm-6 col-md-4 portfolio-box">
+                                    <h4>Informazioni utente</h4>
+                                    <p>@ViewBag.ProfileName, @ViewBag.ProfileSurname</p>
+                                    <p>@ViewBag.ProfileAdress , @ViewBag.ProfileCity - @ViewBag.ProfileZipCode , @ViewBag.ProfileNation</p>
+                                </div>
+                                <div class="col-sm-6 col-md-4 portfolio-box">
+                                    <h4>Informazioni contrattuali</h4>
+                                    <p>Il punto vendita numero 4023 sito in @ViewBag.PvCity - @ViewBag.PvInd</p>
+                                </div>
+                                <div class="col-sm-6 col-md-4 portfolio-box">
+                                    <h4>Riepilogo vendite</h4>
+                                    <p>Benzina: <strong>@ViewBag.SSPBTotalAmount Litri</strong></p>
+                                    <p>Diesel: <strong>@ViewBag.DieselTotalAmount Litri</strong></p>
+                                    <p>Totale: <strong>@ViewBag.TotalAmount Litri</strong></p>
+                                </div>@*
+                                    @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+                                    {<div class="col-sm-6 col-md-4 portfolio-box">
+                                            <p class="bg-danger text-center text-danger">
+                                                Il Sistema ha rilevato che appartieni al ruolo <strong>Amministratori</strong> se vuoi puoi amministrare
+                                                il sito web navigando a questo @Html.ActionLink("Indirizzo", "Index", "Admin")
+                                            </p>
+                                        </div>
+                                    }*@
+                                </div>
                         </div>
                     }
                     <div id="no-more-tables">
@@ -93,9 +100,6 @@
                                         Bandiera
                                     </th>
                                     <th>
-                                        ID Punto Vendita
-                                    </th>
-                                    <th>
                                         Punto Vendita
                                     </th>
                                 </tr>
@@ -107,9 +111,6 @@
                                         <td data-title="Bandiera">
                                             @Html.DisplayFor(modelItem => item.Flag.Nome)
                                         </td>
-                                        <td data-title="ID Punto Vendita">
-                                            @Html.DisplayFor(modelItem => item.pvID)
-                                        </td>
                                         <td data-title="Punto Vendita">
                                             @Html.DisplayFor(modelItem => item.pvName)
                                         </td>
@@ -120,68 +121,6 @@
                         </table>
                     </div>
                 }
-            </div>
-        </div>
-        <div class="row">
-            <div class="center-block">
-                <div class="header-content">
-                    <h4 class="alert alert-info">
-                        Dati Punto Vendita
-                    </h4>
-                </div>
-                <br />
-                <div id="no-more-tables">
-                    <table class="col-md-12 table-bordered table-striped table-condensed">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Codice punto vendita
-                                </th>
-                                <th>
-                                    Indirizzo
-                                </th>
-                                <th>
-                                    Città
-                                </th>
-                                <th>
-                                    Nazione
-                                </th>
-                                <th>
-                                    Cap
-                                </th>
-                                <th>
-                                    @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
-                                    {
-
-                                        @Html.ActionLink("Crea nuovo profilo", "PvProfilesCreate")
-                                    }
-                                </th>
-                            </tr>
-                        </thead>
-                        @foreach (var item in Model.pvprofile)
-                        {
-                            <tbody>
-                                <tr>
-                                    <td data-title="Codice punto vendita">
-                                        @Html.DisplayFor(modelItem => item.Pv.pvName)
-                                    </td>
-                                    <td data-title="Indirizzo">
-                                        @Html.DisplayFor(modelItem => item.Indirizzo)
-                                    </td>
-                                    <td data-title="Città">
-                                        @Html.DisplayFor(modelItem => item.Città)
-                                    </td>
-                                    <td data-title="Nazione">
-                                        @Html.DisplayFor(modelItem => item.Nazione)
-                                    </td>
-                                    <td data-title="Cap">
-                                        @Html.DisplayFor(modelItem => item.Cap)
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
-                </div>
             </div>
         </div>
         <div class="row">
@@ -237,9 +176,6 @@
                                 <th>
                                     @Html.ActionLink("Modello Dispenser", "Dispenser", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
                                 </th>
-                                <th>
-                                    ID Punto Vendita
-                                </th>
                             </tr>
                         </thead>
                         @foreach (var item in Model.dispenser)
@@ -251,9 +187,6 @@
                                     </td>
                                     <td data-title="Modello">
                                         @Html.DisplayFor(modelItem => item.Modello)
-                                    </td>
-                                    <td data-title="ID Punto vendita">
-                                        @Html.DisplayFor(modelItem => item.PvTank.pvID)
                                     </td>
                                 </tr>
                             </tbody>

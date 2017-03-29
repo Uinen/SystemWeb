@@ -10,10 +10,12 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
 using Microsoft.Owin.Security;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.IO;
+using SystemWeb.Repository.Interface;
+using SystemWeb.Repository;
+using System.Data;
 
 namespace SystemWeb.Controllers
 {
@@ -22,10 +24,15 @@ namespace SystemWeb.Controllers
     {
         #region Inizializzatori
         private MyDbContext db = new MyDbContext();
-        private SelectList disp;
+        private iCaricoRepository _CaricoRepository;
+        private iPvRepository _PvRepository;
+        private iPvErogatoriRepository _PvErogatoriRepository;
         public string ly { get; set; }
         public UserController()
         {
+            this._CaricoRepository = new CaricoRepository(new MyDbContext());
+            this._PvRepository = new PvRepository(new MyDbContext());
+            this._PvErogatoriRepository = new PvErogatoriRepository(new MyDbContext());
         }
 
         public UserController(ApplicationUserManager userManager)
@@ -85,8 +92,23 @@ namespace SystemWeb.Controllers
             var getPId = from a in db.UserProfiles
                          where a.ProfileId == currentUser.ProfileId
                          select a;
-
+            
             ViewBag.profileId = getPId;
+
+            var somequalsD1 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Indirizzo).SingleOrDefault();
+            var somequalsD2 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Città).SingleOrDefault();
+
+            ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
+            ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
+            ViewBag.ProfileAdress = currentUser.UserProfiles.ProfileAdress;
+            ViewBag.ProfileCity = currentUser.UserProfiles.ProfileCity;
+            ViewBag.ProfileZipCode = currentUser.UserProfiles.ProfileZipCode;
+            ViewBag.ProfileNation = currentUser.UserProfiles.ProfileNation;
+            ViewBag.ProfileInfo = currentUser.UserProfiles.ProfileInfo;
+            ViewBag.PvId = currentUser.Pv.pvName.First();
+            ViewBag.PvInd = somequalsD1;
+            ViewBag.PvCity = somequalsD2;
+            ViewBag.CompanyId = currentUser.Company.Name;
 
             UserProfiles profile = db.UserProfiles.Include(s => s.UsersImage).SingleOrDefault(s => s.ProfileId == id);
             list.userprofiles = profile;
@@ -316,29 +338,39 @@ namespace SystemWeb.Controllers
 
         public ActionResult Carico( string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo)
         {
-            // Ritorna tutti gli oggetti in Carico
-            var getall = from a in db.Carico.ToList()
-                        select a;
-
+            #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            var getall = from order in _CaricoRepository.GetOrders()
+                         where (currentUser.pvID == order.pvID && order.Year.Anno.Year.ToString().Contains(ly))
+                         select order;
             
+            #region Sorting ViewBag
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "Ordine_Desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.YearSortParm = sortOrder == "Year" ? "year_desc" : "Year";
             ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
             ViewBag.yearId = new SelectList(db.Year, "yearId", "Anno");
+            #endregion
 
+            #region AmmountByDateFrom
             // Totale Carico Benzina secondo il parametro di ricerca specificato
             ViewBag.SSPBTotalAmountFrom = getall.ToList()
-                .Where(o => currentUser.pvID == o.pvID && Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
+                .Where(o => /*currentUser.pvID == o.pvID &&*/ Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
                 .Sum(o => (decimal?) o.Benzina);
+
             // Totale Carico Gasolio secondo il parametro di ricerca specificato
             ViewBag.DieselTotalAmountFrom = getall.ToList()
-                .Where(o => currentUser.pvID == o.pvID && Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
+                .Where(o => /*currentUser.pvID == o.pvID &&*/ Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
                 .Sum(o => (decimal?) o.Gasolio);
-            
+            #endregion
+
+            #region Search and Sorting
             if (searchString != null)
             {
                 page = 1;
@@ -349,57 +381,46 @@ namespace SystemWeb.Controllers
             }
 
             ViewBag.CurrentFilter = searchString;
-            
-            lastYear = DateTime.Today.Year;
-            ly = lastYear.ToString();
-            IQueryable<Carico> carico = (from r in db.Carico
-                                         select r)
-                .Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(ly))
-                .Include(c => c.Pv)
-                .Include(c => c.Year);
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
-                carico = carico.Where(s => s.Ordine.ToString().Contains(searchString.ToUpper()));
+                getall = getall.Where(s => s.Ordine.ToString().Contains(searchString.ToUpper()));
             }
 
             switch (sortOrder)
             {
                 case "Ordine_Desc":
-                    carico = carico.OrderByDescending(s => s.Ordine);
+                    getall = getall.OrderByDescending(s => s.Ordine);
                     break;
                 case "year_desc":
-                    carico = carico.OrderByDescending(s => s.yearId);
+                    getall = getall.OrderByDescending(s => s.yearId);
                     break;
                 default:
-                    carico = carico.OrderBy(s => s.Ordine);
+                    getall = getall.OrderBy(s => s.Ordine);
                     break;
             }
+
             int pageSize = 10;
             int pageNumber = (page ?? 1);
-           
+            #endregion
+
+            #region Total Ammount ViewBag
             // Totale Carico annuo benzina.
-            ViewBag.SSPBTotalAmount = db.Carico.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly)).Sum(o => (decimal?) o.Benzina);
+            ViewBag.SSPBTotalAmount = getall/*.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly))*/.Sum(o => (decimal?) o.Benzina);
 
             // Totale Carico annuo gasolio. 
-            ViewBag.DieselTotalAmount = db.Carico.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly)).Sum(o => (decimal?) o.Gasolio);
+            ViewBag.DieselTotalAmount = getall/*.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly))*/.Sum(o => (decimal?) o.Gasolio);
+            #endregion
 
-            return View(carico.ToPagedList(pageNumber, pageSize));
+            return View(getall.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult CaricoChart()
         {
-            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = userManager.FindById(User.Identity.GetUserId());
-
-            SystemWeb.Models.Carico objCaricoModel = new SystemWeb.Models.Carico();
+            Carico objCaricoModel = new Carico();
             objCaricoModel.sspb = "Benzina";
             objCaricoModel.dsl = "Gasolio";
-            /*
-            ViewBag.Anno = db.Carico.Where(o => currentUser.pvID == o.pvID).Select(o => o.cData.Year).ToString();
-            ViewBag.Mese = db.Carico.Where(o => currentUser.pvID == o.pvID).Select(o => o.cData.Month).ToString();
-            ViewBag.Giorno = db.Carico.Where(o => currentUser.pvID == o.pvID).Select(o => o.cData.Day).ToString();
-            */
+
             return View(objCaricoModel);
         }
 
@@ -411,8 +432,11 @@ namespace SystemWeb.Controllers
             lastYear = DateTime.Today.Year;
             ly = lastYear.ToString();
 
-            return Json(db.Carico.ToList()
-                .Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(ly))
+            var getall = from order in _CaricoRepository.GetOrders()
+                         where (currentUser.pvID == order.pvID && order.Year.Anno.Year.ToString().Contains(ly))
+                         select order;
+
+            return Json(getall.ToList()
                 .OrderBy(c => c.Ordine)
                 .Select(c => new
                 {
@@ -426,13 +450,13 @@ namespace SystemWeb.Controllers
             JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CaricoDetails(Guid? id)
+        public ActionResult CaricoDetails(Guid? Id)
         {
-            if (id == null)
+            if (Id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Carico carico = db.Carico.Find(id);
+            Carico carico = _CaricoRepository.GetOrdersById(Id);
             if (carico == null)
             {
                 return HttpNotFound();
@@ -448,26 +472,27 @@ namespace SystemWeb.Controllers
             int thisYear;
             thisYear = DateTime.Now.Year;
 
-            IQueryable<Pv> pv = db.Pv
-                .Where(c => currentUser.pvID == c.pvID);
-            var sql = pv.ToList();
+            var getall = from order in _PvRepository.GetPvs()
+                         where (currentUser.pvID == order.pvID)
+                         select order;
+
             IQueryable<Year> year = db.Year
                 .Where(c => c.Anno.Year == thisYear);
+
             var sql2 = year.ToList();
-            ViewBag.pvID = new SelectList(pv, "pvID", "pvName");
+            ViewBag.pvID = new SelectList(getall, "pvID", "pvName");
             ViewBag.yearId = new SelectList(year, "yearId", "Anno");
             return View();
         }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CaricoCreate([Bind(Include = "Id,pvID,yearId,Ordine,cData,Documento,Numero,rData,Emittente,Benzina,Gasolio,Note")] Carico carico)
+        public ActionResult CaricoCreate(Carico insertOrder)
         {
             if (ModelState.IsValid)
             {
-                carico.Id = Guid.NewGuid();
-                db.Carico.Add(carico);
-                db.SaveChanges();
+                _CaricoRepository.InsertOrder(insertOrder);
+                _CaricoRepository.Save();
                 return RedirectToAction("Carico");
             }
 
@@ -477,141 +502,101 @@ namespace SystemWeb.Controllers
             int thisYear;
             thisYear = DateTime.Now.Year;
 
-            IQueryable<Pv> pv = db.Pv
-                .Where(c => currentUser.pvID == c.pvID);
-            var sql = pv.ToList();
+            var getall = from order in _PvRepository.GetPvs()
+                         where (currentUser.pvID == order.pvID)
+                         select order;
+
             IQueryable<Year> year = db.Year
                 .Where(c => c.Anno.Year == thisYear);
             var sql2 = year.ToList();
-            ViewBag.pvID = new SelectList(pv, "pvID", "pvName");
+            ViewBag.pvID = new SelectList(getall, "pvID", "pvName");
             ViewBag.yearId = new SelectList(year, "yearId", "Anno");
-            return View(carico);
+            return View(insertOrder);
         }
         
-        public ActionResult CaricoEdit(Guid? id)
+        public ActionResult CaricoEdit(Guid? Id)
         {
-            if (id == null)
+            if (Id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Carico carico = db.Carico.Find(id);
+            Carico carico = _CaricoRepository.GetOrdersById(Id);
+
             if (carico == null)
             {
                 return HttpNotFound();
             }
+
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<Pv> pv = db.Pv
-                .Where(c => currentUser.pvID == c.pvID);
-            var sql = pv.ToList();
+
+            var getall = from order in _PvRepository.GetPvs()
+                         where (currentUser.pvID == order.pvID)
+                         select order;
+
             IQueryable<Year> year = db.Year;
             var sql2 = year.ToList();
-            ViewBag.pvID = new SelectList(pv, "pvID", "pvName", carico.pvID);
+            ViewBag.pvID = new SelectList(getall, "pvID", "pvName", carico.pvID);
             ViewBag.yearId = new SelectList(year, "yearId", "Anno");
             return View(carico);
         }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CaricoEdit([Bind(Include = "Id,pvID,yearId,Ordine,cData,Documento,Numero,rData,Emittente,Benzina,Gasolio,Note")] SystemWeb.Models.Carico carico)
+        public ActionResult CaricoEdit(Carico updateOrder)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(carico).State = EntityState.Modified;
-                db.SaveChanges();
+                _CaricoRepository.UpdateOrder(updateOrder);
+                _CaricoRepository.Save();
                 return RedirectToAction("Carico");
             }
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName", carico.pvID);
-            ViewBag.yearId = new SelectList(db.Year, "yearId", "Anno", carico.yearId);
-            return View(carico);
+            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName", updateOrder.pvID);
+            ViewBag.yearId = new SelectList(db.Year, "yearId", "Anno", updateOrder.yearId);
+            return View(updateOrder);
         }
         
-        public ActionResult CaricoDelete(Guid? id)
+        public ActionResult CaricoDelete(Guid? Id, bool? saveChangesError)
         {
-            if (id == null)
+            if (saveChangesError.GetValueOrDefault())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                ViewBag.ErrorMessage = "Unable to save changes. Try again, and if the problem persists contact your system administrator.";
             }
-            Carico carico = db.Carico.Find(id);
-            if (carico == null)
-            {
-                return HttpNotFound();
-            }
+            Carico carico = _CaricoRepository.GetOrdersById(Id);
+
             return View(carico);
         }
         
         [HttpPost, ActionName("CaricoDelete")]
         [ValidateAntiForgeryToken]
-        public ActionResult CaricoDeleteConfirmed(Guid id)
+        public ActionResult CaricoDeleteConfirmed(Guid Id)
         {
-            Carico carico = db.Carico.Find(id);
-            db.Carico.Remove(carico);
-            db.SaveChanges();
+            try
+            {
+                Carico carico = _CaricoRepository.GetOrdersById(Id);
+                _CaricoRepository.DeleteOrder(Id);
+                _CaricoRepository.Save();
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete",
+                   new System.Web.Routing.RouteValueDictionary {
+        { "id", Id },
+        { "saveChangesError", true } });
+            }
             return RedirectToAction("Carico");
         }
         #endregion
 
         #region PvErogatori
-
-        /*
-        public IList<PvErogatoriViewModel> GetPvErogatoriList()
-        {
-            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = userManager.FindById(User.Identity.GetUserId());
-
-            DateTime da;
-            DateTime al;
-
-            da = new DateTime(2016, 12, 31);
-            al = DateTime.Now;
-
-            MyDbContext db = new MyDbContext();
-
-            var getByKnownDate = from a in db.PvErogatori.ToList()
-
-                                 where (currentUser.pvID == a.pvID && (Convert.ToDateTime(a.FieldDate) >= da)
-                                       && (Convert.ToDateTime(a.FieldDate) <= al))
-                                 select a;
-
-            int maxB = getByKnownDate
-                .Where(z => (z.Product.Nome.Contains("B")))
-                .Max(row => row.Value);
-            int minB = getByKnownDate
-                .Where(z => (z.Product.Nome.Contains("B")))
-                .Min(row => row.Value);
-
-            int maxG = getByKnownDate
-                .Where(z => (z.Product.Nome.Contains("G")))
-                .Max(row => row.Value);
-            int minG = getByKnownDate
-                .Where(z => (z.Product.Nome.Contains("G")))
-                .Min(row => row.Value);
-
-            var pverogatoriList = (from e in db.PvErogatori
-                                   join a in db.Product on e.ProductId equals a.ProductId
-                                   join b in db.Pv on e.pvID equals b.pvID
-                                   join c in db.Dispenser on e.DispenserId equals c.DispenserId
-                                   where (currentUser.pvID == e.pvID && (Convert.ToDateTime(e.FieldDate) >= da)
-                                      && (Convert.ToDateTime(e.FieldDate) <= al))
-                                   select new PvErogatoriViewModel
-                                   {
-                                       PVEROGATORIID = e.PvErogatoriId,
-                                       PV = b.pvName,
-                                       PRODUCT = a.Nome,
-                                       DISPENSER = c.Modello,
-                                       DATE = e.FieldDate,
-                                       VALUE = e.Value,
-                                       TOTSSPB = (maxB - minB),
-                                       TOTDSL = (maxG - minG)
-                                   }).ToList();
-            return pverogatoriList;
-        }
-        */
         public ActionResult PvErogatori(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo, [Bind(Include = "DispenserId")] PvErogatori pvEr)
         {
+            #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
+            #endregion
 
+            #region IF dateFrom == null | dateTo == null
             if (dateFrom == null | dateTo == null)
             {
                 var myDate = DateTime.Now;
@@ -628,23 +613,22 @@ namespace SystemWeb.Controllers
                 lastYear = DateTime.Today.Year;
                 ly = lastYear.ToString();
 
-                var getByKnownDate = from a in db.PvErogatori.ToList()
-
+                var getall = from a in _PvErogatoriRepository.GetPvErogatori()
                              where (currentUser.pvID == a.pvID && (Convert.ToDateTime(a.FieldDate) >= da)
                                    && (Convert.ToDateTime(a.FieldDate) <= al))
                              select a;
 
-                int maxB = getByKnownDate
+                int maxB = getall
                     .Where(z =>(z.Product.Nome.Contains("B")))
                     .Max(row => row.Value);
-                int minB = getByKnownDate
+                int minB = getall
                     .Where(z => (z.Product.Nome.Contains("B")))
                     .Min(row => row.Value);
 
-                int maxG = getByKnownDate
+                int maxG = getall
                     .Where(z => (z.Product.Nome.Contains("G")))
                     .Max(row => row.Value);
-                int minG = getByKnownDate
+                int minG = getall
                     .Where(z => (z.Product.Nome.Contains("G")))
                     .Min(row => row.Value);
 
@@ -657,6 +641,7 @@ namespace SystemWeb.Controllers
                 ViewBag.SSPBTotalAmount = "E' stato impostato un parametro";
                 ViewBag.DieselTotalAmount = "E' stato impostato un parametro";
             }
+            #endregion
 
             #region getCounterByDispenser (Non è strettamente necessario ma necessita di ulteriore lavoro)
             /*
@@ -695,31 +680,33 @@ namespace SystemWeb.Controllers
                 */
             #endregion
 
+            #region IF dateFrom != null | dateTo |= null
             if (dateFrom != null | dateTo != null)
             {
-                var getAll = from a in db.PvErogatori.ToList()
+                var getAllfromParam = from a in _PvErogatoriRepository.GetPvErogatori()
                              where (currentUser.pvID == a.pvID
                                    && (Convert.ToDateTime(a.FieldDate) >= dateFrom)
                                    && (Convert.ToDateTime(a.FieldDate) <= dateTo))
                              select a;
 
-                int maxB = getAll
+                int maxB = getAllfromParam
                     .Where(z => (z.Product.Nome.Contains("B")))
                     .Max(row => row.Value);
-                int minB = getAll
+                int minB = getAllfromParam
                     .Where(z => (z.Product.Nome.Contains("B")))
                     .Min(row => row.Value);
 
-                int maxG = getAll
+                int maxG = getAllfromParam
                     .Where(z => (z.Product.Nome.Contains("G")))
                     .Max(row => row.Value);
-                int minG = getAll
+                int minG = getAllfromParam
                     .Where(z => (z.Product.Nome.Contains("G")))
                     .Min(row => row.Value);
 
                 ViewBag.SSPBTotalAmountFrom = maxB - minB;
                 ViewBag.DieselTotalAmountFrom = maxG - minG;
             }
+            #endregion
 
             #region Dispenser (necessita di ulteriore lavoro)
             /*
@@ -754,13 +741,16 @@ namespace SystemWeb.Controllers
              * */
             #endregion
 
+            #region Viewbag
             ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Erogatori_Desc" : "";
+            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "Erogatori_Desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.DispenserId = new SelectList(db.Dispenser, "DispenserId", "Modello");
             ViewBag.ProductId = new SelectList(db.Product, "ProductId", "Nome");
             ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
+            #endregion
 
+            #region Searching and sorting
             if (searchString != null)
             {
                 page = 1;
@@ -771,108 +761,44 @@ namespace SystemWeb.Controllers
             }
 
             ViewBag.CurrentFilter = searchString;
-            IQueryable<PvErogatori> pvErogatori = (from r in db.PvErogatori
-                                                   select r)
-                .Where(a => currentUser.pvID == a.pvID && a.FieldDate.Year.ToString().Contains(ly))
-                .Include(c => c.Dispenser)
-                .Include(c => c.Product)
-                .Include(c => c.Pv);
+
+            var getAll = from a in _PvErogatoriRepository.GetPvErogatori()
+                         where (currentUser.pvID == a.pvID && a.FieldDate.Year.ToString().Contains(ly))
+                         select a;
+
             if (!string.IsNullOrEmpty(searchString))
             {
-                pvErogatori = pvErogatori.Where(s => s.FieldDate.ToString().Contains(searchString.ToUpper()));
-                //pvErogatori = pvErogatori.Where(s => s.Value.ToString().Contains(searchString.ToUpper()));
+                getAll = getAll.Where(s => s.FieldDate.ToString().Contains(searchString.ToUpper()));
             }
 
             switch (sortOrder)
             {
                 case "date_desc":
-                    pvErogatori = pvErogatori.OrderByDescending(s => s.FieldDate);
-                    //pvErogatori = pvErogatori.OrderByDescending(s => s.Value);
+                    getAll = getAll.OrderByDescending(s => s.FieldDate);
                     break;
+
                 default:
-                    pvErogatori = pvErogatori.OrderBy(s => s.FieldDate);
-                    //pvErogatori = pvErogatori.OrderBy(s => s.Value);
+                    getAll = getAll.OrderBy(s => s.FieldDate);
                     break;
             }
             int pageSize = 10;
             int pageNumber = (page ?? 1);
-            /*
-            DateTime fromm;
-            DateTime to;
+            #endregion
 
-            fromm = new DateTime(2016, 12, 31);
-            to = DateTime.Now;
-            var exportExcell = from a in db.PvErogatori.ToList()
-
-                                 where (currentUser.pvID == a.pvID && (Convert.ToDateTime(a.FieldDate) >= fromm)
-                                       && (Convert.ToDateTime(a.FieldDate) <= to))
-                                 select a;
-
-            int maxxB = exportExcell
-                .Where(z => (z.Product.Nome.Contains("B")))
-                .Max(row => row.Value);
-            int minnB = exportExcell
-                .Where(z => (z.Product.Nome.Contains("B")))
-                .Min(row => row.Value);
-
-            int maxxG = exportExcell
-                .Where(z => (z.Product.Nome.Contains("G")))
-                .Max(row => row.Value);
-            int minnG = exportExcell
-                .Where(z => (z.Product.Nome.Contains("G")))
-                .Min(row => row.Value);
-
-            var gv = new GridView();
-            gv.DataSource = exportExcell;
-            gv.DataBind();
-            Response.ClearContent();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment; filename=Totalizzatori.xls");
-            Response.ContentType = "application/ms-excel";
-            Response.Charset = "";
-            StringWriter objStringWriter = new StringWriter();
-            HtmlTextWriter objHtmlTextWriter = new HtmlTextWriter(objStringWriter);
-            gv.RenderControl(objHtmlTextWriter);
-            Response.Output.Write(objStringWriter.ToString());
-            Response.Flush();
-            Response.End();
-            */
-
-            return View(pvErogatori.ToPagedList(pageNumber, pageSize));
+            return View(getAll.ToPagedList(pageNumber, pageSize));
         }
-
-        /*
-        public ActionResult PvErogatoriExportToExcel()
-        {
-            var gv = new GridView();
-            gv.DataSource = this.GetPvErogatoriList();
-            gv.DataBind();
-            Response.ClearContent();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment; filename=Totalizzatori.xls");
-            Response.ContentType = "application/ms-excel";
-            Response.Charset = "";
-            StringWriter objStringWriter = new StringWriter();
-            HtmlTextWriter objHtmlTextWriter = new HtmlTextWriter(objStringWriter);
-            gv.RenderControl(objHtmlTextWriter);
-            Response.Output.Write(objStringWriter.ToString());
-            Response.Flush();
-            Response.End();
-            return View("PvErogatori");
-        }
-        */
+        
         public ActionResult PvErogatoriChart()
         {
-            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = userManager.FindById(User.Identity.GetUserId());
-
-            SystemWeb.Models.PvErogatori objPvErogatoriModel = new SystemWeb.Models.PvErogatori();
+            PvErogatori objPvErogatoriModel = new PvErogatori();
             objPvErogatoriModel.sspb = "Benzina";
             objPvErogatoriModel.dsl = "Gasolio";
 
             return View(objPvErogatoriModel);
         }
 
+        #region PvErogatoriGetChart()
+        /*
         public ActionResult PvErogatoriGetChart()
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -883,7 +809,7 @@ namespace SystemWeb.Controllers
             dateFrom.AddDays(i++);
             DateTime dateTo = DateTime.Now.AddDays(i--);
 
-            var getAll = from a in db.PvErogatori.ToList()
+            var getAll = from a in _PvErogatoriRepository.GetPvErogatori()
                          where (currentUser.pvID == a.pvID
                          && (Convert.ToDateTime(a.FieldDate) >= dateFrom)
                          && (Convert.ToDateTime(a.FieldDate) <= dateTo))
@@ -903,7 +829,7 @@ namespace SystemWeb.Controllers
                 .Where(z => (z.Product.Nome.Contains("G")))
                 .Min(row => row.Value);
 
-            return Json(db.PvErogatori.ToList()
+            return Json(_PvErogatoriRepository.GetPvErogatori()
                 .Where(c => currentUser.pvID == c.pvID)
                 .OrderBy(c => c.FieldDate)
                 .Select(c => new
@@ -917,6 +843,8 @@ namespace SystemWeb.Controllers
                 }),
             JsonRequestBehavior.AllowGet);
         }
+        */
+        #endregion
 
         public ActionResult PvErogatoriDetails(Guid? id)
         {
@@ -924,7 +852,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.PvErogatori pvErogatori = db.PvErogatori.Find(id);
+            PvErogatori pvErogatori = _PvErogatoriRepository.GetPvErogatoriById(id);
             if (pvErogatori == null)
             {
                 return HttpNotFound();
@@ -938,22 +866,24 @@ namespace SystemWeb.Controllers
             ViewBag.ProductId = new SelectList(db.Product, "ProductId", "Nome");
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<SystemWeb.Models.Pv> pv = db.Pv
-                .Where(c => currentUser.pvID == c.pvID);
-            var sql = pv.ToList();
-            ViewBag.pvID = new SelectList(pv, "pvID", "pvName");
+
+            var getall = from a in _PvRepository.GetPvs()
+                         where (currentUser.pvID == a.pvID)
+                         select a;
+
+            ViewBag.pvID = new SelectList(getall, "pvID", "pvName");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PvErogatoriCreate([Bind(Include = "PvErogatoriId,pvID,ProductId,DispenserId,Value,FieldDate")] SystemWeb.Models.PvErogatori pvErogatori)
+        public ActionResult PvErogatoriCreate(PvErogatori pvErogatori)
         {
             if (ModelState.IsValid)
             {
                 pvErogatori.PvErogatoriId = Guid.NewGuid();
-                db.PvErogatori.Add(pvErogatori);
-                db.SaveChanges();
+                _PvErogatoriRepository.InsertPvErogatori(pvErogatori);
+                _PvErogatoriRepository.Save();
                 return RedirectToAction("PvErogatori");
             }
 
@@ -969,7 +899,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.PvErogatori pvErogatori = db.PvErogatori.Find(id);
+            PvErogatori pvErogatori = _PvErogatoriRepository.GetPvErogatoriById(id);
             if (pvErogatori == null)
             {
                 return HttpNotFound();
@@ -978,20 +908,22 @@ namespace SystemWeb.Controllers
             ViewBag.ProductId = new SelectList(db.Product, "ProductId", "Nome", pvErogatori.ProductId);
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<SystemWeb.Models.Pv> pv = db.Pv
-                .Where(c => currentUser.pvID == c.pvID);
-            var sql = pv.ToList();
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName", pvErogatori.pvID);
+
+            var getall = from a in _PvRepository.GetPvs()
+                         where (currentUser.pvID == a.pvID)
+                         select a;
+
+            ViewBag.pvID = new SelectList(getall, "pvID", "pvName", pvErogatori.pvID);
             return View(pvErogatori);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PvErogatoriEdit([Bind(Include = "PvErogatoriId,pvID,ProductId,DispenserId,Value,FieldDate")] SystemWeb.Models.PvErogatori pvErogatori)
+        public ActionResult PvErogatoriEdit(PvErogatori pvErogatori)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(pvErogatori).State = EntityState.Modified;
+                _PvErogatoriRepository.UpdatePvErogatori(pvErogatori);
                 db.SaveChanges();
                 return RedirectToAction("PvErogatori");
             }
@@ -1001,17 +933,14 @@ namespace SystemWeb.Controllers
             return View(pvErogatori);
         }
 
-        public ActionResult PvErogatoriDelete(Guid? id)
+        public ActionResult PvErogatoriDelete(Guid? id, bool? saveChangesError)
         {
-            if (id == null)
+            if (saveChangesError.GetValueOrDefault())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                ViewBag.ErrorMessage = "Unable to save changes. Try again, and if the problem persists contact your system administrator.";
             }
-            SystemWeb.Models.PvErogatori pvErogatori = db.PvErogatori.Find(id);
-            if (pvErogatori == null)
-            {
-                return HttpNotFound();
-            }
+            PvErogatori pvErogatori = _PvErogatoriRepository.GetPvErogatoriById(id);
+
             return View(pvErogatori);
         }
 
@@ -1019,9 +948,19 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult PvErogatoriDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.PvErogatori pvErogatori = db.PvErogatori.Find(id);
-            db.PvErogatori.Remove(pvErogatori);
-            db.SaveChanges();
+            try
+            {
+                PvErogatori pvErogatori = _PvErogatoriRepository.GetPvErogatoriById(id);
+                _PvErogatoriRepository.DeletePvErogatori(id);
+                _CaricoRepository.Save();
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete",
+                   new System.Web.Routing.RouteValueDictionary {
+        { "id", id },
+        { "saveChangesError", true } });
+            }
             return RedirectToAction("PvErogatori");
         }
         #endregion
@@ -1030,8 +969,8 @@ namespace SystemWeb.Controllers
 
         public ActionResult Pv()
         {
-            var pv = db.Pv.Include(p => p.Flag);
-            return View(pv.ToList());
+            var pv = _PvRepository.GetPvs();
+            return View(pv);
         }
   
         public ActionResult PvDetails(Guid? id)
@@ -1040,7 +979,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Pv pv = db.Pv.Find(id);
+            Pv pv = _PvRepository.GetPvsById(id);
             if (pv == null)
             {
                 return HttpNotFound();
@@ -1056,13 +995,13 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PvCreate([Bind(Include = "pvID,pvName,pvFlagId")] SystemWeb.Models.Pv pv)
+        public ActionResult PvCreate(Pv pv)
         {
             if (ModelState.IsValid)
             {
                 pv.pvID = Guid.NewGuid();
-                db.Pv.Add(pv);
-                db.SaveChanges();
+                _PvRepository.InsertPv(pv);
+                _PvRepository.Save();
                 return RedirectToAction("Pv");
             }
 
@@ -1076,7 +1015,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Pv pv = db.Pv.Find(id);
+            Pv pv = _PvRepository.GetPvsById(id);
             if (pv == null)
             {
                 return HttpNotFound();
@@ -1087,29 +1026,25 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PvEdit([Bind(Include = "pvID,pvName,pvFlagId")] SystemWeb.Models.Pv pv)
+        public ActionResult PvEdit(Pv pv)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(pv).State = EntityState.Modified;
-                db.SaveChanges();
+                _PvRepository.UpdatePv(pv);
+                _PvRepository.Save();
                 return RedirectToAction("Pv");
             }
             ViewBag.pvFlagId = new SelectList(db.Flag, "pvFlagId", "Nome", pv.pvFlagId);
             return View(pv);
         }
       
-        public ActionResult PvDelete(Guid? id)
+        public ActionResult PvDelete(Guid? id, bool? saveChangesError)
         {
-            if (id == null)
+            if (saveChangesError.GetValueOrDefault())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                ViewBag.ErrorMessage = "Unable to save changes. Try again, and if the problem persists contact your system administrator.";
             }
-            SystemWeb.Models.Pv pv = db.Pv.Find(id);
-            if (pv == null)
-            {
-                return HttpNotFound();
-            }
+            Pv pv = _PvRepository.GetPvsById(id);
             return View(pv);
         }
 
@@ -1117,9 +1052,19 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult PvDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.Pv pv = db.Pv.Find(id);
-            db.Pv.Remove(pv);
-            db.SaveChanges();
+            try
+            {
+                Pv pv = _PvRepository.GetPvsById(id);
+                _PvRepository.DeletePv(id);
+                _PvRepository.Save();
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete",
+                   new System.Web.Routing.RouteValueDictionary {
+        { "id", id },
+        { "saveChangesError", true } });
+            }
             return RedirectToAction("Pv");
         }
         #endregion

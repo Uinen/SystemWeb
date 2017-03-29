@@ -221,6 +221,12 @@
     </Compile>
     <Compile Include="Models\AppModel.cs" />
     <Compile Include="Models\FileType.cs" />
+    <Compile Include="Repository\CaricoRepository.cs" />
+    <Compile Include="Repository\Interface\iCaricoRepository.cs" />
+    <Compile Include="Repository\Interface\iPvErogatoriRepository.cs" />
+    <Compile Include="Repository\Interface\iPvRepository.cs" />
+    <Compile Include="Repository\PvErogatoriRepository.cs" />
+    <Compile Include="Repository\PvRepository.cs" />
     <Compile Include="ViewModels\IRegistrationViewModel.cs" />
     <Compile Include="ViewModels\MapDesignerViewModel.cs" />
     <Compile Include="Controllers\PayPalController.cs" />
@@ -837,9 +843,9 @@
     <Content Include="fonts\IONICONS.TTF" />
     <Content Include="fonts\ionicons.woff" />
     <Content Include="packages.config" />
-    <None Include="Properties\PublishProfiles\arvixe.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\Export.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

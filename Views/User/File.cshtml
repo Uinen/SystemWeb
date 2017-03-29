@@ -1,45 +1,66 @@
 ﻿@model IEnumerable<SystemWeb.Models.FilePath>
 
-<p>
-    @Html.ActionLink("Upload", "FileCreate")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FileName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FileType)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UploadDate)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FileName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FileType)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UploadDate)
-        </td>
-        <td>
-            @Html.ActionLink("Modifica", "FileEdit", new { id=item.FilePathID }) |
-            @Html.ActionLink("Dettagli", "FileDetails", new { id=item.FilePathID }) |
-            @Html.ActionLink("Cancella", "FileDelete", new { id=item.FilePathID })
-        </td>
-    </tr>
-}
-
-</table>
+<section id="message" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                <div class="header-content">
+                    <h3 class="alert alert-info"><strong>Dashboard Utente</strong></h3>
+                    @if (Request.IsAuthenticated)
+                    {
+                        <div class="list-group-item">
+                            <div class="bounceOutDown">
+                                <p class="tooltipText">@Html.ActionLink("Upload", "FileCreate")</p>
+                            </div>
+                        </div>
+                                <div id="no-more-tables">
+                                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.FileName)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.FileType)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.UploadDate)
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.FileName)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.FileType)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.UploadDate)
+                                                    </td>
+                                                    <td>
+                                                        @Html.ActionLink("Modifica", "FileEdit", new { id = item.FilePathID }) |
+                                                        @Html.ActionLink("Dettagli", "FileDetails", new { id = item.FilePathID }) |
+                                                        @Html.ActionLink("Cancella", "FileDelete", new { id = item.FilePathID })
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        }
+                                    </table>
+                                </div>
+                    }
+                </div>
+             </div>
+        </div>
+    </div>
+</section>
