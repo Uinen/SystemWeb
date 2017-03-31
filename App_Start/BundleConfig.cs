@@ -1,4 +1,5 @@
 ﻿using System.Web.Optimization;
+using SystemWeb.Helpers;
 
 namespace SystemWeb
 {
@@ -6,6 +7,13 @@ namespace SystemWeb
     {
         // Per ulteriori informazioni sulla creazione di bundle, visitare http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
+        {
+            BundleTable.EnableOptimizations = true;
+            bundles.UseCdn = true;
+            AddCss(bundles);
+            AddJavaScript(bundles);
+        }
+        private static void AddCss(BundleCollection bundles)
         {
             CssRewriteUrlTransform rewrite = new CssRewriteUrlTransform();
 
@@ -55,12 +63,16 @@ namespace SystemWeb
             bundles.Add(new StyleBundle("~/Content/nivolightbox").Include(
                 "~/Contenuti/nivo-lightbox/nivo-lightbox.css", rewrite));
 
-            bundles.Add(new StyleBundle("~/Content/fontawesome").Include(
+            bundles.Add(new StyleBundle("~/Content/fontawesome", 
+                ContentDeliveryNetwork.MaxCdn.FontAwesomeUrl).Include(
                       "~/MainFont/font-awesome.css", rewrite));
             #endregion
+        }
 
-            #region Script 
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+        private static void AddJavaScript(BundleCollection bundles)
+        {
+            #region Script
+            bundles.Add(new ScriptBundle("~/bundles/jquery", ContentDeliveryNetwork.Google.JQueryUrl).Include(
                 "~/Scripts/jquery-1.10.2.js"
                 ));
 
@@ -83,8 +95,13 @@ namespace SystemWeb
             bundles.Add(new ScriptBundle("~/bundles/jqueryajaxchimp").Include(
                 "~/Scripts/jquery.ajaxchimp.min.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
+            bundles.Add(new ScriptBundle("~/bundles/jqueryval",
+                ContentDeliveryNetwork.Microsoft.JQueryValidateUrl).Include(
                 "~/Scripts/jquery.validate.js",
+                "~/Scripts/jquery.validate.unobtrusive.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/jqueryvalunobtrusive",
+                ContentDeliveryNetwork.Microsoft.JQueryValidateUnobtrusiveUrl).Include(
                 "~/Scripts/jquery.validate.unobtrusive.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/ej").Include(
@@ -97,10 +114,12 @@ namespace SystemWeb
                 "~/Scripts/MicrosoftMvcValidation.js"
                         ));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap",
+                ContentDeliveryNetwork.Microsoft.BootstrapUrl).Include(
                 "~/Scripts/bootstrap.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
+            bundles.Add(new ScriptBundle("~/bundles/modernizr",
+                ContentDeliveryNetwork.Microsoft.ModernizrUrl).Include(
                 "~/Scripts/modernizr-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/theme").Include(
@@ -113,8 +132,6 @@ namespace SystemWeb
             bundles.Add(new ScriptBundle("~/bundles/sorting").Include(
                 "~/Scripts/sortable.js"));
             #endregion
-
-            BundleTable.EnableOptimizations = true;
         }
     }
 }

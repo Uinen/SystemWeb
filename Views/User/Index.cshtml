@@ -8,11 +8,10 @@
         <div class="row">
             <div class="center-block">
                 <div class="header-content">
-                    <h3 class="alert alert-info"><strong>Documents Cloud</strong></h3>
+                    <h3 class="alert alert-info"><strong>Dashboard Utente</strong></h3>
                     @if (Request.IsAuthenticated)
                     {
-                        <div class="list-group-item">
-                            <div class="bounceOutDown">
+                        <div class="bounceOutDown">
                                 <p class="text-primary">Benvenuto <strong>@User.Identity.GetUserName()</strong></p>
                                 @if (Model.usersimage.Any(f => f.FileType == FileType.Avatar))
                                 {
@@ -21,21 +20,28 @@
                                     </div>
                                 }
 
-                                <div class="col-sm-6 col-md-4 portfolio-box">
-                                    <h4>Informazioni utente</h4>
+                                <div class="col-sm-6 col-md-4">
+                                    <h4>INFORMAZIONI UTENTE</h4>
                                     <p>@ViewBag.ProfileName, @ViewBag.ProfileSurname</p>
                                     <p>@ViewBag.ProfileAdress , @ViewBag.ProfileCity - @ViewBag.ProfileZipCode , @ViewBag.ProfileNation</p>
                                 </div>
-                                <div class="col-sm-6 col-md-4 portfolio-box">
-                                    <h4>Informazioni contrattuali</h4>
-                                    <p>Il punto vendita numero 4023 sito in @ViewBag.PvCity - @ViewBag.PvInd</p>
+                                <div class="col-sm-6 col-md-4">
+                                    <h4>INFORMAZIONI PUNTO VENDITA</h4>
+                                    <p>Il punto vendita numero @ViewBag.PvNamee sito in @ViewBag.PvCity - @ViewBag.PvInd</p>
                                 </div>
-                                <div class="col-sm-6 col-md-4 portfolio-box">
-                                    <h4>Riepilogo vendite</h4>
-                                    <p>Benzina: <strong>@ViewBag.SSPBTotalAmount Litri</strong></p>
-                                    <p>Diesel: <strong>@ViewBag.DieselTotalAmount Litri</strong></p>
-                                    <p>Totale: <strong>@ViewBag.TotalAmount Litri</strong></p>
-                                </div>@*
+                                <div class="col-sm-6 col-md-4">
+                                    <h4>RIEPILOGO VENDITE</h4>
+                                    <p class="text-success">Benzina: <strong>@ViewBag.SSPBTotalAmount Litri</strong></p>
+                                    <p class="text-danger">Diesel: <strong>@ViewBag.DieselTotalAmount Litri</strong></p>
+                                    <p class="text-uppercase">Totale: <strong>@ViewBag.TotalAmount Litri</strong></p>
+                                </div>
+                            <div class="col-sm-6 col-md-4">
+                                <h4>RIEPILOGO VENDITE - ANNO PRECEDENTE</h4>
+                                <p class="text-success">Benzina: <strong>@ViewBag.SSPBTotalAmount2 Litri</strong></p>
+                                <p class="text-danger">Diesel: <strong>@ViewBag.DieselTotalAmount2 Litri</strong></p>
+                                <p class="text-uppercase">Totale: <strong>@ViewBag.TotalAmount2 Litri</strong></p>
+                            </div>
+    @*
                                     @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
                                     {<div class="col-sm-6 col-md-4 portfolio-box">
                                             <p class="bg-danger text-center text-danger">
@@ -44,7 +50,6 @@
                                             </p>
                                         </div>
                                     }*@
-                                </div>
                         </div>
                     }
                     <div id="no-more-tables">

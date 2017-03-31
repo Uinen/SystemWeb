@@ -56,7 +56,7 @@ namespace SystemWeb.Controllers
 
         #region Index 
 
-        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo, Guid? id)
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo, DateTime? dateFrom2, DateTime? dateTo2, Guid? id)
         {
             #region List
 
@@ -97,7 +97,8 @@ namespace SystemWeb.Controllers
 
             var somequalsD1 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Indirizzo).SingleOrDefault();
             var somequalsD2 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Città).SingleOrDefault();
-
+            var somequalsD3 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.pvName).SingleOrDefault();
+             
             ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
             ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
             ViewBag.ProfileAdress = currentUser.UserProfiles.ProfileAdress;
@@ -105,7 +106,7 @@ namespace SystemWeb.Controllers
             ViewBag.ProfileZipCode = currentUser.UserProfiles.ProfileZipCode;
             ViewBag.ProfileNation = currentUser.UserProfiles.ProfileNation;
             ViewBag.ProfileInfo = currentUser.UserProfiles.ProfileInfo;
-            ViewBag.PvId = currentUser.Pv.pvName.First();
+            ViewBag.PvNamee = somequalsD3;
             ViewBag.PvInd = somequalsD1;
             ViewBag.PvCity = somequalsD2;
             ViewBag.CompanyId = currentUser.Company.Name;
@@ -138,7 +139,7 @@ namespace SystemWeb.Controllers
             lastYear = DateTime.Today.Year;
             ly = lastYear.ToString();
 
-            var getAll = from a in db.PvErogatori.ToList()
+            var getAll = from a in _PvErogatoriRepository.GetPvErogatori()
                           where (Convert.ToDateTime(a.FieldDate) >= dateFrom)
                                    && (Convert.ToDateTime(a.FieldDate) <= dateTo)
                          //where (a.FieldDate.Year.ToString().Contains(ly))
@@ -165,10 +166,40 @@ namespace SystemWeb.Controllers
             ViewBag.SSPBTotalAmount = maxB - minB;
             ViewBag.DieselTotalAmount = maxG - minG;
             ViewBag.TotalAmount = maxB - minB + maxG - minG;
-            //ViewBag.PvId = pv;
-            ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
-            ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
-            ViewBag.CompanyId = currentUser.Company.Name;
+            #endregion
+
+            #region TotaleContatoriPrecedente
+
+            dateFrom2 = new DateTime(2015, 12, 31);
+            dateTo2 = DateTime.Now.AddYears(-1);
+
+            var getAll2 = from a in _PvErogatoriRepository.GetPvErogatori()
+                          where (Convert.ToDateTime(a.FieldDate) >= dateFrom2)
+                                  && (Convert.ToDateTime(a.FieldDate) <= dateTo2)
+                         //where (a.FieldDate.Year.ToString().Contains(ly))
+                         select a;
+
+            int maxB2 = getAll2
+                .Where(z => currentUser.pvID == z.pvID
+                && (z.Product.Nome.Contains("B")))
+                .Max(row => row.Value);
+            int minB2 = getAll2
+                .Where(z => currentUser.pvID == z.pvID
+                && (z.Product.Nome.Contains("B")))
+                .Min(row => row.Value);
+
+            int maxG2 = getAll2
+                .Where(z => currentUser.pvID == z.pvID
+                && (z.Product.Nome.Contains("G")))
+                .Max(row => row.Value);
+            int minG2 = getAll2
+                .Where(z => currentUser.pvID == z.pvID
+                && (z.Product.Nome.Contains("G")))
+                .Min(row => row.Value);
+
+            ViewBag.SSPBTotalAmount2 = maxB2 - minB2;
+            ViewBag.DieselTotalAmount2 = maxG2 - minG2;
+            ViewBag.TotalAmount2 = maxB2 - minB2 + maxG2 - minG2;
             #endregion
 
             return View(list);

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Le informazioni generali relative a un assembly sono controllate dal seguente
@@ -31,5 +30,5 @@ using System.Runtime.InteropServices;
 //
 // È possibile specificare tutti i valori o lasciare i valori predefiniti per Revisione e Numeri build
 // utilizzando l'asterisco (*) come illustrato di seguito:
-[assembly: AssemblyVersion("3.0.3.*")]
-[assembly: AssemblyFileVersion("3.0.3")]
+[assembly: AssemblyVersion("3.0.4.*")]
+[assembly: AssemblyFileVersion("3.0.4")]

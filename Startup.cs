@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin;
 using Owin;
+using System.Web.Mvc;
 
 [assembly: OwinStartup(typeof(SystemWeb.Startup))]
 namespace SystemWeb
@@ -8,7 +9,8 @@ namespace SystemWeb
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app);
+            ConfigureContainer(app);
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             var CurrentAssembly = System.Reflection.Assembly.GetExecutingAssembly();
             string VersionNumber = CurrentAssembly.GetName().Version.ToString();
         }

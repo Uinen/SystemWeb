@@ -7,9 +7,19 @@ namespace SystemWeb
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
+            routes.AppendTrailingSlash = true;
             routes.LowercaseUrls = true;
+
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.IgnoreRoute("Contenuti/{*pathInfo}");
+            routes.IgnoreRoute("Scripts/{*pathInfo}");
+            routes.IgnoreRoute("Error/Forbidden.html");
+            routes.IgnoreRoute("Error/GatewayTimeout.html");
+            routes.IgnoreRoute("Error/ServiceUnavailable.html");
+            routes.IgnoreRoute("humans.txt");
+
+            routes.MapMvcAttributeRoutes();
+
 
             routes.MapRoute(
                 name: "Default",
