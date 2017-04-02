@@ -24,7 +24,7 @@
 <div class="form-group">
     @Html.LabelFor(model => model.step3.RagioneSociale.Nome, "Tipo Azienda", htmlAttributes: new { @class = "control-label col-md-2" })
     <div class="col-md-10">
-        @Html.DropDownListFor(model => model.step3.RagioneSociale.RagioneSocialeId, new SelectList("RagioneSocialeId", "Nome"))
+        @Html.DropDownListFor(model => model.step3.RagioneSociale, new SelectList(ViewBag.RagioneSocialeId))
     </div>
 </div>
 <button type="submit">Avanti</button>

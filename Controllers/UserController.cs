@@ -98,7 +98,8 @@ namespace SystemWeb.Controllers
             var somequalsD1 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Indirizzo).SingleOrDefault();
             var somequalsD2 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Città).SingleOrDefault();
             var somequalsD3 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.pvName).SingleOrDefault();
-             
+            var somequalsD4 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.Flag.Nome).SingleOrDefault(); 
+
             ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
             ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
             ViewBag.ProfileAdress = currentUser.UserProfiles.ProfileAdress;
@@ -106,6 +107,7 @@ namespace SystemWeb.Controllers
             ViewBag.ProfileZipCode = currentUser.UserProfiles.ProfileZipCode;
             ViewBag.ProfileNation = currentUser.UserProfiles.ProfileNation;
             ViewBag.ProfileInfo = currentUser.UserProfiles.ProfileInfo;
+            ViewBag.Flag = somequalsD4;
             ViewBag.PvNamee = somequalsD3;
             ViewBag.PvInd = somequalsD1;
             ViewBag.PvCity = somequalsD2;

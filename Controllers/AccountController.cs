@@ -190,12 +190,9 @@ namespace SystemWeb.Controllers
         [AllowAnonymous]
         public ActionResult RegisterStep3()
         {
-            var company = db.Company.Include(c => c.RagioneSociale);
-            var pv = db.Pv.Include(p => p.Flag);
-            ViewBag.pvFlagId = new SelectList(db.Flag, "pvFlagId", "Nome");
-            ViewBag.CompanyId = new SelectList(db.Company, "CompanyId", "Name");
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
-            ViewBag.RagioneSocialeId = new SelectList(db.RagioneSociale, "RagioneSocialeId", "Nome");
+            var rag = from a in db.RagioneSociale
+                      select a;
+            ViewBag.RagioneSocialeId = new SelectList(rag, "RagioneSocialeId", "Nome");
             return View();
         }
 
@@ -216,10 +213,9 @@ namespace SystemWeb.Controllers
         {
             var company = db.Company.Include(c => c.RagioneSociale);
             var pv = db.Pv.Include(p => p.Flag);
-            ViewBag.pvFlagId = new SelectList(db.Flag, "pvFlagId", "Nome");
-            ViewBag.CompanyId = new SelectList(db.Company, "CompanyId", "Name");
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
-            ViewBag.RagioneSocialeId = new SelectList(db.RagioneSociale, "RagioneSocialeId", "Nome");
+            var flag = from a in db.Flag
+                       select a;
+            ViewBag.pvFlagId = new SelectList(flag, "pvFlagId", "Nome");
             return View();
         }
 
