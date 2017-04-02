@@ -7,7 +7,7 @@ namespace SystemWeb.Migrations
     {
         public override void Up()
         {
-            DropForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage");
+            /*DropForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage");
             DropIndex("dbo.Users", new[] { "UsersImageId" });
             CreateTable(
                 "dbo.FilePath",
@@ -32,12 +32,12 @@ namespace SystemWeb.Migrations
             CreateIndex("dbo.UsersImage", "ProfileID");
             AddForeignKey("dbo.UsersImage", "ProfileID", "dbo.UserProfiles", "ProfileId", cascadeDelete: true);
             DropColumn("dbo.Users", "UsersImageId");
-            DropColumn("dbo.UsersImage", "ImagePath");
+            DropColumn("dbo.UsersImage", "ImagePath");*/
         }
         
         public override void Down()
         {
-            AddColumn("dbo.UsersImage", "ImagePath", c => c.String());
+            /*AddColumn("dbo.UsersImage", "ImagePath", c => c.String());
             AddColumn("dbo.Users", "UsersImageId", c => c.Guid());
             DropForeignKey("dbo.UsersImage", "ProfileID", "dbo.UserProfiles");
             DropForeignKey("dbo.FilePath", "UserID", "dbo.Users");
@@ -51,7 +51,7 @@ namespace SystemWeb.Migrations
             DropColumn("dbo.UsersImage", "UsersImageName");
             DropTable("dbo.FilePath");
             CreateIndex("dbo.Users", "UsersImageId");
-            AddForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage", "UsersImageId");
+            AddForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage", "UsersImageId");*/
         }
     }
 }

@@ -454,7 +454,7 @@ namespace SystemWeb.Models
         public string ProfileSurname { get; set; }
         [MaxLength(32)]
         public string ProfileAdress { get; set; }
-        [MaxLength(14)]
+        [MaxLength(32)]
         public string ProfileCity { get; set; }
         public int ProfileZipCode { get; set; }
         [MaxLength(14)]
@@ -465,9 +465,19 @@ namespace SystemWeb.Models
         {
             get
             {
-                return ProfileSurname + ", " + ProfileName;
+                return ProfileSurname + " " + ProfileName;
             }
         }
+
+        [Display(Name = "Indirizzo completo")]
+        public string FullAdress
+        {
+            get
+            {
+                return ProfileAdress + ", " + ProfileCity + "- (" + ProfileZipCode + ") -" + ProfileNation;
+            }
+        }
+
         [JsonIgnore]
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
         public ICollection<UsersImage> UsersImage { get; set; }

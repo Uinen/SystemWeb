@@ -7,20 +7,20 @@ namespace SystemWeb.Migrations
     {
         public override void Up()
         {
-            DropForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage");
+            /*DropForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage");
             DropIndex("dbo.Users", new[] { "UsersImageId" });
             AlterColumn("dbo.Users", "UsersImageId", c => c.Guid());
             CreateIndex("dbo.Users", "UsersImageId");
-            AddForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage", "UsersImageId");
+            AddForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage", "UsersImageId");*/
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage");
+            /*DropForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage");
             DropIndex("dbo.Users", new[] { "UsersImageId" });
             AlterColumn("dbo.Users", "UsersImageId", c => c.Guid(nullable: false));
             CreateIndex("dbo.Users", "UsersImageId");
-            AddForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage", "UsersImageId", cascadeDelete: true);
+            AddForeignKey("dbo.Users", "UsersImageId", "dbo.UsersImage", "UsersImageId", cascadeDelete: true);*/
         }
     }
 }

@@ -18,7 +18,7 @@ using SystemWeb.Repository;
 using System.Data;
 
 namespace SystemWeb.Controllers
-{
+{  
     [Authorize]
     public class UserController : Controller
     {
@@ -59,7 +59,6 @@ namespace SystemWeb.Controllers
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo, DateTime? dateFrom2, DateTime? dateTo2, Guid? id)
         {
             #region List
-
             UserIndexViewModel list = new UserIndexViewModel();
 
             list.carico = db.Carico.ToList();
@@ -98,15 +97,17 @@ namespace SystemWeb.Controllers
             var somequalsD1 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Indirizzo).SingleOrDefault();
             var somequalsD2 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Città).SingleOrDefault();
             var somequalsD3 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.pvName).SingleOrDefault();
-            var somequalsD4 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.Flag.Nome).SingleOrDefault(); 
+            var somequalsD4 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.Flag.Nome).SingleOrDefault();
 
-            ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
-            ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
-            ViewBag.ProfileAdress = currentUser.UserProfiles.ProfileAdress;
-            ViewBag.ProfileCity = currentUser.UserProfiles.ProfileCity;
-            ViewBag.ProfileZipCode = currentUser.UserProfiles.ProfileZipCode;
-            ViewBag.ProfileNation = currentUser.UserProfiles.ProfileNation;
-            ViewBag.ProfileInfo = currentUser.UserProfiles.ProfileInfo;
+            //ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
+            //ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
+            ViewBag.FullAdress = currentUser.UserProfiles.FullAdress;
+            ViewBag.ProfileFullName = currentUser.UserProfiles.FullName;
+            //ViewBag.ProfileAdress = currentUser.UserProfiles.ProfileAdress;
+            //ViewBag.ProfileCity = currentUser.UserProfiles.ProfileCity;
+            //ViewBag.ProfileZipCode = currentUser.UserProfiles.ProfileZipCode;
+            //ViewBag.ProfileNation = currentUser.UserProfiles.ProfileNation;
+            //ViewBag.ProfileInfo = currentUser.UserProfiles.ProfileInfo;
             ViewBag.Flag = somequalsD4;
             ViewBag.PvNamee = somequalsD3;
             ViewBag.PvInd = somequalsD1;
@@ -202,6 +203,12 @@ namespace SystemWeb.Controllers
             ViewBag.SSPBTotalAmount2 = maxB2 - minB2;
             ViewBag.DieselTotalAmount2 = maxG2 - minG2;
             ViewBag.TotalAmount2 = maxB2 - minB2 + maxG2 - minG2;
+            #endregion
+
+            #region Difference
+
+            ViewBag.TotalAmountDifference = ((maxB - minB) + (maxG - minG)) - ((maxB2 - minB2) + (maxG2 - minG2));
+
             #endregion
 
             return View(list);

@@ -3,131 +3,92 @@
 
 @model UserIndexViewModel
 
+@if (Request.IsAuthenticated)
+{
 <section id="message" class="block">
     <div class="container">
-        <div class="row">
             <div class="center-block">
                 <div class="header-content">
                     <h3 class="alert alert-info"><strong>Dashboard Utente</strong></h3>
-                    @if (Request.IsAuthenticated)
-                    {
-                        <div class="bounceOutDown">
-                                <p class="text-primary">Benvenuto <strong>@User.Identity.GetUserName()</strong></p>
-                                @if (Model.usersimage.Any(f => f.FileType == FileType.Avatar))
+                    <p class="alert alert-info text-uppercase">@ViewBag.Flag - @ViewBag.PvNamee, @ViewBag.PvCity - @ViewBag.PvInd</p>
+                        <div class="row">
+                            @if (Model.usersimage.Any(f => f.FileType == FileType.Avatar))
+                            {
+                                <div class="col-sm-4 col-md-2">
+                                    <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:120px;height:120px;background: #FFFFFF;margin: auto;-moz-border-radius: 60px;border-radius: 10px;padding: 6px;box-shadow: 0px 0px 20px #888;" />
+                                    <p class="text-uppercase text-info"><strong>@ViewBag.ProfileFullName</strong></p>
+                                    <p class="text-faded">@ViewBag.FullAdress</p>
+                                </div>
+                                    <div class="clearfix visible-sm-block"></div>
+                            }
+                            <div class="col-lg-6 col-md-4">
+                                @if (User.IsInRole("Administrator"))
                                 {
-                                    <div class="col-sm-6 col-md-4">
-                                        <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:100px;height:100px;background: #FFFFFF;margin: auto;-moz-border-radius: 60px;border-radius: 100px;padding: 6px;box-shadow: 0px 0px 20px #888;" />
-                                    </div>
+                                    <p class="text-warning">Appartieni al ruolo amministratori, puoi configurare i parametri avanzati del sistema alla  @Html.ActionLink("seguente", "index", "admin") pagina</p>
                                 }
-
-                                <div class="col-sm-6 col-md-4">
-                                    <h4>INFORMAZIONI UTENTE</h4>
-                                    <p>@ViewBag.ProfileName, @ViewBag.ProfileSurname</p>
-                                    <p>@ViewBag.ProfileAdress , @ViewBag.ProfileCity - @ViewBag.ProfileZipCode , @ViewBag.ProfileNation</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <h4>INFORMAZIONI PUNTO VENDITA</h4>
-                                    <p>Stai gestendo il punto vendita @ViewBag.Flag - @ViewBag.PvNamee sito in @ViewBag.PvCity - @ViewBag.PvInd</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4">
-                                    <h4>RIEPILOGO VENDITE</h4>
-                                    <p class="text-success">Benzina: <strong>@ViewBag.SSPBTotalAmount Litri</strong></p>
-                                    <p class="text-danger">Diesel: <strong>@ViewBag.DieselTotalAmount Litri</strong></p>
-                                    <p class="text-uppercase">Totale: <strong>@ViewBag.TotalAmount Litri</strong></p>
-                                </div>
-                            <div class="col-sm-6 col-md-4">
-                                <h4>RIEPILOGO VENDITE - ANNO PRECEDENTE</h4>
-                                <p class="text-success">Benzina: <strong>@ViewBag.SSPBTotalAmount2 Litri</strong></p>
-                                <p class="text-danger">Diesel: <strong>@ViewBag.DieselTotalAmount2 Litri</strong></p>
-                                <p class="text-uppercase">Totale: <strong>@ViewBag.TotalAmount2 Litri</strong></p>
+                                else
+                                {
+                                    <p class="text-info">Appartieni al ruolo utenti</p>
+                                }
                             </div>
-    @*
-                                    @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
-                                    {<div class="col-sm-6 col-md-4 portfolio-box">
-                                            <p class="bg-danger text-center text-danger">
-                                                Il Sistema ha rilevato che appartieni al ruolo <strong>Amministratori</strong> se vuoi puoi amministrare
-                                                il sito web navigando a questo @Html.ActionLink("Indirizzo", "Index", "Admin")
-                                            </p>
-                                        </div>
-                                    }*@
-                        </div>
-                    }
-                    <div id="no-more-tables">
-                        <table class="col-md-12 table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Link Utili</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                  @*<td data-title="1">@Html.ActionLink("Inserimento Password", "Area")</td>*@
-                                    <td data-title="1">@Html.ActionLink("Lista Ordini", "Carico")</td>
-                                  @*<td data-title="2">@Html.ActionLink("Gestione Azienda", "Companies")</td>*@
-                                    <td data-title="2">@Html.ActionLink("Inserimento Totalizzatori", "PvErogatoriCreate", "User")</td>
-                                  @*<td data-title="5">@Html.ActionLink("Consistenza Cassa", "Task")</td>*@
-                                    <td data-title="3">@Html.ActionLink("Inserimento Deficienze", "PvDeficienzeCreate")</td>
-                                    <td data-title="4">@Html.ActionLink("Lista Deficienze", "PvDeficienze")</td>
-                                    <td data-title="5">@Html.ActionLink("Inserimento Cali", "PvCaliCreate")</td>
-                                    <td data-title="6">@Html.ActionLink("Lista Cali", "PvCali")</td>
-                                    <td data-title="7">@Html.ActionLink("Lista Contatori", "PvErogatori")</td>
-                                    <td data-title="8">@Html.ActionLink("Upload Documenti", "File")</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            <div class="clearfix visible-sm-block"></div>
+                            <div class="col-lg-4 col-md-2">
+                                <p class="text-uppercase"><strong>Statistiche di vendita</strong></p>
+                                <p class="text-success">Benzina: @ViewBag.SSPBTotalAmount Litri</p>
+                                <p class="text-danger">Diesel: @ViewBag.DieselTotalAmount Litri</p>
+                                <p class="text-warning"><strong>Totale:</strong> @ViewBag.TotalAmount Litri</p>
+                            </div>@*
+                            <div class="clearfix visible-sm-block"></div>
+                            <div class="col-sm-4 col-md-2">
+                                <p class="text-uppercase"><strong>ANNO PRECEDENTE</strong></p>
+                                <p class="text-success">Benzina: @ViewBag.SSPBTotalAmount2 Litri</p>
+                                <p class="text-danger">Diesel: @ViewBag.DieselTotalAmount2 Litri</p>
+                                <p class="text-warning"><strong>Totale:</strong> @ViewBag.TotalAmount2 Litri</p>
+                            </div>*@
+                            <div class="clearfix visible-sm-block"></div>
+                            <div class="col-lg-4 col-md-2">
+                                <p class="text-uppercase"><strong>Obiettivo di vendita</strong></p>
+                                <p class="text-warning"><strong>Totale:</strong> @ViewBag.TotalAmountDifference Litri</p>
+                            </div>
+                            
+                                <div id="no-more-tables">
+                                    <table class="col-md-12 table-bordered table-striped table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>Link Utili</th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                @*<td data-title="1">@Html.ActionLink("Inserimento Password", "Area")</td>*@
+                                                <td data-title="1">@Html.ActionLink("Lista Ordini", "Carico")</td>
+                                                @*<td data-title="2">@Html.ActionLink("Gestione Azienda", "Companies")</td>*@
+                                                <td data-title="2">@Html.ActionLink("Inserimento Totalizzatori", "PvErogatoriCreate", "User")</td>
+                                                @*<td data-title="5">@Html.ActionLink("Consistenza Cassa", "Task")</td>*@
+                                                <td data-title="3">@Html.ActionLink("Inserimento Deficienze", "PvDeficienzeCreate")</td>
+                                                <td data-title="4">@Html.ActionLink("Lista Deficienze", "PvDeficienze")</td>
+                                                <td data-title="5">@Html.ActionLink("Inserimento Cali", "PvCaliCreate")</td>
+                                                <td data-title="6">@Html.ActionLink("Lista Cali", "PvCali")</td>
+                                                <td data-title="7">@Html.ActionLink("Lista Contatori", "PvErogatori")</td>
+                                                <td data-title="8">@Html.ActionLink("Upload Documenti", "File")</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                 </div>
             </div>
-        </div>
     </div>
 </section>
 <section id="features">
     <div class="container">
-        <div class="row">
-            <div class="center-block">
-                @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
-                {
-                    <div class="header-content">
-                        <h4 class="alert alert-info">Lista di tutti i punti vendita registrati sul Database</h4>
-                    </div>
-                    <div id="no-more-tables">
-                        <table class="col-md-12 table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Bandiera
-                                    </th>
-                                    <th>
-                                        Punto Vendita
-                                    </th>
-                                </tr>
-                            </thead>
-                            @foreach (var item in Model.pv)
-                            {
-                                <tbody>
-                                    <tr>
-                                        <td data-title="Bandiera">
-                                            @Html.DisplayFor(modelItem => item.Flag.Nome)
-                                        </td>
-                                        <td data-title="Punto Vendita">
-                                            @Html.DisplayFor(modelItem => item.pvName)
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            }
-
-                        </table>
-                    </div>
-                }
-            </div>
-        </div>
         <div class="row">
             <div class="center-block">
                 <div class="header-content">
@@ -304,6 +265,5 @@
             </div>
         </div>
     </div>
-
 </section>
-
+}

@@ -7,12 +7,13 @@ namespace SystemWeb.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.Users", "UsersImageId", c => c.Guid(nullable: false));
+            /*
+            AddColumn("dbo.Users", "UsersImageId", c => c.Guid(nullable: false));*/
         }
         
         public override void Down()
         {
-            DropColumn("dbo.Users", "UsersImageId");
+            //DropColumn("dbo.Users", "UsersImageId");
         }
     }
 }
