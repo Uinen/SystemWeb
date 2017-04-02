@@ -272,8 +272,10 @@
     <Compile Include="Repository\Interface\iCaricoRepository.cs" />
     <Compile Include="Repository\Interface\iPvErogatoriRepository.cs" />
     <Compile Include="Repository\Interface\iPvRepository.cs" />
+    <Compile Include="Repository\Interface\iUsersImageRepository.cs" />
     <Compile Include="Repository\PvErogatoriRepository.cs" />
     <Compile Include="Repository\PvRepository.cs" />
+    <Compile Include="Repository\UsersImageRepository.cs" />
     <Compile Include="Services\BrowserConfig\BrowserConfigService.cs" />
     <Compile Include="Services\BrowserConfig\IBrowserConfigService.cs" />
     <Compile Include="Services\Cache\CacheService.cs" />
