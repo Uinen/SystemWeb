@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using SystemWeb.Models;
 using SystemWeb.Repository.Interface;
 
@@ -25,7 +24,7 @@ namespace SystemWeb.Repository
 
         public IEnumerable<PvErogatori> GetPvErogatori()
         {
-            return db.PvErogatori.ToList();
+            return db.PvErogatori.Include(s => s.Product).ToList();
         }
 
         public PvErogatori GetPvErogatoriById(Guid? Id)

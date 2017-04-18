@@ -4,7 +4,7 @@ using SystemWeb.Models;
 
 namespace SystemWeb.Repository.Interface
 {
-    public interface iUsersImageRepository
+    public interface iUsersImageRepository : IDisposable
     {
         /// <summary>
         /// GET ALL UsersImages

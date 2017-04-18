@@ -21,7 +21,7 @@
         /// The feed universally unique identifier. Do not use the URL of your feed as this can change.
         /// A much better ID is to use a GUID which you can generate from Tools->Create GUID in Visual Studio.
         /// </summary>
-        private const string FeedId = "[INSERT GUID HERE]";
+        private const string FeedId = "CF876DAD-2610-4695-90E5-A2496BAB646F";
         private const string PubSubHubbubHubUrl = "https://pubsubhubbub.appspot.com/";
 
         private readonly HttpClient httpClient;
@@ -56,12 +56,12 @@
                 Id = FeedId,
                 // title (Required) - Contains a human readable title for the feed. Often the same as the title of the 
                 //                    associated website. This value should not be blank.
-                Title = SyndicationContent.CreatePlaintextContent("ASP.NET MVC Boilerplate"),
+                Title = SyndicationContent.CreatePlaintextContent("SystemWeb - Gestionidirette"),
                 // items (Required) - The items to add to the feed.
                 Items = await this.GetItems(cancellationToken),
                 // subtitle (Recommended) - Contains a human-readable description or subtitle for the feed.
                 Description = SyndicationContent.CreatePlaintextContent(
-                    "This is the ASP.NET MVC Boilerplate feed description."),
+                    "Desc."),
                 // updated (Optional) - Indicates the last time the feed was modified in a significant way.
                 LastUpdatedTime = DateTimeOffset.Now,
                 // logo (Optional) - Identifies a larger image which provides visual identification for the feed. 

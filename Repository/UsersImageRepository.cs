@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using SystemWeb.Models;
 using SystemWeb.Repository.Interface;
 
@@ -9,34 +9,63 @@ namespace SystemWeb.Repository
 {
     public class UsersImageRepository : iUsersImageRepository
     {
+        private MyDbContext db;
+
+        public UsersImageRepository(MyDbContext context)
+        {
+            this.db = context;
+        }
         public void DeleteUsersImages(Guid? Id)
         {
-            throw new NotImplementedException();
+            UsersImage deleteUsersImage = db.UsersImage.Find(Id);
+            db.UsersImage.Remove(deleteUsersImage);
         }
 
         public IEnumerable<UsersImage> GetUsersImages()
         {
-            throw new NotImplementedException();
+            return db.UsersImage.Include(z => z.UserProfiles).ToList();
         }
 
         public UsersImage GetUsersImagesById(Guid? Id)
         {
-            throw new NotImplementedException();
+            return db.UsersImage.Find(Id);
         }
 
         public void InsertUsersImages(UsersImage insertUsersImages)
         {
-            throw new NotImplementedException();
+            db.UsersImage.Add(insertUsersImages);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            db.SaveChanges();
         }
 
         public void UpdateUsersImages(UsersImage updateUsersImages)
         {
-            throw new NotImplementedException();
+            db.Entry(updateUsersImages).State = EntityState.Modified;
         }
+
+        #region IDisposable Support
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    db.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

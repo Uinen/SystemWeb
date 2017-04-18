@@ -16,6 +16,10 @@ using System.IO;
 using SystemWeb.Repository.Interface;
 using SystemWeb.Repository;
 using System.Data;
+using Syncfusion.JavaScript;
+using System.Collections;
+using Syncfusion.JavaScript.DataSources;
+using Syncfusion.Linq;
 
 namespace SystemWeb.Controllers
 {  
@@ -28,6 +32,7 @@ namespace SystemWeb.Controllers
         private iPvRepository _PvRepository;
         private iPvErogatoriRepository _PvErogatoriRepository;
         public string ly { get; set; }
+
         public UserController()
         {
             this._CaricoRepository = new CaricoRepository(new MyDbContext());
@@ -98,11 +103,13 @@ namespace SystemWeb.Controllers
             var somequalsD2 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Città).SingleOrDefault();
             var somequalsD3 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.pvName).SingleOrDefault();
             var somequalsD4 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.Flag.Nome).SingleOrDefault();
-
+            var somequalsD5 = db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileCity).SingleOrDefault(); 
+            var somequalsD6 = db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileName).SingleOrDefault();
+            var somequalsD7 = db.Users.Include(s => s.Company).Where(s => s.Id == currentUser.Id).Select(s => s.Company.Name).SingleOrDefault();
             //ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
             //ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
-            ViewBag.FullAdress = currentUser.UserProfiles.FullAdress;
-            ViewBag.ProfileFullName = currentUser.UserProfiles.FullName;
+            ViewBag.FullAdress = somequalsD5;
+            ViewBag.ProfileFullName = somequalsD6;
             //ViewBag.ProfileAdress = currentUser.UserProfiles.ProfileAdress;
             //ViewBag.ProfileCity = currentUser.UserProfiles.ProfileCity;
             //ViewBag.ProfileZipCode = currentUser.UserProfiles.ProfileZipCode;
@@ -112,7 +119,7 @@ namespace SystemWeb.Controllers
             ViewBag.PvNamee = somequalsD3;
             ViewBag.PvInd = somequalsD1;
             ViewBag.PvCity = somequalsD2;
-            ViewBag.CompanyId = currentUser.Company.Name;
+            ViewBag.CompanyId = somequalsD7;
 
             UserProfiles profile = db.UserProfiles.Include(s => s.UsersImage).SingleOrDefault(s => s.ProfileId == id);
             list.userprofiles = profile;
@@ -143,6 +150,7 @@ namespace SystemWeb.Controllers
             ly = lastYear.ToString();
 
             var getAll = from a in _PvErogatoriRepository.GetPvErogatori()
+                        
                           where (Convert.ToDateTime(a.FieldDate) >= dateFrom)
                                    && (Convert.ToDateTime(a.FieldDate) <= dateTo)
                          //where (a.FieldDate.Year.ToString().Contains(ly))
@@ -247,50 +255,40 @@ namespace SystemWeb.Controllers
             return View(filePath);
         }
 
-        // GET: FilePaths/Create
-        public ActionResult FileCreate()
-        {
-            ViewBag.UserID = new SelectList(db.Users, "Id", "UserName");
-            return View();
-        }
-
-        // POST: FilePaths/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult FileCreate([Bind(Include = "FilePathID,FileName,FileType,UploadDate,UserID")] FilePath filePath, ApplicationUser user, HttpPostedFileBase upload)
+        public ActionResult FileCreate([Bind(Include = "FilePathID,FileName,FileType,UploadDate,UserID")] FilePath filePath, ApplicationUser user, IEnumerable<HttpPostedFileBase> upload)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
             if (ModelState.IsValid)
             {
-                if (upload != null && upload.ContentLength > 0)
+                foreach (var file in upload)
                 {
-                    string filename = Path.GetFileName(Guid.NewGuid() + "." + upload.FileName);
-                    var filepath = Path.Combine(Server.MapPath("~/Uploads/Documents/"), filename);
-                    upload.SaveAs(filepath);
-
-                    var path = "/Uploads/Documents/" + filename;
-                    var FileDocumentPath = string.Format("{0}", path);
-
-                    var document = new FilePath
+                    if (file != null && file.ContentLength > 0)
                     {
-                        FileName = FileDocumentPath,
-                        FileType = FileType.Document,
-                        UploadDate = DateTime.Now.Date,
-                        UserID = currentUser.Id
-                    };
-                    db.FilePaths.Add(document);
-                    db.SaveChanges();
-                }
+                        string filename = Path.GetFileName(Guid.NewGuid() + "." + file.FileName);
+                        var filepath = Path.Combine(Server.MapPath("~/Uploads/Documents/"), filename);
+                        file.SaveAs(filepath);
 
-                return RedirectToAction("File");
+                        var path = "/Uploads/Documents/" + filename;
+                        var FileDocumentPath = string.Format("{0}", path);
+
+                        var document = new FilePath
+                        {
+                            FileName = FileDocumentPath,
+                            FileType = FileType.Document,
+                            UploadDate = DateTime.Now.Date,
+                            UserID = currentUser.Id
+                        };
+                        db.FilePaths.Add(document);
+                        db.SaveChanges();
+                    }
+                }
             }
 
             ViewBag.UserID = new SelectList(db.Users, "Id", "UserName", filePath.UserID);
-            return View(filePath);
+
+            return Content("");
         }
 
         // GET: FilePaths/Edit/5
@@ -342,7 +340,7 @@ namespace SystemWeb.Controllers
         }
 
         // POST: FilePaths/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("FileDelete")]
         [ValidateAntiForgeryToken]
         public ActionResult FileDeleteConfirmed(Guid id)
         {
@@ -375,8 +373,7 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region Carico
-
-        public ActionResult Carico( string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo)
+        public ActionResult Carico(/*string sortOrder, string currentFilter, string searchString, int? page, */ DateTime? dateFrom, DateTime? dateTo)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -385,74 +382,116 @@ namespace SystemWeb.Controllers
             ly = lastYear.ToString();
             #endregion
 
-            var getall = from order in _CaricoRepository.GetOrders()
-                         where (currentUser.pvID == order.pvID && order.Year.Anno.Year.ToString().Contains(ly))
-                         select order;
-            
-            #region Sorting ViewBag
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "Ordine_Desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewBag.YearSortParm = sortOrder == "Year" ? "year_desc" : "Year";
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
-            ViewBag.yearId = new SelectList(db.Year, "yearId", "Anno");
-            #endregion
+            var getall = (from order in _CaricoRepository.GetOrders()
+                          where (currentUser.pvID == order.pvID && order.Year.Anno.Year.ToString().Contains(ly))
+                          select order);
+
+            var DataSource2 = new MyDbContext().Pv
+                .Where(a => a.pvID == currentUser.pvID).ToList();
+
+            ViewBag.dataSource2 = DataSource2;
+
+            var DataSource3 = new MyDbContext().Year.Where(c => c.Anno.Year.ToString().Contains(ly)).ToList();
+            ViewBag.dataSource3 = DataSource3;
 
             #region AmmountByDateFrom
             // Totale Carico Benzina secondo il parametro di ricerca specificato
             ViewBag.SSPBTotalAmountFrom = getall.ToList()
                 .Where(o => /*currentUser.pvID == o.pvID &&*/ Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
-                .Sum(o => (decimal?) o.Benzina);
+                .Sum(o => (decimal?)o.Benzina);
 
             // Totale Carico Gasolio secondo il parametro di ricerca specificato
             ViewBag.DieselTotalAmountFrom = getall.ToList()
                 .Where(o => /*currentUser.pvID == o.pvID &&*/ Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
-                .Sum(o => (decimal?) o.Gasolio);
-            #endregion
-
-            #region Search and Sorting
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            ViewBag.CurrentFilter = searchString;
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                getall = getall.Where(s => s.Ordine.ToString().Contains(searchString.ToUpper()));
-            }
-
-            switch (sortOrder)
-            {
-                case "Ordine_Desc":
-                    getall = getall.OrderByDescending(s => s.Ordine);
-                    break;
-                case "year_desc":
-                    getall = getall.OrderByDescending(s => s.yearId);
-                    break;
-                default:
-                    getall = getall.OrderBy(s => s.Ordine);
-                    break;
-            }
-
-            int pageSize = 10;
-            int pageNumber = (page ?? 1);
+                .Sum(o => (decimal?)o.Gasolio);
             #endregion
 
             #region Total Ammount ViewBag
             // Totale Carico annuo benzina.
-            ViewBag.SSPBTotalAmount = getall/*.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly))*/.Sum(o => (decimal?) o.Benzina);
+            ViewBag.SSPBTotalAmount = getall/*.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly))*/.Sum(o => (decimal?)o.Benzina);
 
             // Totale Carico annuo gasolio. 
-            ViewBag.DieselTotalAmount = getall/*.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly))*/.Sum(o => (decimal?) o.Gasolio);
+            ViewBag.DieselTotalAmount = getall/*.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly))*/.Sum(o => (decimal?)o.Gasolio);
             #endregion
 
-            return View(getall.ToPagedList(pageNumber, pageSize));
+            return View();
+        }
+        public ActionResult CaricoGetData(DateTime? dateFrom, DateTime? dateTo, DataManager dm)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            /*IEnumerable getall = (from order in db.Carico
+                          where (currentUser.pvID == order.pvID && order.Year.Anno.Year.ToString().Contains(ly))
+                          select order).ToList();*/
+
+            IEnumerable DataSource = new MyDbContext().Carico.Where(c => c.pvID == currentUser.pvID && c.Year.Anno.Year.ToString().Contains(ly)).OrderBy(c => c.Ordine).ToList();
+            DataResult result = new DataResult();
+            DataOperations operation = new DataOperations();
+            result.result = DataSource;
+
+            if (dm.Sorted != null && dm.Sorted.Count > 0) //Sorting 
+            {
+                result.result = operation.PerformSorting(result.result, dm.Sorted);
+            }
+
+            result.count = result.result.AsQueryable().Count();
+
+            if (dm.Skip > 0)  // for paging  
+
+                result.result = operation.PerformSkip(result.result, dm.Skip);
+
+            if (dm.Take > 0)
+
+                result.result = operation.PerformTake(result.result, dm.Take);
+
+            return Json(new { result = result.result, count = result.count }, JsonRequestBehavior.AllowGet);
+        }
+
+        public class DataResult
+        {
+            public IEnumerable result { get; set; }
+            public int count { get; set; }
+
+        }
+
+        //Perform file insertion 
+        public ActionResult PerformInsert(EditParams param)
+        {
+
+            MyDbContext db = new MyDbContext();
+            db.Carico.Add(param.value);
+            db.SaveChanges();
+
+            return RedirectToAction("GetOrderData");
+        }
+
+        //Perform update
+        public ActionResult PerformUpdate(EditParams param)
+        {
+
+            MyDbContext db = new MyDbContext();
+            Carico table = db.Carico.Single(o => o.Id == param.value.Id);
+
+            db.Entry(table).CurrentValues.SetValues(param.value);
+            db.Entry(table).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return RedirectToAction("GetOrderData");
+        }
+
+        //Perform delete
+        public ActionResult PerformDelete(Guid key, string keyColumn)
+        {
+
+            MyDbContext db = new MyDbContext();
+            db.Carico.Remove(db.Carico.Single(o => o.Id == key));
+            db.SaveChanges();
+            return RedirectToAction("GetOrderData");
         }
 
         public ActionResult CaricoChart()

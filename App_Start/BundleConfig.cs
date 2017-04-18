@@ -40,7 +40,7 @@ namespace SystemWeb
                 "~/Contenuti/ej/web/responsive-css/ejgrid.responsive.css", rewrite));
 
             bundles.Add(new StyleBundle("~/Content/style").Include(
-                "~/Contenuti/css/style.css", rewrite));
+                "~/Contenuti/css/style.css"));
 
             bundles.Add(new StyleBundle("~/Content/custom").Include(
                 "~/Contenuti/colors/custom.css", rewrite));

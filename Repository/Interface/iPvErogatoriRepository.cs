@@ -4,7 +4,7 @@ using SystemWeb.Models;
 
 namespace SystemWeb.Repository.Interface
 {
-    public interface iPvErogatoriRepository
+    public interface iPvErogatoriRepository: IDisposable
     {
         /// <summary>
         /// GET ALL PvErogatori

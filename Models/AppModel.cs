@@ -32,16 +32,16 @@ namespace SystemWeb.Models
     {
         public Guid ProfileId { get; set; }
         [DataMember]
-        public virtual UserProfiles UserProfiles { get; set; }
+        public UserProfiles UserProfiles { get; set; }
         [DataMember]
-        public virtual Guid? pvID { get; set; }
+        public Guid? pvID { get; set; }
         [DataMember]
-        public virtual Pv Pv { get; set; }
+        public Pv Pv { get; set; }
         [DataMember]
-        public virtual Guid? CompanyId { get; set; }
+        public Guid? CompanyId { get; set; }
         public DateTime CreateDate { get; set; }
         [DataMember]
-        public virtual Company Company { get; set; }
+        public Company Company { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ApplicationUser()
         {
@@ -64,7 +64,7 @@ namespace SystemWeb.Models
         [JsonIgnore]
         public ICollection<CompanyTask> CompanyTask { get; set; }
 
-        public virtual ICollection<FilePath> FilePaths { get; set; }
+        public ICollection<FilePath> FilePaths { get; set; }
     }
     #endregion
 
@@ -101,7 +101,7 @@ namespace SystemWeb.Models
         public FileType FileType { get; set; }
         public DateTime UploadDate { get; set; }
         public Guid ProfileID { get; set; }
-        public virtual UserProfiles UserProfiles { get; set; }
+        public UserProfiles UserProfiles { get; set; }
     }
     #endregion
 
@@ -132,9 +132,9 @@ namespace SystemWeb.Models
         public int Gasolio { get; set; }
         public string Note { get; set; }
         [DataMember]
-        public virtual Pv Pv { get; set; }
+        public Pv Pv { get; set; }
         [DataMember]
-        public virtual Year Year { get; set; }
+        public Year Year { get; set; }
 
         [NotMapped]
         public string ord { get; set; }
@@ -163,12 +163,12 @@ namespace SystemWeb.Models
         public string Name { get; set; }
         public int PartitaIva { get; set; }
         [DataMember]
-        public virtual Guid? RagioneSocialeId { get; set; }
+        public Guid? RagioneSocialeId { get; set; }
         [DataMember]
-        public virtual RagioneSociale RagioneSociale { get; set; }
+        public RagioneSociale RagioneSociale { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection<ApplicationUser> ApplicationUser { get; set; }
+        public ICollection<ApplicationUser> ApplicationUser { get; set; }
     }
     #endregion
 
@@ -189,7 +189,7 @@ namespace SystemWeb.Models
         public DateTime? FieldDate { get; set; }
         public float FieldResult { get; set; }
         [DataMember]
-        public virtual ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
     }
     #endregion
 
@@ -224,11 +224,11 @@ namespace SystemWeb.Models
         public DateTime FieldDate { get; set; }
         public int Value { get; set; }
         [DataMember]
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
         [DataMember]
-        public virtual Dispenser Dispenser { get; set; }
+        public Dispenser Dispenser { get; set; }
         [DataMember]
-        public virtual Pv Pv { get; set; }
+        public Pv Pv { get; set; }
         [NotMapped]
         public string sspb { get; set; }
         [NotMapped]
@@ -255,7 +255,7 @@ namespace SystemWeb.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection<Pv> Pv { get; set; }
+        public ICollection<Pv> Pv { get; set; }
     }
     #endregion
 
@@ -278,7 +278,7 @@ namespace SystemWeb.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection<PvTank> PvTank { get; set; }
+        public ICollection<PvTank> PvTank { get; set; }
     }
     #endregion
 
@@ -303,19 +303,19 @@ namespace SystemWeb.Models
         public string pvName { get; set; }
         public Guid? pvFlagId { get; set; }
         [DataMember]
-        public virtual Flag Flag { get; set; }
+        public Flag Flag { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection<PvTank> PvTank { get; set; }
+        public  ICollection<PvTank> PvTank { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection<Carico> Carico { get; set; }
+        public ICollection<Carico> Carico { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection<PvProfile> PvProfile { get; set; }
+        public ICollection<PvProfile> PvProfile { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection<ApplicationUser> ApplicationUser { get; set; }
+        public ICollection<ApplicationUser> ApplicationUser { get; set; }
     }
     #endregion
 
@@ -338,7 +338,7 @@ namespace SystemWeb.Models
         public string Nazione { get; set; }
         public int Cap { get; set; }
         [DataMember]
-        public virtual Pv Pv { get; set; }
+        public Pv Pv { get; set; }
     }
     #endregion
 
@@ -365,15 +365,15 @@ namespace SystemWeb.Models
         public int Giacenza { get; set; }
         public string Descrizione { get; set; }
         [DataMember]
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
         [DataMember]
-        public virtual Pv Pv { get; set; }
+        public Pv Pv { get; set; }
         [JsonIgnore]
-        public virtual ICollection<PvTankDesc> PvTankDesc { get; set; }
+        public ICollection<PvTankDesc> PvTankDesc { get; set; }
         [JsonIgnore]
-        public virtual ICollection<PvDeficienze> PvDeficienze { get; set; }
+        public ICollection<PvDeficienze> PvDeficienze { get; set; }
         [JsonIgnore]
-        public virtual ICollection<PvCali> PvCali { get; set; }
+        public ICollection<PvCali> PvCali { get; set; }
     }
     #endregion
 
@@ -390,7 +390,7 @@ namespace SystemWeb.Models
         public Guid PvDefId { get; set; }
         public Guid PvTankId { get; set; }
         [DataMember]
-        public virtual PvTank PvTank { get; set; }
+        public PvTank PvTank { get; set; }
         public int Value { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime FieldDate { get; set; }
@@ -410,7 +410,7 @@ namespace SystemWeb.Models
         public Guid PvCaliId { get; set; }
         public Guid PvTankId { get; set; }
         [DataMember]
-        public virtual PvTank PvTank { get; set; }
+        public PvTank PvTank { get; set; }
         public int Value { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime FieldDate { get; set; }
@@ -432,7 +432,7 @@ namespace SystemWeb.Models
         public float PvTankCM { get; set; }
         public float PvTankLT { get; set; }
         [DataMember]
-        public virtual PvTank PvTank { get; set; }
+        public PvTank PvTank { get; set; }
     }
     #endregion
 
@@ -500,10 +500,10 @@ namespace SystemWeb.Models
         public string Modello { get; set; }
         public Guid? PvTankId { get; set; }
         [DataMember]
-        public virtual PvTank PvTank { get; set; }
+        public PvTank PvTank { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection<PvErogatori> PvErogatori { get; set; }
+        public ICollection<PvErogatori> PvErogatori { get; set; }
         public bool? isActive { get; set; }
     }
     #endregion
@@ -527,7 +527,7 @@ namespace SystemWeb.Models
         public string UsersId { get; set; }
         public string Description { get; set; }
         [DataMember]
-        public virtual ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         public override string ToString()
         {
             return string.Format(
@@ -550,7 +550,7 @@ namespace SystemWeb.Models
         [MaxLength(128)]
         public string UsersId { get; set; }
         [DataMember]
-        public virtual ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         [MaxLength(48)]
         public string UserFieldAccount { get; set; }
         [MaxLength(28)]
@@ -580,7 +580,7 @@ namespace SystemWeb.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public virtual ICollection<Carico> Carico { get; set; }
+        public ICollection<Carico> Carico { get; set; }
     }
     #endregion
 
@@ -599,7 +599,7 @@ namespace SystemWeb.Models
         public FileType FileType { get; set; }
         public DateTime UploadDate { get; set; }
         public string UserID { get; set; }
-        public virtual ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
     }
 
     #endregion
@@ -610,8 +610,10 @@ namespace SystemWeb.Models
         public MyDbContext()
             : base("DefaultConnection")
         {
+            /*
             Configuration.LazyLoadingEnabled = true;
             Configuration.ProxyCreationEnabled = true;
+            Configuration.AutoDetectChangesEnabled = true;*/
         }
 
         #region Db Intializer
@@ -627,7 +629,7 @@ namespace SystemWeb.Models
         {
             return new MyDbContext();
         }
-
+        
         #region Foreign Key
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -670,26 +672,26 @@ namespace SystemWeb.Models
 
         #region Db Set
 
-        public virtual DbSet<Pv> Pv { get; set; }
-        public virtual DbSet<PvProfile> PvProfile { get; set; }
-        public virtual DbSet<PvTank> PvTank { get; set; }
-        public virtual DbSet<PvTankDesc> PvTankDesc { get; set; }
-        public virtual DbSet<PvDeficienze> PvDeficienze { get; set; }
-        public virtual DbSet<PvCali> PvCali { get; set; }
-        public virtual DbSet<Product> Product { get; set; }
-        public virtual DbSet<Flag> Flag { get; set; }
-        public virtual DbSet<Carico> Carico { get; set; }
-        public virtual DbSet<UserProfiles> UserProfiles { get; set; }
-        public virtual DbSet<PvErogatori> PvErogatori { get; set; }
-        public virtual DbSet<Company> Company { get; set; }
-        public virtual DbSet<RagioneSociale> RagioneSociale { get; set; }
-        public virtual DbSet<Dispenser> Dispenser { get; set; }
-        public virtual DbSet<Notice> Notice { get; set; }
-        public virtual DbSet<UserArea> UserArea { get; set; }
-        public virtual DbSet<CompanyTask> CompanyTask { get; set; }
-        public virtual DbSet<Year> Year { get; set; }
-        public virtual DbSet<UsersImage> UsersImage { get; set; }
-        public virtual DbSet<FilePath> FilePaths { get; set; }
+        public  DbSet<Pv> Pv { get; set; }
+        public  DbSet<PvProfile> PvProfile { get; set; }
+        public  DbSet<PvTank> PvTank { get; set; }
+        public  DbSet<PvTankDesc> PvTankDesc { get; set; }
+        public  DbSet<PvDeficienze> PvDeficienze { get; set; }
+        public  DbSet<PvCali> PvCali { get; set; }
+        public  DbSet<Product> Product { get; set; }
+        public  DbSet<Flag> Flag { get; set; }
+        public  DbSet<Carico> Carico { get; set; }
+        public  DbSet<UserProfiles> UserProfiles { get; set; }
+        public  DbSet<PvErogatori> PvErogatori { get; set; }
+        public  DbSet<Company> Company { get; set; }
+        public  DbSet<RagioneSociale> RagioneSociale { get; set; }
+        public  DbSet<Dispenser> Dispenser { get; set; }
+        public  DbSet<Notice> Notice { get; set; }
+        public  DbSet<UserArea> UserArea { get; set; }
+        public  DbSet<CompanyTask> CompanyTask { get; set; }
+        public  DbSet<Year> Year { get; set; }
+        public  DbSet<UsersImage> UsersImage { get; set; }
+        public  DbSet<FilePath> FilePaths { get; set; }
 
         #endregion
     }

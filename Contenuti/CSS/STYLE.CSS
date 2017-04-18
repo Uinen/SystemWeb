@@ -20,8 +20,6 @@ a {
     text-decoration:none;
     transition:all 0.3s ease-out;
     position:relative;
-    padding:.5em;
-    margin:-.5em;
 }
 a:hover,a:active,a:focus {
     color:#405162;

@@ -19,6 +19,11 @@
     @Styles.Render("~/Content/bootstrap-theme")
     @Styles.Render("~/Content/style")
     @Styles.Render("~/Content/custom")
+    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.css")" rel="stylesheet" />
+   @* @Styles.Render("~/Content/ejBootstrap-Themes") *@
     @Styles.Render("~/Content/ionicons")
     @Styles.Render("~/Content/animate")
     @Styles.Render("~/Content/owlcarousel")
@@ -28,10 +33,16 @@
     @Styles.Render("~/Content/fontawesome")
 
     @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jquerybrowser")
-    @Scripts.Render("~/bundles/jqueryajaxchimp")
+    @Scripts.Render("~/bundles/jqueryeasing")
+    @Scripts.Render("~/bundles/jqueryglobalize")
+    @Scripts.Render("~/bundles/jquerybrowser") 
+    @Scripts.Render("~/bundles/jqueryajaxchimp") 
+   @* @Scripts.Render("~/bundles/jqueryval") *@
+    @Scripts.Render("~/bundles/jsrender")
+    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
+    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
+   @* @Scripts.Render("~/bundles/ej") *@
     @Scripts.Render("~/bundles/bootstrap")
-    @*@Scripts.Render("~/bundles/jqueryval")*@
     @Scripts.Render("~/bundles/microsoft")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/theme")
@@ -40,16 +51,16 @@
 </head>
 <body>
     <!-- ****************************** Preloader ************************** -->
-    <div id="preloader"></div>
+    <div id="preloader"></div> 
 
     <!-- ****************************** Sidebar ************************** -->
     <nav id="sidebar-wrapper">
         <a id="menu-close" href="#" class="close-btn toggle">Chiudi<i class="ion-log-in"></i></a>
         <ul class="sidebar-nav">
-            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>@*
             <li><a href="@Url.RouteUrl(HomeControllerRoute.GetAbout)"><span aria-hidden="true" class="fa fa-users"></span> About</a></li>
             <li><a href="@Url.RouteUrl(HomeControllerRoute.GetContact)"><span aria-hidden="true" class="fa fa-phone"></span> Contact</a></li>
-            <li><a href="@Url.RouteUrl(HomeControllerRoute.GetFeed)"><span aria-hidden="true" class="fa fa-rss"></span> RSS</a></li>
+            <li><a href="@Url.RouteUrl(HomeControllerRoute.GetFeed)"><span aria-hidden="true" class="fa fa-rss"></span> RSS</a></li>*@
             @using (Html.BeginForm("Index", "User", FormMethod.Get))
             {
                 if (User.Identity.IsAuthenticated)
@@ -61,28 +72,11 @@
             @Html.Partial("_LoginPartial")
             @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
             {
-                <li class="dropdown">
-                    <a class="dropdown-toggle" role="button" aria-expanded="false" href="#" data-toggle="dropdown"><span aria-hidden="true" class="fa fa-cogs"></span> Debug <span aria-hidden="true" class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="/@System.Configuration.ConfigurationManager.AppSettings["elmah.mvc.route"]"><span aria-hidden="true" class="fa fa-life-ring"></span> Elmah</a></li>
-                        <li><a href="/glimpse.axd"><span aria-hidden="true" class="fa fa-line-chart"></span> Glimpse</a></li>
-                        <li><a href="/trace.axd"><span aria-hidden="true" class="fa fa-heart"></span> Tracing</a></li>
-                    </ul>
-                </li>
+                <li><a href="@Url.RouteUrl(HomeControllerRoute.GetFeed)"><span aria-hidden="true" class="fa fa-rss"></span> RSS</a></li>
+                <li><a href="/@System.Configuration.ConfigurationManager.AppSettings["elmah.mvc.route"]"><span aria-hidden="true" class="fa fa-life-ring"></span> Elmah</a></li>
+                <li><a href="/glimpse.axd"><span aria-hidden="true" class="fa fa-line-chart"></span> Glimpse</a></li>
+                <li><a href="/trace.axd"><span aria-hidden="true" class="fa fa-heart"></span> Tracing</a></li>
             }
-            @*
-            @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
-            {
-                <li>@Html.ActionLink("Impostazioni Avanzate", "Index", "Admin")</l
-                <li>@Html.ActionLink("Log", "Index", "Logging")</li>
-                <li>@Html.ActionLink("Amministrazione Dati", "Area", "User")</li>
-                <li>@Html.ActionLink("Task", "Task", "User")</li>
-            }
-            
-            @if (ViewContext.HttpContext.User.IsInRole("User"))
-            {
-                <li>@Html.ActionLink("Invio Dati", "Area", "User")</li>
-            }*@
         </ul>
     </nav>
 
@@ -122,6 +116,7 @@
 
     <!-- ****************************** Scripts ****************************** -->
     @RenderSection("Scripts", false)
+    @Html.EJ().ScriptManager()
     @RenderBody()
 
 

@@ -1,206 +1,148 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Syncfusion.JavaScript;
+using Syncfusion.JavaScript.DataSources;
+using Syncfusion.Linq;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using System.Data.Entity.Core.EntityClient;
-using System.Data.Entity;
-using SystemWeb.Models.Entities;
 using SystemWeb.Models;
-using Syncfusion.JavaScript;
-using System.Collections;
-using Syncfusion.JavaScript.DataSources;
-using SystemWeb.Models.Repository;
-using System.Net;
+using SystemWeb.Repository;
+using SystemWeb.Repository.Interface;
 
 namespace SystemWeb.Controllers
 {
     public class AdaptiveController : Controller
     {
-        //
-        // GET: /Adaptive/
+        private iCaricoRepository _CaricoRepository;
+        private MyDbContext db = new MyDbContext();
+        public string ly { get; set; }
+        private int lastYear;
 
-        public ActionResult Adaptive()
+        public AdaptiveController()
         {
-            /*
-            #region Initialize
+            this._CaricoRepository = new CaricoRepository(new MyDbContext());
+        }
+
+        public AdaptiveController(ApplicationUserManager userManager)
+        {
+            UserManager = userManager;
+        }
+
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        // GET: Adaptive
+        public ActionResult Index()
+        {
+            #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-
-            MyDbContext db = new MyDbContext();
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
             #endregion
 
-            #region Operation
-            DateTime currentYear = DateTime.Now;
+            var DataSource2 = new MyDbContext().Pv
+                .Where(a=> a.pvID == currentUser.pvID).ToList();
 
-            var getdata = from a in db.Carico.ToList()
-                          where (currentUser.pvID == a.pvID && currentYear.Year == a.Year.Anno.Year)
-                          select a;
+            ViewBag.dataSource2 = DataSource2;
 
-            int SSPBTotalAmount = getdata.Sum(s => s.Benzina);
-            int DieselTotalAmount = getdata.Sum(s => s.Gasolio);
+            var DataSource3 = new MyDbContext().Year.Where(c => c.Anno.Year.ToString().Contains(ly)).ToList();
+            ViewBag.dataSource3 = DataSource3;
 
-            ViewBag.TotalAmount = SSPBTotalAmount + DieselTotalAmount;
-
-            #endregion
-            */
             return View();
         }
 
-        public ActionResult AdaptiveGrid(DataManager dm, Guid? Id)
+        public ActionResult CaricoGetData(/*string sortOrder, string currentFilter, string searchString, int? page, */ DateTime? dateFrom, DateTime? dateTo, DataManager dm)
         {
-            #region Initialize
-
+            #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-
-            MyDbContext db = new MyDbContext();
-
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
             #endregion
 
-            #region Query
+            /*IEnumerable getall = (from order in db.Carico
+                          where (currentUser.pvID == order.pvID && order.Year.Anno.Year.ToString().Contains(ly))
+                          select order).ToList();*/
 
-            var getall = from a in db.Carico
-                         select a;
+            IEnumerable DataSource = new MyDbContext().Carico.Where(c => c.pvID == currentUser.pvID && c.Year.Anno.Year.ToString().Contains(ly)).OrderBy(c=> c.Ordine).ToList();
+            DataResult result = new DataResult();
+            DataOperations operation = new DataOperations();
+            result.result = DataSource;
 
-            var getall2 = from a in db.Carico
-                         select a;
-            
-            IEnumerable DataSource = CaricoRepository.GetAllRecords();
-            IEnumerable DataSource2 = getall2;
-            //int currentYear = DateTime.Today.Year;
-            //DateTime currentYearConverted = Convert.ToDateTime(currentYear);
-            DataSource = db.Carico/*.Where(c => currentUser.pvID == c.pvID)*/.Include("Pv").Include("Year").OrderBy(p => p.Ordine).ToList();
-            
-            BatchDataResult result = new BatchDataResult();
-            DataOperations obj = new DataOperations();
-            List<string> str = new List<string>();
-
-            if (dm.Aggregates != null)
+            if (dm.Sorted != null && dm.Sorted.Count > 0) //Sorting 
             {
-                for (var i = 0; i < dm.Aggregates.Count; i++)
-                    str.Add(dm.Aggregates[i].Field);
-                result.aggregate = obj.PerformSelect(DataSource, str);
+                result.result = operation.PerformSorting(result.result, dm.Sorted);
             }
 
-            if (dm.Skip != 0)
-            {
-                DataSource = obj.PerformSkip(DataSource, dm.Skip);
-            }
-            if (dm.Take != 0)
-            {
-                DataSource = obj.PerformTake(DataSource, dm.Take);
-            }
+            result.count = result.result.AsQueryable().Count();
 
-            result.value = "Sono presenti";
-            result.count = CaricoRepository.GetAllRecords().Count();
-            result.value2 = "Ordini";
-            result.result = DataSource.Cast<SystemWeb.Models.Carico>().Select(x => new
-            {
-                ID = x.Id,
-                ORDINE = x.Ordine,
-                PVNAME = x.Pv.pvName,
-                YEARSDATE = x.Year.Anno.Year,
-                CDATA = x.cData,
-                DOCUMENTO = x.Documento,
-                NUMERO = x.Numero,
-                RDATA = x.rData,
-                EMITTENTE = x.Emittente,
-                BENZINA = x.Benzina,
-                GASOLIO = x.Gasolio,
-                NOTE = x.Note
-            });
+            if (dm.Skip > 0)  // for paging  
 
-            #endregion
+                result.result = operation.PerformSkip(result.result, dm.Skip);
 
-            #region Operation
+            if (dm.Take > 0)
 
-            DateTime currentYear = DateTime.Now;
+                result.result = operation.PerformTake(result.result, dm.Take);
 
-            var getdata = from a in db.Carico.ToList()
-                          where (/*currentUser.pvID == a.pvID &&*/ currentYear.Year == a.Year.Anno.Year)
-                          select a;
-
-            int SSPBTotalAmount = getdata.Sum(s => s.Benzina);
-            int DieselTotalAmount = getdata.Sum(s => s.Gasolio);
-
-            ViewBag.TotalAmount = SSPBTotalAmount + DieselTotalAmount;
-
-            #endregion
-
-            #region Update
-
-            BatchDataResult year = new BatchDataResult();
-            BatchDataResult pv = new BatchDataResult();
-
-            pv.pv = DataSource2.Cast<SystemWeb.Models.Carico>().ToList()
-                .Select(x => new
-                {
-                    PVNAME = x.Pv.pvName
-                });
-
-            year.year = DataSource2.Cast<SystemWeb.Models.Carico>().ToList()
-                .Select(x => new
-                {
-                    YEARSDATE = x.Year.Anno.Year
-                });
-
-            SystemWeb.Models.Carico carico = db.Carico.Find(Id);
-
-            ViewBag.year = year;
-            ViewBag.pv = pv;
-
-            #endregion
-
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(new { result = result.result, count = result.count }, JsonRequestBehavior.AllowGet);
         }
-        public class BatchDataResult
+
+        public class DataResult
         {
             public IEnumerable result { get; set; }
-            public IEnumerable pv { get; set; }
-            public IEnumerable year { get; set; }
             public int count { get; set; }
-            public IEnumerable aggregate { get; set; }
-            public IEnumerable groupDs { get; set; }
-            public string value { get; set; }
-            public string value2 { get; set; } 
+
         }
 
-        public ActionResult Update(SystemWeb.Models.Carico value, Guid? id)
+        //Perform file insertion 
+        public ActionResult PerformInsert(EditParams param)
         {
+
             MyDbContext db = new MyDbContext();
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            db.Carico.Add(param.value);
+            db.SaveChanges();
 
-            SystemWeb.Models.Carico carico = db.Carico.Find(id);
-
-            if (carico == null)
-            {
-                return HttpNotFound();
-            }
-    
-            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = userManager.FindById(User.Identity.GetUserId());
-
-            CaricoRepository.Update(value);
-        
-            return Json(carico, JsonRequestBehavior.AllowGet);
+            return RedirectToAction("GetOrderData");
         }
-        public ActionResult Insert(SystemWeb.Models.Carico value)
+
+        //Perform update
+        public ActionResult PerformUpdate(EditParams param)
         {
-            CaricoRepository.Add(value);
-            var data = CaricoRepository.GetAllRecords();
-            return Json(data, JsonRequestBehavior.AllowGet);
+
+            MyDbContext db = new MyDbContext();
+            Carico table = db.Carico.Single(o => o.Id == param.value.Id);
+
+            db.Entry(table).CurrentValues.SetValues(param.value);
+            db.Entry(table).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return RedirectToAction("GetOrderData");
         }
-        public ActionResult Remove(Guid key)
+
+        //Perform delete
+        public ActionResult PerformDelete(Guid key, string keyColumn)
         {
-            CaricoRepository.Delete(key);
-            var data = CaricoRepository.GetAllRecords();
-            return Json(data, JsonRequestBehavior.AllowGet);
+
+            MyDbContext db = new MyDbContext();
+            db.Carico.Remove(db.Carico.Single(o => o.Id == key));
+            db.SaveChanges();
+            return RedirectToAction("GetOrderData");
         }
     }
 }

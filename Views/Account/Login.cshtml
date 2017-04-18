@@ -1,38 +1,115 @@
 @model SystemWeb.Models.LoginViewModel
+        @{Html.EJ().Dialog("lognForm").Title("Autenticazione").IsResponsive(true).Containment(".control").ContentTemplate(
+              @<div>
+                  @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+                  {
+                      @Html.AntiForgeryToken()
+                      @Html.ValidationSummary(true)
+                   <table>
+                       <tr>
+                           <td>
+                               @Html.LabelFor(m => m.UserName)
+                               @Html.TextBoxFor(m => m.UserName, new { @class = "ejinputtext" })
+                               @Html.ValidationMessageFor(m => m.UserName)
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>
+                               @Html.LabelFor(m => m.Password)
+                               @Html.PasswordFor(m => m.Password, new { @class = "ejinputtext" })
+                               @Html.ValidationMessageFor(m => m.Password)
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>
+                               @Html.CheckBoxFor(m => m.RememberMe)
+                               @Html.Label("Ricordami", new { @class = "top" })
+                           </td>
+                       </tr>
+                       <tr>
+                           <td align="center">
+                               @Html.EJ().Button("downloadBtn").Type(ButtonType.Submit).Size(ButtonSize.Medium).Height("30").Width("100").Text("ACCEDI")
+                           </td>
+                       </tr>
+                       <tr>
+                           <td align="center" class="acc">
+                               Non hai un account ? <a href="#">Registrati</a>
+                           </td>
+                       </tr>
+                   </table>
+                  }
+                       </div>).EnableModal(true).EnableResize(false).Width(291).IsResponsive(true).CloseOnEscape(false).Render();
+               }
+<style>
+    .e-dialog .e-dialog-icon {
+        visibility: hidden;
+    }
 
-<section id="login" class="block">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6 col-md-4 col-md-offset-4">
-                <h2 class="text-center login-title">Accedi per continuare con Gestionidirette</h2>
-                <div class="account-wall">
-                    <img class="profile-img" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="">
-                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-signin", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        @Html.ValidationSummary(true)
-                        @Html.LabelFor(m => m.UserName)
-                        <br/>
-                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.UserName)
-                        <br/>
-                        @Html.LabelFor(m => m.Password)
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                        <br/>
-                        @Html.ValidationMessageFor(m => m.Password)
-                        <button class="btn btn-lg btn-primary btn-block" type="submit">Accedi</button>
-                        <label class="checkbox pull-left">
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                            @Html.LabelFor(m => m.RememberMe)
-                        </label>
-                        <a href="#" class="pull-right need-help">Hai bisogno d'aiuto? </a><span class="clearfix"></span>
-                    }
-                </div>
-                <!--<a href="#" class="text-center new-account">Create an account </a>-->
-            </div>
-        </div>
-    </div>
-</section>
+    label.error {
+        color: red;
+    }
+
+    .htmljssamplebrowser.material .control {
+        height: 700px;
+    }
+
+    .control {
+        height: auto;
+        position: relative;
+    }
+
+    .ejinputtext {
+        height: 25px;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .row .cols-sample-area {
+        padding: 20px;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .acc {
+        font-size: 12px;
+        padding-top: 8px;
+    }
+
+    .top {
+        margin-top: 5px;
+    }
+
+    .reqired {
+        margin: 0 0 3px 0;
+        color: red;
+        display: inline-block;
+    }
+
+    .e-btn.e-button.e-js {
+        border: none;
+    }
+</style>
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+<script>
+        $("#btnOpen").hide();
+        function onclick() {
+            $("#lognForm").ejDialog("open");
+            $("#btnOpen").hide();
+        }
+        function formsubmit() {
+            $("#form1").valid();
+        }
+        function coupeClick() {
+            $("#r8Coupe").ejDialog("open");
+        }
+        function spyderClick() {
+            $("#r8Spyder").ejDialog("open");
+        }
+        function onDialogClose(args) {
+            $("#btnOpen").show();
+        }
+</script>
 }
