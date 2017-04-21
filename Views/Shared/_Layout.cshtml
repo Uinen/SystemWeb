@@ -31,15 +31,20 @@
     @Styles.Render("~/Content/pagedlist")
     @Styles.Render("~/Content/nivolightbox")
     @Styles.Render("~/Content/fontawesome")
-
-    @Scripts.Render("~/bundles/jquery")
+    <!--[if lt IE 9]>
+        <script src="@Url.Content("https://code.jquery.com/jquery-1.11.3.min.js")"></script>
+        <![endif]-->
+    <!--[if gte IE 9]><!-->
+    <script src="@Url.Content("https://code.jquery.com/jquery-2.1.4.min.js")"></script>
+    <!--<![endif]-->
+   @* @Scripts.Render("~/bundles/jquery") *@
     @Scripts.Render("~/bundles/jqueryeasing")
+    @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
+    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
     @Scripts.Render("~/bundles/jquerybrowser") 
     @Scripts.Render("~/bundles/jqueryajaxchimp") 
    @* @Scripts.Render("~/bundles/jqueryval") *@
-    @Scripts.Render("~/bundles/jsrender")
-    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
     <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
    @* @Scripts.Render("~/bundles/ej") *@
     @Scripts.Render("~/bundles/bootstrap")
@@ -49,7 +54,7 @@
     @Scripts.Render("~/bundles/sorting")
 
 </head>
-<body>
+<body style="overflow:hidden">
     <!-- ****************************** Preloader ************************** -->
     <div id="preloader"></div> 
 

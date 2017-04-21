@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 10.125" name="SystemWeb">
+  <DataContextMoniker Name="/SystemWebDataContext" />
+  <nestedChildShapes>
+    <classShape Id="81340469-4972-4d90-9182-6c421479598a" absoluteBounds="3.5, 1, 2, 3.1170068359375009">
+      <DataClassMoniker Name="/SystemWebDataContext/Carico" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e3109e6f-5834-4693-b42e-b3fc19b98506" absoluteBounds="3.515, 1.46, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0ffa861f-5ff8-479e-9f6c-a1e7936cb292" absoluteBounds="0.75, 2, 2, 1.1939925130208335">
+      <DataClassMoniker Name="/SystemWebDataContext/Year" />
+      <nestedChildShapes>
+        <elementListCompartment Id="1ec7584f-fe56-45fc-b40e-c82994c587f8" absoluteBounds="0.765, 2.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="7b756d1c-e3ad-40de-8add-641569930397" absoluteBounds="0.75, 5.875, 2, 1.3862939453125005">
+      <DataClassMoniker Name="/SystemWebDataContext/Pv" />
+      <nestedChildShapes>
+        <elementListCompartment Id="8a48293d-c128-46c2-9483-3d74e4f36658" absoluteBounds="0.765, 6.335, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 2.59699625651042); (3.5 : 2.59699625651042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SystemWebDataContext/Year/Year_Carico" />
+      <nodes>
+        <classShapeMoniker Id="0ffa861f-5ff8-479e-9f6c-a1e7936cb292" />
+        <classShapeMoniker Id="81340469-4972-4d90-9182-6c421479598a" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 6.46875); (4.28125 : 6.46875); (4.28125 : 4.1170068359375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SystemWebDataContext/Pv/Pv_Carico" />
+      <nodes>
+        <classShapeMoniker Id="7b756d1c-e3ad-40de-8add-641569930397" />
+        <classShapeMoniker Id="81340469-4972-4d90-9182-6c421479598a" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="75e22b3c-0602-4c31-bd31-4242015ececb" absoluteBounds="0.75, 8.5, 2, 1.3862939453125">
+      <DataClassMoniker Name="/SystemWebDataContext/Flag" />
+      <nestedChildShapes>
+        <elementListCompartment Id="1313daf8-9451-4d25-ba29-b3ebcccd4130" absoluteBounds="0.76500000000000012, 8.96, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(1.75 : 8.5); (1.75 : 7.2612939453125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/SystemWebDataContext/Flag/Flag_Pv" />
+      <nodes>
+        <classShapeMoniker Id="75e22b3c-0602-4c31-bd31-4242015ececb" />
+        <classShapeMoniker Id="7b756d1c-e3ad-40de-8add-641569930397" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

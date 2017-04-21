@@ -4,6 +4,7 @@ using System.Linq;
 using SystemWeb.Models;
 using SystemWeb.Repository.Interface;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
 namespace SystemWeb.Repository
 {

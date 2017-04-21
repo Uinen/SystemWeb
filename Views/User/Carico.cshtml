@@ -1,14 +1,5 @@
-﻿@*
-    @model PagedList.IPagedList<SystemWeb.Models.Carico>
-    @using PagedList.Mvc;
-    <link href="~/Contenuti/css/PagedList.min.css" rel="stylesheet" type="text/css" />*@
-
-    @{
-        ViewBag.Title = "Carico carburante";
-    }
-@using (Html.BeginForm("Carico", "User", FormMethod.Get))
+﻿@using (Html.BeginForm("Carico", "User", FormMethod.Get))
 {
-
     <section id="carico" class="block">
         <div class="container">
             <div class="row">
@@ -47,62 +38,21 @@
     </section>
 }
 <section id="adaptive">
-    <style type="text/css">
-        ::-ms-clear {
-            display: none;
-        }
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                <style type="text/css">
+                    ::-ms-clear {
+                        display: none;
+                    }
 
-        .e-gridAdaptive {
-            border-width: 0px !important;
-        }
-    </style>
+                    .e-gridAdaptive {
+                        border-width: 0px !important;
+                    }
+                </style>
 
-    <script type="text/javascript">
-                    $(function () {
-                        var browserDetails = ej.browserInfo();
-                        if (!(browserDetails.name == "msie" && parseInt(browserDetails.version, 10) < 9)) {
-                            window.addEventListener('message', function (e) {
-                                var gridObj = $("#FlatGrid").data('ejGrid');
-                                $("#FlatGrid").ejGrid("model.enableResponsiveRow", false);
-                                var obj = $("#FlatGrid").ejGrid("instance");
-                                if (e.data == "mobile") {
-                                    $('body').css('margin', '0px');
-                                    $('body').css('width', '100%');
-                                    gridObj.phoneMode = true;
-                                    $("#FlatGrid").ejGrid("model.scrollSettings.height", "100%");
-                                    $("#FlatGrid").ejGrid("model.pageSettings.pageSize", 10);
-                                    if (gridObj.model.isEdit)
-                                        gridObj.cancelEdit();
-                                    $("#Grid").addClass('e-gridAdaptive');
-                                }
-                                else if (e.data == "desktop") {
-                                    $('body').css('margin-right', '1%');
-                                    $('body').css('width', '99%');
-                                    $("#FlatGrid").ejGrid("model.pageSettings.pageSize", 7)
-                                    gridObj.windowonresize();
-                                }
-                                if (typeof e.data == "boolean") {
-                                    if (obj.model.isEdit)
-                                        obj.cancelEdit();
-                                    $("#FlatGrid").ejGrid("model.enableResponsiveRow", e.data);
-                                    if (e.data) {
-                                        $('body').css('overflow', 'visible');
-                                        $('body').css('overflow-x', 'hidden');
-                                    }
-                                    else {
-                                        $("#FlatGrid").ejGrid("model.pageSettings.pageSize", 10)
-                                        $('body').css('overflow', 'hidden');
-                                    }
-                                }
-                                else
-                                    changeTheme();
-                            });
-                            window.onload = function () {
-                                changeTheme();
-                            }
-                        }
-                    });
-                    function ActionComplete(args) {
+                <script type="text/javascript">
+                    function ActionComplete(args, sender) {
                         var gridObj = $("#FlatGrid").ejGrid("instance");
                         this.getContent().addClass("e-widget");
                         var browserDetails = gridObj.getBrowserDetails();
@@ -112,91 +62,90 @@
                             var proxy = this;
                             setTimeout(function () { proxy.windowonresize(); }, 30);
                         }
-                    }
-                    function changeTheme() {
-                        var links = $(document.head || document.getElementsByTagName('head')[0]).find("link");
-                        for (var i = 0; i < links.length; i++) {
-                            if (links[i].href.indexOf("ej.theme.min.css") != -1) {
-                                var cssref = links[i].href,
-                                    serverconfig = cssref.substr(0, cssref.indexOf("Content") - 1), fileref, theme;
-                                theme = window.parent.themes[window.parent.theme]
-                                fileref = $('<link rel="stylesheet" type="text/css" href="' + serverconfig + theme + '" />');
-                                $(fileref).insertAfter(links[i]);
-                                $(links[i]).remove();
-                                break;
-                            }
+
+                        if (args.requestType == "BeginEdit") {
+
+                            var date = $("#" + sender._ID + "cData" + "rData").val();
+
+                            $("#" + sender._ID + "cData" + "rData").val($.ejDatePicker.formatDate("mm/dd/yy", new Date(date)));
+
                         }
                     }
-    </script>
 
-    @(Html.EJ().Grid<Carico>("FlatGrid")
-                    .Datasource(ds => ds.URL("CaricoGetData")
-                    .InsertURL("PerformInsert")
-                    .UpdateURL("PerformUpdate")
-                    .RemoveURL("PerformDelete")
-                    .Adaptor(AdaptorType.UrlAdaptor)
-                    )
+                </script>
+
+                @(Html.EJ().Grid<CaricoDto>("FlatGrid")
+                    .Datasource(ds => ds.URL("carico/caricogetdata")
+                    .BatchURL("carico/batchupdate")
+                    .Adaptor(AdaptorType.UrlAdaptor))
+
                     .AllowPaging()
-                    .PageSettings(p => p.PageCount(10).PageSize(10))
+                    .EnableAltRow()
+                    .PageSettings(p => p.PageCount(2).PageSize(10))
                     .IsResponsive(true)
                     .EnableResponsiveRow(false)
                     .AllowSorting()
-                    .AllowFiltering()
-                    .FilterSettings(filter => filter.FilterType(FilterType.FilterBar).FilterBarMode(FilterBarMode.OnEnter))
+                    //.AllowFiltering()
+                    //.FilterSettings(filter => filter.FilterType(FilterType.FilterBar).FilterBarMode(FilterBarMode.OnEnter))
                     .AllowMultiSorting()
                     .ClientSideEvents(eve => eve.ActionComplete("ActionComplete"))
                     .MinWidth(600)
-                    .EditSettings(e => e.AllowEditing()
-                    .AllowDeleting()
-                    .EditMode(EditMode.Normal)
-                                )
-                                .ToolbarSettings(tool => tool.ShowToolbar().ToolbarItems(item =>
-                                {
-                                    item.AddTool(ToolBarItems.Add);
-                                    item.AddTool(ToolBarItems.Edit);
-                                    item.AddTool(ToolBarItems.Delete);
-                                    item.AddTool(ToolBarItems.Update);
-                                    item.AddTool(ToolBarItems.Cancel);
-                                }))
-                                .Columns(col =>
-                                {
-                                    col.Field("pvID").HeaderText("Punto Vendita").ForeignKeyField("pvID").ForeignKeyValue("pvName")
-                                    .DataSource((IEnumerable<object>)ViewBag.dataSource2).TextAlign(TextAlign.Left).Width(100).Add();
+                    .EditSettings(d => d.AllowAdding(false).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.InlineForm))
+                    .ToolbarSettings(toolbar =>
+                    {
+                        toolbar.ShowToolbar().ToolbarItems(items =>
+                        {
+                            items.AddTool(ToolBarItems.Edit);
+                            items.AddTool(ToolBarItems.Delete);
+                            items.AddTool(ToolBarItems.Update);
+                            items.AddTool(ToolBarItems.Cancel);
+                            //items.AddTool(ToolBarItems.Search);
+                        });
+                    })
+                    .Columns(col =>
+                    {
+                        col.Field(p => p.Id).HeaderText("ID Ordine").IsPrimaryKey(true).Visible(false).Add();
 
-                                    col.Field(p => p.yearId).HeaderText("Anno Finanziario").ForeignKeyField("yearId").ForeignKeyValue("Anno")
-                                    .DataSource((IEnumerable<object>)ViewBag.dataSource3).TextAlign(TextAlign.Left).Width(75).Add();
+                        col.Field(p => p.pvName).HeaderText("Punto Vendita")//.ForeignKeyField("pvID").ForeignKeyValue("pvName")
+                        .DataSource((List<object>)ViewData["PVID"]).TextAlign(TextAlign.Left).Width(100).EditType(EditingType.Dropdown).Add();
 
-                                    col.Field(p => p.Ordine).HeaderText("Ordine").Width("50").Add();
-                                    col.Field(p => p.cData).HeaderText("Scarico").Width("45").Add();
-                                    col.Field(p => p.Documento).HeaderText("Tipo").Width("50").Add();
-                                    col.Field(p => p.Numero).HeaderText("Documento").Width("65").Add();
-                                    col.Field(p => p.rData).HeaderText("Bolla").Width("45").Add();
-                                    col.Field(p => p.Emittente).HeaderText("Emittente").Width("75").Add();
-                                    col.Field(p => p.Benzina).HeaderText("Benzina").Width("50").Add();
-                                    col.Field(p => p.Gasolio).HeaderText("Gasolio").Width("50").Add();
-                                    col.Field(p => p.Note).HeaderText("Note").Width("50").Add();
-                                })
-    )
+                        col.Field(p => p.yearId).HeaderText("Anno")//.ForeignKeyField("yearId").ForeignKeyValue("Anno")
+                        .DataSource((List<object>)ViewData["YearID"]).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
+
+                        col.Field(p => p.Ordine).HeaderText("Ordine").Width("50").Add();
+                        col.Field(p => p.cData).HeaderText("Scarico").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
+                        col.Field(p => p.Documento).HeaderText("Tipo").Width("50").Add();
+                        col.Field(p => p.Numero).HeaderText("Documento").Width("65").Add();
+                        col.Field(p => p.rData).HeaderText("Bolla").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
+                        col.Field(p => p.Emittente).HeaderText("Emittente").Width("75").Add();
+                        col.Field(p => p.Benzina).HeaderText("Benzina").Width("50").Add();
+                        col.Field(p => p.Gasolio).HeaderText("Gasolio").Width("50").Add();
+                        col.Field(p => p.Note).HeaderText("Note").Width("50").Add();
+                    })
+                )
+            </div>
+        </div>
+    </div>
 </section>
+            @section Scripts{
+                @Scripts.Render("~/bundles/jqueryval")
+                <script type="text/javascript">
 
-    @section Scripts{
-        @Scripts.Render("~/bundles/jqueryval")
+                    $(function () {
+                        $("#from").ejDatePicker({
+                            onClose: function (selectedDate) {
+                                $("#to").ejDatePicker(@*"option",*@ "minDate", selectedDate);
 
-        <script type="text/javascript">
+                            }
+                        });
+                        $("#to").ejDatePicker({
+                            onClose: function (selectedDate) {
+                                $("#from").ejDatePicker(@*"option",*@ "maxDate", selectedDate);
 
-            $(function () {
-                $("#from").ejDatePicker({
-                    onClose: function (selectedDate) {
-                        $("#to").ejDatePicker(@*"option",*@ "minDate", selectedDate);
+                            },
+                        });
+                    });
+                </script>
+            }
 
-                    }
-                });
-                $("#to").ejDatePicker({
-                    onClose: function (selectedDate) {
-                        $("#from").ejDatePicker(@*"option",*@ "maxDate", selectedDate);
 
-                    },
-                });
-            });
-        </script>
-    }

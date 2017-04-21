@@ -20,6 +20,7 @@ using Syncfusion.JavaScript;
 using System.Collections;
 using Syncfusion.JavaScript.DataSources;
 using Syncfusion.Linq;
+using SystemWeb.Dto;
 
 namespace SystemWeb.Controllers
 {  
@@ -60,33 +61,75 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region Index 
-
+        [Route("user")]
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo, DateTime? dateFrom2, DateTime? dateTo2, Guid? id)
         {
             #region List
             UserIndexViewModel list = new UserIndexViewModel();
 
-            list.carico = db.Carico.ToList();
+            list.carico = db.Carico
+                .Include(i => i.Pv)
+                .Include(i => i.Year)
+                .ToList();
 
-            list.pverogatori = db.PvErogatori.ToList();
+            list.pverogatori = db.PvErogatori
+                .Include(i => i.Pv)
+                .Include(i => i.Dispenser)
+                .Include(i => i.Product)
+                .ToList();
 
-            list.pv = db.Pv.ToList();
+            list.pv = db.Pv
+                .Include(i => i.Flag)
+                .Include(i => i.Carico)
+                .Include(i => i.PvTank)
+                .Include(i => i.ApplicationUser)
+                .ToList();
 
-            list.pvprofile = db.PvProfile.ToList();
+            list.pvprofile = db.PvProfile
+                .Include(i => i.Pv)
+                .ToList();
 
-            list.pvtank = db.PvTank.ToList();
+            list.pvtank = db.PvTank
+                .Include(i => i.Product)
+                .Include(i => i.Pv)
+                .Include(i => i.PvCali)
+                .Include(i => i.PvDeficienze)
+                .ToList();
 
-            list.dispenser = db.Dispenser.ToList();
+            list.dispenser = db.Dispenser
+                .Include(i => i.PvErogatori)
+                .Include(i => i.PvTank)
+                .ToList();
 
-            list.company = db.Company.ToList();
+            list.company = db.Company
+                .Include(i => i.ApplicationUser)
+                .Include(i => i.RagioneSociale)
+                .ToList();
 
-            list.companytask = db.CompanyTask.ToList();
+            list.companytask = db.CompanyTask
+                .Include(i => i.ApplicationUser)
+                .ToList();
 
-            list.userarea = db.UserArea.ToList();
+            list.userarea = db.UserArea
+                .Include(i => i.ApplicationUser)
+                .ToList();
 
-            list.applicationuser = db.Users.ToList();
+            list.applicationuser = db.Users
+                .Include(i => i.Pv)
+                .Include(i => i.Company)
+                .Include(i => i.FilePaths)
+                .Include(i => i.Pv)
+                .Include(i => i.UserArea)
+                .Include(i => i.UserProfiles)
+                .Include(i => i.CompanyTask)
+                .Include(i => i.Roles)
+                .Include(i => i.Logins)
+                .Include(i => i.Claims)
+                .ToList();
 
-            list.usersimage = db.UsersImage.ToList();
+            list.usersimage = db.UsersImage
+                .Include(i => i.UserProfiles)
+                .ToList();
 
             #endregion
 
@@ -103,8 +146,8 @@ namespace SystemWeb.Controllers
             var somequalsD2 = (from PvProfile in db.PvProfile where currentUser.pvID == PvProfile.pvID select PvProfile.Città).SingleOrDefault();
             var somequalsD3 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.pvName).SingleOrDefault();
             var somequalsD4 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.Flag.Nome).SingleOrDefault();
-            var somequalsD5 = db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileCity).SingleOrDefault(); 
-            var somequalsD6 = db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileName).SingleOrDefault();
+            var somequalsD5 = db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileCity + ", " + s.UserProfiles.ProfileAdress).SingleOrDefault(); 
+            var somequalsD6 = db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileName + "" + s.UserProfiles.ProfileSurname).SingleOrDefault();
             var somequalsD7 = db.Users.Include(s => s.Company).Where(s => s.Id == currentUser.Id).Select(s => s.Company.Name).SingleOrDefault();
             //ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
             //ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
@@ -121,7 +164,7 @@ namespace SystemWeb.Controllers
             ViewBag.PvCity = somequalsD2;
             ViewBag.CompanyId = somequalsD7;
 
-            UserProfiles profile = db.UserProfiles.Include(s => s.UsersImage).SingleOrDefault(s => s.ProfileId == id);
+            UserProfiles profile = db.UserProfiles.Include(s => s.UsersImage).Include(s => s.ApplicationUser).SingleOrDefault(s => s.ProfileId == id);
             list.userprofiles = profile;
 
             #region CaricoCreate
@@ -373,7 +416,8 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region Carico
-        public ActionResult Carico(/*string sortOrder, string currentFilter, string searchString, int? page, */ DateTime? dateFrom, DateTime? dateTo)
+        [Route("user/carico")]
+        public ActionResult Carico(DateTime? dateFrom, DateTime? dateTo)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -381,6 +425,10 @@ namespace SystemWeb.Controllers
             lastYear = DateTime.Today.Year;
             ly = lastYear.ToString();
             #endregion
+
+            System.Web.HttpContext.Current.Session["Orders"] = null;
+            ViewData["PVID"] = PVID;
+            ViewData["YearID"] = YearID;
 
             var getall = (from order in _CaricoRepository.GetOrders()
                           where (currentUser.pvID == order.pvID && order.Year.Anno.Year.ToString().Contains(ly))
@@ -391,7 +439,9 @@ namespace SystemWeb.Controllers
 
             ViewBag.dataSource2 = DataSource2;
 
-            var DataSource3 = new MyDbContext().Year.Where(c => c.Anno.Year.ToString().Contains(ly)).ToList();
+            var DataSource3 = new MyDbContext().Year
+                .Where(c => c.Anno.Year.ToString().Contains(ly)).ToList();
+
             ViewBag.dataSource3 = DataSource3;
 
             #region AmmountByDateFrom
@@ -416,7 +466,8 @@ namespace SystemWeb.Controllers
 
             return View();
         }
-        public ActionResult CaricoGetData(DateTime? dateFrom, DateTime? dateTo, DataManager dm)
+        [Route("user/carico/caricogetdata")]
+        public ActionResult CaricoGetData(DataManager dm)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -425,11 +476,7 @@ namespace SystemWeb.Controllers
             ly = lastYear.ToString();
             #endregion
 
-            /*IEnumerable getall = (from order in db.Carico
-                          where (currentUser.pvID == order.pvID && order.Year.Anno.Year.ToString().Contains(ly))
-                          select order).ToList();*/
-
-            IEnumerable DataSource = new MyDbContext().Carico.Where(c => c.pvID == currentUser.pvID && c.Year.Anno.Year.ToString().Contains(ly)).OrderBy(c => c.Ordine).ToList();
+            IEnumerable DataSource = OrderRepository.GetAllRecords().Where(c => c.pvID == currentUser.pvID && c.yearId.ToString().Contains(ly)).OrderBy(c => c.Ordine).ToList();
             DataResult result = new DataResult();
             DataOperations operation = new DataOperations();
             result.result = DataSource;
@@ -459,39 +506,60 @@ namespace SystemWeb.Controllers
 
         }
 
-        //Perform file insertion 
-        public ActionResult PerformInsert(EditParams param)
+        public List<object> PVID
         {
+            get
+            {
+                #region Initial var
+                var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                var currentUser = userManager.FindById(User.Identity.GetUserId());
+                #endregion
 
-            MyDbContext db = new MyDbContext();
-            db.Carico.Add(param.value);
-            db.SaveChanges();
-
-            return RedirectToAction("GetOrderData");
+                //Provare .Distinct()
+                var pv = new Pv();
+                var pvID = OrderRepository.GetAllRecords().Where(a => a.pvID == currentUser.pvID).Select(s => s.pvName).Distinct().ToList();
+                var PVID = new List<object>();
+                foreach (var id in pvID)
+                {
+                    PVID.Add(new { value = id, text = id });
+                }
+                return PVID;
+            }
         }
 
-        //Perform update
-        public ActionResult PerformUpdate(EditParams param)
+        public List<object> YearID
         {
+            get
+            {
+                #region Initial var
+                var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                var currentUser = userManager.FindById(User.Identity.GetUserId());
+                lastYear = DateTime.Today.Year;
+                ly = lastYear.ToString();
+                #endregion
 
-            MyDbContext db = new MyDbContext();
-            Carico table = db.Carico.Single(o => o.Id == param.value.Id);
-
-            db.Entry(table).CurrentValues.SetValues(param.value);
-            db.Entry(table).State = EntityState.Modified;
-            db.SaveChanges();
-
-            return RedirectToAction("GetOrderData");
+                var ANNO = new SystemWeb.Models.LinqToSql.Year();
+                var yearId = OrderRepository.GetAllRecords().Where(c => c.yearId.ToString().Contains(ly)).Select(s => s.yearId).Distinct().ToList();
+                var YearID = new List<object>();
+                foreach (var id in yearId)
+                {
+                    YearID.Add(new { value = id, text = id });
+                }
+                return YearID;
+            }
         }
 
-        //Perform delete
-        public ActionResult PerformDelete(Guid key, string keyColumn)
+        [Route("user/carico/batchupdate")]
+        public ActionResult BatchUpdate(List<CaricoDto> changed, List<CaricoDto> added, List<CaricoDto> deleted)
         {
-
-            MyDbContext db = new MyDbContext();
-            db.Carico.Remove(db.Carico.Single(o => o.Id == key));
-            db.SaveChanges();
-            return RedirectToAction("GetOrderData");
+            if (changed != null)
+                OrderRepository.Update(changed);
+            if (deleted != null)
+                OrderRepository.Delete(deleted);
+            if (added != null)
+                OrderRepository.Add(added);
+            var data = OrderRepository.GetAllRecords();
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult CaricoChart()
@@ -592,7 +660,9 @@ namespace SystemWeb.Controllers
             ViewBag.yearId = new SelectList(year, "yearId", "Anno");
             return View(insertOrder);
         }
-        
+
+        #region Old result
+        /*
         public ActionResult CaricoEdit(Guid? Id)
         {
             if (Id == null)
@@ -665,6 +735,9 @@ namespace SystemWeb.Controllers
             }
             return RedirectToAction("Carico");
         }
+        */
+        #endregion
+
         #endregion
 
         #region PvErogatori

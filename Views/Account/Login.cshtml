@@ -1,45 +1,43 @@
 @model SystemWeb.Models.LoginViewModel
-        @{Html.EJ().Dialog("lognForm").Title("Autenticazione").IsResponsive(true).Containment(".control").ContentTemplate(
-              @<div>
-                  @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
-                  {
-                      @Html.AntiForgeryToken()
-                      @Html.ValidationSummary(true)
-                   <table>
-                       <tr>
-                           <td>
-                               @Html.LabelFor(m => m.UserName)
-                               @Html.TextBoxFor(m => m.UserName, new { @class = "ejinputtext" })
-                               @Html.ValidationMessageFor(m => m.UserName)
-                           </td>
-                       </tr>
-                       <tr>
-                           <td>
-                               @Html.LabelFor(m => m.Password)
-                               @Html.PasswordFor(m => m.Password, new { @class = "ejinputtext" })
-                               @Html.ValidationMessageFor(m => m.Password)
-                           </td>
-                       </tr>
-                       <tr>
-                           <td>
-                               @Html.CheckBoxFor(m => m.RememberMe)
-                               @Html.Label("Ricordami", new { @class = "top" })
-                           </td>
-                       </tr>
-                       <tr>
-                           <td align="center">
-                               @Html.EJ().Button("downloadBtn").Type(ButtonType.Submit).Size(ButtonSize.Medium).Height("30").Width("100").Text("ACCEDI")
-                           </td>
-                       </tr>
-                       <tr>
-                           <td align="center" class="acc">
-                               Non hai un account ? <a href="#">Registrati</a>
-                           </td>
-                       </tr>
-                   </table>
-                  }
-                       </div>).EnableModal(true).EnableResize(false).Width(291).IsResponsive(true).CloseOnEscape(false).Render();
-               }
+@{Html.EJ().Dialog("lognForm").Title("Autenticazione").IsResponsive(false).Containment(".control").ContentTemplate(
+    @<div>
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            <table>
+                <tr>
+                    <td align="center">
+                        @Html.TextBoxFor(m => m.UserName, new { @required = "require", @class = "ejinputtext", placeholder = "Username" })
+                        @Html.ValidationMessageFor(m => m.UserName)
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        @Html.PasswordFor(m => m.Password, new { @required = "require", @class = "ejinputtext", placeholder = "Password" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.CheckBoxFor(m => m.RememberMe)
+                        @Html.Label("Ricordami", new { @class = "top" })
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        @Html.EJ().Button("downloadBtn").Type(ButtonType.Submit).Size(ButtonSize.Medium).Height("30").Width("100").Text("ACCEDI")
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" class="acc">
+                        Non hai un account ? <a href="#">Registrati</a>
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>).EnableModal(false).EnableResize(false).CloseOnEscape(false).Render();
+}
 <style>
     .e-dialog .e-dialog-icon {
         visibility: hidden;
@@ -50,17 +48,18 @@
     }
 
     .htmljssamplebrowser.material .control {
-        height: 700px;
+        height: 300px;
     }
 
     .control {
-        height: auto;
         position: relative;
+        margin: 0 auto 0;
     }
 
     .ejinputtext {
-        height: 25px;
+        height: 28px;
         width: 100%;
+        margin: 0 auto 0;
         margin-bottom: 10px;
     }
 
@@ -93,7 +92,7 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 
-<script>
+    <script>
         $("#btnOpen").hide();
         function onclick() {
             $("#lognForm").ejDialog("open");
@@ -111,5 +110,5 @@
         function onDialogClose(args) {
             $("#btnOpen").show();
         }
-</script>
+    </script>
 }

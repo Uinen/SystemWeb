@@ -267,11 +267,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\AdaptiveController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UsersImageController.cs" />
+    <Compile Include="Dto\CaricoDto.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Helpers\Application.cs" />
     <Compile Include="Helpers\CacheProfileName.cs" />
@@ -315,15 +315,21 @@
     <Compile Include="Migrations\201704021345085_8.Designer.cs">
       <DependentUpon>201704021345085_8.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\AppModel.cs" />
+    <Compile Include="Models\CodeFirst\AppModel.cs" />
     <Compile Include="Models\EditParams.cs" />
     <Compile Include="Models\FileType.cs" />
+    <Compile Include="Models\LinqToSql\SystemWeb.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SystemWeb.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Repository\CaricoRepository.cs" />
     <Compile Include="Repository\Interface\iCaricoRepository.cs" />
     <Compile Include="Repository\Interface\iProductRepository.cs" />
     <Compile Include="Repository\Interface\iPvErogatoriRepository.cs" />
     <Compile Include="Repository\Interface\iPvRepository.cs" />
     <Compile Include="Repository\Interface\iUsersImageRepository.cs" />
+    <Compile Include="Repository\OrderRepository.cs" />
     <Compile Include="Repository\ProductRepository.cs" />
     <Compile Include="Repository\PvErogatoriRepository.cs" />
     <Compile Include="Repository\PvRepository.cs" />
@@ -846,6 +852,11 @@
     <Content Include="Contenuti\ej\mobile\images\ejmmobilefonts.woff" />
     <Content Include="Contenuti\ej\mobile\images\ejmmobilefonts.ttf" />
     <Content Include="Contenuti\ej\mobile\images\ejmmobilefonts.eot" />
+    <Content Include="Models\LinqToSql\SystemWeb.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>SystemWeb.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="NWebsecConfig\HttpHeaderSecurityModuleConfig.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1048,9 +1059,6 @@
     <Content Include="Views\Account\VerifyCode.cshtml" />
     <Content Include="Views\Account\EditorTemplates\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\User\CaricoCreate.cshtml" />
-    <Content Include="Views\User\CaricoDelete.cshtml" />
-    <Content Include="Views\User\CaricoDetails.cshtml" />
-    <Content Include="Views\User\CaricoEdit.cshtml" />
     <Content Include="Views\User\Carico.cshtml" />
     <Content Include="Views\User\CompaniesCreate.cshtml" />
     <Content Include="Views\User\CompaniesDelete.cshtml" />
@@ -1198,7 +1206,6 @@
     <Content Include="Views\Error\InternalServerError.cshtml" />
     <Content Include="Views\Error\MethodNotAllowed.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
-    <Content Include="Views\Adaptive\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1235,6 +1242,9 @@
     <EmbeddedResource Include="Migrations\201704021345085_8.resx">
       <DependentUpon>201704021345085_8.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Models\LinqToSql\SystemWeb.dbml.layout">
+      <DependentUpon>SystemWeb.dbml</DependentUpon>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

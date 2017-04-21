@@ -118,13 +118,13 @@ namespace SystemWeb.Models
         public Guid pvID { get; set; }
         public Guid? yearId { get; set; }
         public int Ordine { get; set; }
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}")]
         public DateTime cData { get; set; }
         [MaxLength(4)]
         public string Documento { get; set; }
         [MaxLength(18)]
         public string Numero { get; set; }
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}")]
         public System.DateTime rData { get; set; }
         [MaxLength(32)]
         public string Emittente { get; set; }
