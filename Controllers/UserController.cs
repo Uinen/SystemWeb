@@ -16,14 +16,16 @@ using System.IO;
 using SystemWeb.Repository.Interface;
 using SystemWeb.Repository;
 using System.Data;
-using Syncfusion.JavaScript;
 using System.Collections;
-using Syncfusion.JavaScript.DataSources;
 using Syncfusion.Linq;
-using SystemWeb.Dto;
+using Syncfusion.EJ.Export;
+using Syncfusion.JavaScript.Models;
+using Syncfusion.XlsIO;
+using System.Web.Script.Serialization;
+using System.Reflection;
 
 namespace SystemWeb.Controllers
-{  
+{
     [Authorize]
     public class UserController : Controller
     {
@@ -32,6 +34,7 @@ namespace SystemWeb.Controllers
         private iCaricoRepository _CaricoRepository;
         private iPvRepository _PvRepository;
         private iPvErogatoriRepository _PvErogatoriRepository;
+        private iPvCaliRepository _PvCaliRepository;
         public string ly { get; set; }
 
         public UserController()
@@ -39,6 +42,7 @@ namespace SystemWeb.Controllers
             this._CaricoRepository = new CaricoRepository(new MyDbContext());
             this._PvRepository = new PvRepository(new MyDbContext());
             this._PvErogatoriRepository = new PvErogatoriRepository(new MyDbContext());
+            this._PvCaliRepository = new PvCaliRepository(new MyDbContext());
         }
 
         public UserController(ApplicationUserManager userManager)
@@ -147,7 +151,7 @@ namespace SystemWeb.Controllers
             var somequalsD3 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.pvName).SingleOrDefault();
             var somequalsD4 = (from ApplicationUser in db.Users where currentUser.pvID == ApplicationUser.Pv.pvID select ApplicationUser.Pv.Flag.Nome).SingleOrDefault();
             var somequalsD5 = db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileCity + ", " + s.UserProfiles.ProfileAdress).SingleOrDefault(); 
-            var somequalsD6 = db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileName + "" + s.UserProfiles.ProfileSurname).SingleOrDefault();
+            var somequalsD6 = db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileName + " " + s.UserProfiles.ProfileSurname).SingleOrDefault();
             var somequalsD7 = db.Users.Include(s => s.Company).Where(s => s.Id == currentUser.Id).Select(s => s.Company.Name).SingleOrDefault();
             //ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
             //ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
@@ -426,46 +430,38 @@ namespace SystemWeb.Controllers
             ly = lastYear.ToString();
             #endregion
 
-            System.Web.HttpContext.Current.Session["Orders"] = null;
-            ViewData["PVID"] = PVID;
-            ViewData["YearID"] = YearID;
+            var DataSource = new MyDbContext().Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).OrderBy(o => o.Ordine).ToList();
+            ViewBag.datasource = DataSource;
 
-            var getall = (from order in _CaricoRepository.GetOrders()
-                          where (currentUser.pvID == order.pvID && order.Year.Anno.Year.ToString().Contains(ly))
-                          select order);
+            IEnumerable DataSource2 = new MyDbContext().Year.Where(a => (a.Anno.Year.ToString().Contains(ly))).ToList();
+            ViewBag.datasource2 = DataSource2;
 
-            var DataSource2 = new MyDbContext().Pv
-                .Where(a => a.pvID == currentUser.pvID).ToList();
-
-            ViewBag.dataSource2 = DataSource2;
-
-            var DataSource3 = new MyDbContext().Year
-                .Where(c => c.Anno.Year.ToString().Contains(ly)).ToList();
-
-            ViewBag.dataSource3 = DataSource3;
-
+            IEnumerable DataSource3 = new MyDbContext().Pv.Where(c => currentUser.pvID == c.pvID).ToList();
+            ViewBag.datasource3 = DataSource3;
+            
             #region AmmountByDateFrom
             // Totale Carico Benzina secondo il parametro di ricerca specificato
-            ViewBag.SSPBTotalAmountFrom = getall.ToList()
+            ViewBag.SSPBTotalAmountFrom = DataSource.ToList()
                 .Where(o => /*currentUser.pvID == o.pvID &&*/ Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
                 .Sum(o => (decimal?)o.Benzina);
 
             // Totale Carico Gasolio secondo il parametro di ricerca specificato
-            ViewBag.DieselTotalAmountFrom = getall.ToList()
+            ViewBag.DieselTotalAmountFrom = DataSource.ToList()
                 .Where(o => /*currentUser.pvID == o.pvID &&*/ Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
                 .Sum(o => (decimal?)o.Gasolio);
             #endregion
 
             #region Total Ammount ViewBag
             // Totale Carico annuo benzina.
-            ViewBag.SSPBTotalAmount = getall/*.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly))*/.Sum(o => (decimal?)o.Benzina);
+            ViewBag.SSPBTotalAmount = DataSource.Sum(o => (decimal?)o.Benzina);
 
             // Totale Carico annuo gasolio. 
-            ViewBag.DieselTotalAmount = getall/*.Where(o => currentUser.pvID == o.pvID && o.Year.Anno.Year.ToString().Contains(ly))*/.Sum(o => (decimal?)o.Gasolio);
+            ViewBag.DieselTotalAmount = DataSource.Sum(o => (decimal?)o.Gasolio);
             #endregion
 
             return View();
         }
+        /*
         [Route("user/carico/caricogetdata")]
         public ActionResult CaricoGetData(DataManager dm)
         {
@@ -514,9 +510,7 @@ namespace SystemWeb.Controllers
                 var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
                 var currentUser = userManager.FindById(User.Identity.GetUserId());
                 #endregion
-
-                //Provare .Distinct()
-                var pv = new Pv();
+                
                 var pvID = OrderRepository.GetAllRecords().Where(a => a.pvID == currentUser.pvID).Select(s => s.pvName).Distinct().ToList();
                 var PVID = new List<object>();
                 foreach (var id in pvID)
@@ -537,8 +531,7 @@ namespace SystemWeb.Controllers
                 lastYear = DateTime.Today.Year;
                 ly = lastYear.ToString();
                 #endregion
-
-                var ANNO = new SystemWeb.Models.LinqToSql.Year();
+                
                 var yearId = OrderRepository.GetAllRecords().Where(c => c.yearId.ToString().Contains(ly)).Select(s => s.yearId).Distinct().ToList();
                 var YearID = new List<object>();
                 foreach (var id in yearId)
@@ -560,6 +553,127 @@ namespace SystemWeb.Controllers
                 OrderRepository.Add(added);
             var data = OrderRepository.GetAllRecords();
             return Json(data, JsonRequestBehavior.AllowGet);
+        }*/
+        [Route("user/carico/updatecarico")]
+        public ActionResult UpdateCarico(Carico value)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            OrderRepository.Update(value);
+            var data = context.Carico.Include(i => i.Pv).Include(i => i.Year).Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(ly));
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+        [Route("user/carico/insertcarico")]
+        public ActionResult InsertCarico(Carico value)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            OrderRepository.Add(value);
+            var data = context.Carico.Include(i => i.Pv).Include(i => i.Year).Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(ly));
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/carico/removecarico")]
+        public ActionResult RemoveCarico(Guid key)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+            
+            MyDbContext context = new MyDbContext();
+            context.Carico.Remove(context.Carico.Single(o => o.Id == key));
+            context.SaveChanges();
+
+            var data = context.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(ly));
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/carico/caricoexcell")]
+        public void CaricoExcell(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            ExcelExport exp = new ExcelExport();
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            IEnumerable DataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = context.Year.Where(a => a.Anno.Year.ToString().Contains(ly)).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Carico.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+        }
+
+        [Route("user/carico/caricoword")]
+        public void CaricoWord(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            WordExport exp = new WordExport();
+
+            IEnumerable DataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = context.Year.Where(a => a.Anno.Year.ToString().Contains(ly)).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Carico.docx", false, false, "flat-saffron");
+        }
+
+        [Route("user/carico/caricopdf")]
+        public void CaricoPdf(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+
+            Guid now = Guid.NewGuid();
+
+            PdfExport exp = new PdfExport();
+
+            IEnumerable DataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = context.Year.Where(a => a.Anno.Year.ToString().Contains(ly)).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Carico.pdf", false, false, "flat-saffron");
         }
 
         public ActionResult CaricoChart()
@@ -596,7 +710,7 @@ namespace SystemWeb.Controllers
                 }),
             JsonRequestBehavior.AllowGet);
         }
-
+        /*
         public ActionResult CaricoDetails(Guid? Id)
         {
             if (Id == null)
@@ -610,7 +724,7 @@ namespace SystemWeb.Controllers
             }
             return View(carico);
         }
-        
+        */
         public ActionResult CaricoCreate()
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -741,12 +855,26 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvErogatori
-        public ActionResult PvErogatori(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo, [Bind(Include = "DispenserId")] PvErogatori pvEr)
+        public ActionResult PvErogatori(DateTime? dateFrom, DateTime? dateTo)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
             #endregion
+
+            var DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
+            ViewBag.datasource = DataSource;
+
+            IEnumerable DataSource2 = new MyDbContext().Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            ViewBag.datasource2 = DataSource2;
+
+            IEnumerable DataSource3 = new MyDbContext().Product.ToList();
+            ViewBag.datasource3 = DataSource3;
+
+            IEnumerable DataSource4 = new MyDbContext().Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+            ViewBag.datasource4 = DataSource4;
 
             #region IF dateFrom == null | dateTo == null
             if (dateFrom == null | dateTo == null)
@@ -795,43 +923,6 @@ namespace SystemWeb.Controllers
             }
             #endregion
 
-            #region getCounterByDispenser (Non è strettamente necessario ma necessita di ulteriore lavoro)
-            /*
-            if (disp == null)
-            {
-                disp = new SelectList(db.Dispenser, "DispenserId", "Modello");
-                ViewBag.SelectDispenser = disp;
-                var getCounterByDispenser = from a in db.PvErogatori.ToList()
-                                            where (currentUser.pvID == a.pvID
-                                            && (disp.ToString() == a.DispenserId.ToString())
-                                            && (Convert.ToDateTime(a.FieldDate) >= dateFrom)
-                                            && (Convert.ToDateTime(a.FieldDate) <= dateTo))
-                                            select a;
-
-                    int maxBdisp = getCounterByDispenser
-                        .Where(z => currentUser.pvID == z.pvID
-                        && (z.Product.Nome.Contains("B")))
-                        .Max(row => row.Value);
-                    int minBdisp = getCounterByDispenser
-                        .Where(z => currentUser.pvID == z.pvID
-                        && (z.Product.Nome.Contains("B")))
-                        .Min(row => row.Value);
-
-                    int maxGdisp = getCounterByDispenser
-                        .Where(z => currentUser.pvID == z.pvID
-                        && (z.Product.Nome.Contains("G")))
-                        .Max(row => row.Value);
-                    int minGdisp = getCounterByDispenser
-                        .Where(z => currentUser.pvID == z.pvID
-                        && (z.Product.Nome.Contains("G")))
-                        .Min(row => row.Value);
-
-                    ViewBag.SSPBTotalAmountFromDisp = maxBdisp - minBdisp;
-                    ViewBag.DieselTotalAmountFromDisp = maxGdisp - minGdisp;
-                }
-                */
-            #endregion
-
             #region IF dateFrom != null | dateTo |= null
             if (dateFrom != null | dateTo != null)
             {
@@ -860,86 +951,134 @@ namespace SystemWeb.Controllers
             }
             #endregion
 
-            #region Dispenser (necessita di ulteriore lavoro)
-            /*
-            if (disp != null)
-            {
-                disp = new SelectList(db.Dispenser, "DispenserId", "Modello", pvEr.DispenserId);
-                ViewBag.SelectDispenser = disp;
-                var getCounterByDispenser = from a in db.PvErogatori.ToList()
-                                            where (currentUser.pvID == a.pvID
-                                            && (disp.ToString() == a.DispenserId.ToString())
-                                            && (Convert.ToDateTime(a.FieldDate) >= dateFrom)
-                                            && (Convert.ToDateTime(a.FieldDate) <= dateTo))
-                                            select a;
-
-                int maxBdisp = getCounterByDispenser
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Max(row => row.Value);
-                int minBdisp = getCounterByDispenser
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Min(row => row.Value);
-
-                int maxGdisp = getCounterByDispenser
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Max(row => row.Value);
-                int minGdisp = getCounterByDispenser
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Min(row => row.Value);
-
-                ViewBag.SSPBTotalAmountFromDisp = maxBdisp - minBdisp;
-                ViewBag.DieselTotalAmountFromDisp = maxGdisp - minGdisp;
-            }
-             * */
-            #endregion
-
-            #region Viewbag
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "Erogatori_Desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewBag.DispenserId = new SelectList(db.Dispenser, "DispenserId", "Modello");
-            ViewBag.ProductId = new SelectList(db.Product, "ProductId", "Nome");
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
-            #endregion
-
-            #region Searching and sorting
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            ViewBag.CurrentFilter = searchString;
-
-            var getAll = from a in _PvErogatoriRepository.GetPvErogatori()
-                         where (currentUser.pvID == a.pvID && a.FieldDate.Year.ToString().Contains(ly))
-                         select a;
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                getAll = getAll.Where(s => s.FieldDate.ToString().Contains(searchString.ToUpper()));
-            }
-
-            switch (sortOrder)
-            {
-                case "date_desc":
-                    getAll = getAll.OrderByDescending(s => s.FieldDate);
-                    break;
-
-                default:
-                    getAll = getAll.OrderBy(s => s.FieldDate);
-                    break;
-            }
-            int pageSize = 10;
-            int pageNumber = (page ?? 1);
-            #endregion
-
-            return View(getAll.ToPagedList(pageNumber, pageSize));
+            return View();
         }
-        
+
+        [Route("user/carico/updateerogatori")]
+        public ActionResult UpdateErogatori(PvErogatori value)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            ContatoriRepository.Update(value);
+            var data = context.PvErogatori.Include(i => i.Pv).Include(i => i.Product).Include(i => i.Dispenser).Where(c => currentUser.pvID == c.pvID && c.FieldDate.Year.ToString().Contains(ly));
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+        [Route("user/carico/inserterogatori")]
+        public ActionResult InsertErogatori(PvErogatori value)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            ContatoriRepository.Add(value);
+            var data = context.PvErogatori.Include(i => i.Pv).Include(i => i.Product).Include(i => i.Dispenser).Where(c => currentUser.pvID == c.pvID && c.FieldDate.Year.ToString().Contains(ly));
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/carico/removeerogatori")]
+        public ActionResult RemoveErogatori(Guid key)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            context.PvErogatori.Remove(context.PvErogatori.Single(o => o.PvErogatoriId == key));
+            context.SaveChanges();
+
+            var data = context.PvErogatori.Where(c => currentUser.pvID == c.pvID && c.FieldDate.Year.ToString().Contains(ly));
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/carico/erogatoriexcell")]
+        public void PvErogatoriExcell(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            ExcelExport exp = new ExcelExport();
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            IEnumerable DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.Value).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[2].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[3].DataSource = context.Product.ToList();
+            obj.Columns[4].DataSource = context.Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Carico.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+        }
+
+        [Route("user/carico/erogatoriword")]
+        public void PvErogatoriWord(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            WordExport exp = new WordExport();
+
+            IEnumerable DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.Value).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[2].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[3].DataSource = context.Product.ToList();
+            obj.Columns[4].DataSource = context.Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Carico.docx", false, false, "flat-saffron");
+        }
+
+        [Route("user/carico/erogatoripdf")]
+        public void PvErogatoriPdf(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+
+            Guid now = Guid.NewGuid();
+
+            PdfExport exp = new PdfExport();
+
+            IEnumerable DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.Value).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[2].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[3].DataSource = context.Product.ToList();
+            obj.Columns[4].DataSource = context.Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Carico.pdf", false, false, "flat-saffron");
+        }
+
         public ActionResult PvErogatoriChart()
         {
             PvErogatori objPvErogatoriModel = new PvErogatori();
@@ -1737,19 +1876,32 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvCali
- 
-        public ActionResult PvCali(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo)
+        //[Route("user/pvcali")]
+        public ActionResult PvCali(/*string sortOrder, string currentFilter, string searchString, int? page, */DateTime? dateFrom, DateTime? dateTo)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+
+            //System.Web.HttpContext.Current.Session["Cali"] = null;
+            //ViewData["PVTANKID"] = PVTANKID;
+            //MyDbContext context = new MyDbContext();
+            IEnumerable DataSource = new MyDbContext().PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
+            ViewBag.datasource = DataSource;
+
+            IEnumerable DataSource2 = new MyDbContext().PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            ViewBag.dataSource2 = DataSource2;
 
             if (dateFrom == null | dateTo == null)
             {
                 dateFrom = new DateTime(2016, 12, 31);
                 dateTo = DateTime.Now;
 
-                var getAll = from a in db.PvCali.ToList()
-                             where (Convert.ToDateTime(a.FieldDate) >= dateFrom)
+                var getAll = from a in _PvCaliRepository.GetRecords()
+                             where (currentUser.pvID == a.PvTank.pvID
+                                   && Convert.ToDateTime(a.FieldDate) >= dateFrom)
                                    && (Convert.ToDateTime(a.FieldDate) <= dateTo)
                              select a;
 
@@ -1770,7 +1922,7 @@ namespace SystemWeb.Controllers
 
             if (dateFrom != null | dateTo != null)
             {
-                var getAll = from a in db.PvCali.ToList()
+                var getAll = from a in _PvCaliRepository.GetRecords()
                              where (currentUser.pvID == a.PvTank.pvID
                                    && (Convert.ToDateTime(a.FieldDate) >= dateFrom)
                                    && (Convert.ToDateTime(a.FieldDate) <= dateTo))
@@ -1788,6 +1940,8 @@ namespace SystemWeb.Controllers
                 ViewBag.PvCaliSumBByDate = SumB;
             }
 
+            #region Old method
+            /*
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Cali_Desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
@@ -1832,7 +1986,210 @@ namespace SystemWeb.Controllers
             int pageSize = 10;
             int pageNumber = (page ?? 1);
 
-            return View(pvCali.ToPagedList(pageNumber, pageSize));
+            return View(pvCali.ToPagedList(pageNumber, pageSize));*/
+            #endregion
+
+            return View();
+        }
+        /*
+        [Route("user/pvcali/pvcaligetdata")]
+        public ActionResult PvCaliGetData(DataManager dm)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            MyDbContext context = new MyDbContext();
+            #endregion
+
+            IEnumerable DataSource = CaliRepository.GetAllRecords().Where(c => currentUser.pvID == c.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
+
+            DataResult result = new DataResult();
+            DataOperations operation = new DataOperations();
+            result.result = DataSource;
+
+            if (dm.Sorted != null && dm.Sorted.Count > 0) //Sorting 
+            {
+                result.result = operation.PerformSorting(result.result, dm.Sorted);
+            }
+
+            result.count = result.result.AsQueryable().Count();
+
+            if (dm.Skip > 0)  // for paging  
+
+                result.result = operation.PerformSkip(result.result, dm.Skip);
+
+            if (dm.Take > 0)
+
+                result.result = operation.PerformTake(result.result, dm.Take);
+
+            return Json(new { result = result.result, count = result.count }, JsonRequestBehavior.AllowGet);
+        }*/
+        /*
+        public List<object> PVTANKID
+        {
+            get
+            {
+                #region Initial var
+                var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                var currentUser = userManager.FindById(User.Identity.GetUserId());
+                #endregion
+
+                MyDbContext context = new MyDbContext();
+                IEnumerable pvtankID = context.PvCali.Include(i => i.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).Select(s => s.PvTankId).Distinct().ToList();
+                var PVTANKID = new List<object>();
+                foreach (var id in pvtankID)
+                {
+                    PVTANKID.Add(new { value = id, text = id });
+                }
+                return PVTANKID;
+            }
+        }
+        */
+        //[Route("user/pvcali/updatecalo")]
+        public ActionResult UpdateCalo(PvCali value)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            CaliRepository.Update(value);
+            var data = context.PvCali.Include(i=>i.PvTank).Where(c => currentUser.pvID == c.PvTank.pvID && c.FieldDate.ToString().Contains(ly));
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+
+        //[Route("user/pvcali/insertcalo")]
+        public ActionResult InsertCalo(PvCali value)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            CaliRepository.Add(value);
+            var data = context.PvCali.Include(i => i.PvTank).Where(c => currentUser.pvID == c.PvTank.pvID && c.FieldDate.ToString().Contains(ly));
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+
+        //[Route("user/pvcali/removecalo")]
+        public ActionResult RemoveCalo(Guid key)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            /*MyDbContext context = new MyDbContext();
+            CaliRepository.Delete(id);*/
+
+            MyDbContext context = new MyDbContext();
+            context.PvCali.Remove(context.PvCali.Single(o => o.PvCaliId == key));
+            context.SaveChanges();
+
+            var data = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && c.FieldDate.ToString().Contains(ly));
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public void CaliExcell(string GridModel)
+
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            ExcelExport exp = new ExcelExport();
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            IEnumerable DataSource = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Cali.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+
+        }
+
+        public void CaliWord(string GridModel)
+
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            WordExport exp = new WordExport();
+
+            IEnumerable DataSource = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Cali.docx", false, false, "flat-saffron");
+
+        }
+
+        public void CaliPdf(string GridModel)
+
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+
+            Guid now = Guid.NewGuid();
+
+            PdfExport exp = new PdfExport();
+
+            IEnumerable DataSource = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Cali.pdf", false, false, "flat-saffron");
+
+
+        }
+        private GridProperties ConvertGridObject(string gridProperty)
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            IEnumerable div = (IEnumerable)serializer.Deserialize(gridProperty, typeof(IEnumerable));
+            GridProperties gridProp = new GridProperties();
+            foreach (KeyValuePair<string, object> ds in div)
+            {
+                var property = gridProp.GetType().GetProperty(ds.Key, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+                if (property != null)
+                {
+                    Type type = property.PropertyType;
+                    string serialize = serializer.Serialize(ds.Value);
+                    object value = serializer.Deserialize(serialize, type);
+                    property.SetValue(gridProp, value, null);
+                }
+            }
+            return gridProp;
         }
 
         public ActionResult PvCaliDetails(Guid? id)
@@ -1857,13 +2214,12 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PvCaliCreate([Bind(Include = "PvCaliId,PvTankId,Value,FieldDate")] SystemWeb.Models.PvCali pvCali)
+        public ActionResult PvCaliCreate(SystemWeb.Models.PvCali pvCali)
         {
             if (ModelState.IsValid)
             {
-                pvCali.PvCaliId = Guid.NewGuid();
-                db.PvCali.Add(pvCali);
-                db.SaveChanges();
+                _PvCaliRepository.InsertRecords(pvCali);
+                _PvCaliRepository.Save();
                 return RedirectToAction("Index");
             }
 

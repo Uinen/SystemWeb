@@ -42,6 +42,15 @@ namespace SystemWeb.Models.LinqToSql
     partial void InsertFlag(Flag instance);
     partial void UpdateFlag(Flag instance);
     partial void DeleteFlag(Flag instance);
+    partial void InsertPvCali(PvCali instance);
+    partial void UpdatePvCali(PvCali instance);
+    partial void DeletePvCali(PvCali instance);
+    partial void InsertPvTank(PvTank instance);
+    partial void UpdatePvTank(PvTank instance);
+    partial void DeletePvTank(PvTank instance);
+    partial void InsertProduct(Product instance);
+    partial void UpdateProduct(Product instance);
+    partial void DeleteProduct(Product instance);
     #endregion
 		
 		public SystemWebDataContext() : 
@@ -103,6 +112,30 @@ namespace SystemWeb.Models.LinqToSql
 			get
 			{
 				return this.GetTable<Flag>();
+			}
+		}
+		
+		public System.Data.Linq.Table<PvCali> PvCali
+		{
+			get
+			{
+				return this.GetTable<PvCali>();
+			}
+		}
+		
+		public System.Data.Linq.Table<PvTank> PvTank
+		{
+			get
+			{
+				return this.GetTable<PvTank>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Product> Product
+		{
+			get
+			{
+				return this.GetTable<Product>();
 			}
 		}
 	}
@@ -643,6 +676,8 @@ namespace SystemWeb.Models.LinqToSql
 		
 		private EntitySet<Carico> _Carico;
 		
+		private EntitySet<PvTank> _PvTank;
+		
 		private EntityRef<Flag> _Flag;
 		
     #region Definizioni metodo Extensibility
@@ -660,6 +695,7 @@ namespace SystemWeb.Models.LinqToSql
 		public Pv()
 		{
 			this._Carico = new EntitySet<Carico>(new Action<Carico>(this.attach_Carico), new Action<Carico>(this.detach_Carico));
+			this._PvTank = new EntitySet<PvTank>(new Action<PvTank>(this.attach_PvTank), new Action<PvTank>(this.detach_PvTank));
 			this._Flag = default(EntityRef<Flag>);
 			OnCreated();
 		}
@@ -741,6 +777,19 @@ namespace SystemWeb.Models.LinqToSql
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Pv_PvTank", Storage="_PvTank", ThisKey="pvID", OtherKey="pvID")]
+		public EntitySet<PvTank> PvTank
+		{
+			get
+			{
+				return this._PvTank;
+			}
+			set
+			{
+				this._PvTank.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Flag_Pv", Storage="_Flag", ThisKey="pvFlagId", OtherKey="pvFlagId", IsForeignKey=true)]
 		public Flag Flag
 		{
@@ -802,6 +851,18 @@ namespace SystemWeb.Models.LinqToSql
 		}
 		
 		private void detach_Carico(Carico entity)
+		{
+			this.SendPropertyChanging();
+			entity.Pv = null;
+		}
+		
+		private void attach_PvTank(PvTank entity)
+		{
+			this.SendPropertyChanging();
+			entity.Pv = this;
+		}
+		
+		private void detach_PvTank(PvTank entity)
 		{
 			this.SendPropertyChanging();
 			entity.Pv = null;
@@ -943,6 +1004,683 @@ namespace SystemWeb.Models.LinqToSql
 		{
 			this.SendPropertyChanging();
 			entity.Flag = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PvCali")]
+	public partial class PvCali : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _PvCaliId;
+		
+		private System.Guid _PvTankId;
+		
+		private int _Value;
+		
+		private System.DateTime _FieldDate;
+		
+		private EntityRef<PvTank> _PvTank;
+		
+    #region Definizioni metodo Extensibility
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnPvCaliIdChanging(System.Guid value);
+    partial void OnPvCaliIdChanged();
+    partial void OnPvTankIdChanging(System.Guid value);
+    partial void OnPvTankIdChanged();
+    partial void OnValueChanging(int value);
+    partial void OnValueChanged();
+    partial void OnFieldDateChanging(System.DateTime value);
+    partial void OnFieldDateChanged();
+    #endregion
+		
+		public PvCali()
+		{
+			this._PvTank = default(EntityRef<PvTank>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PvCaliId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid PvCaliId
+		{
+			get
+			{
+				return this._PvCaliId;
+			}
+			set
+			{
+				if ((this._PvCaliId != value))
+				{
+					this.OnPvCaliIdChanging(value);
+					this.SendPropertyChanging();
+					this._PvCaliId = value;
+					this.SendPropertyChanged("PvCaliId");
+					this.OnPvCaliIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PvTankId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid PvTankId
+		{
+			get
+			{
+				return this._PvTankId;
+			}
+			set
+			{
+				if ((this._PvTankId != value))
+				{
+					if (this._PvTank.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPvTankIdChanging(value);
+					this.SendPropertyChanging();
+					this._PvTankId = value;
+					this.SendPropertyChanged("PvTankId");
+					this.OnPvTankIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Value", DbType="Int NOT NULL")]
+		public int Value
+		{
+			get
+			{
+				return this._Value;
+			}
+			set
+			{
+				if ((this._Value != value))
+				{
+					this.OnValueChanging(value);
+					this.SendPropertyChanging();
+					this._Value = value;
+					this.SendPropertyChanged("Value");
+					this.OnValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FieldDate", DbType="DateTime NOT NULL")]
+		public System.DateTime FieldDate
+		{
+			get
+			{
+				return this._FieldDate;
+			}
+			set
+			{
+				if ((this._FieldDate != value))
+				{
+					this.OnFieldDateChanging(value);
+					this.SendPropertyChanging();
+					this._FieldDate = value;
+					this.SendPropertyChanged("FieldDate");
+					this.OnFieldDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PvTank_PvCali", Storage="_PvTank", ThisKey="PvTankId", OtherKey="PvTankId", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public PvTank PvTank
+		{
+			get
+			{
+				return this._PvTank.Entity;
+			}
+			set
+			{
+				PvTank previousValue = this._PvTank.Entity;
+				if (((previousValue != value) 
+							|| (this._PvTank.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._PvTank.Entity = null;
+						previousValue.PvCali.Remove(this);
+					}
+					this._PvTank.Entity = value;
+					if ((value != null))
+					{
+						value.PvCali.Add(this);
+						this._PvTankId = value.PvTankId;
+					}
+					else
+					{
+						this._PvTankId = default(System.Guid);
+					}
+					this.SendPropertyChanged("PvTank");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PvTank")]
+	public partial class PvTank : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _PvTankId;
+		
+		private System.Guid _pvID;
+		
+		private System.Guid _ProductId;
+		
+		private string _Modello;
+		
+		private System.DateTime _LastDate;
+		
+		private int _Capienza;
+		
+		private int _Giacenza;
+		
+		private string _Descrizione;
+		
+		private EntitySet<PvCali> _PvCali;
+		
+		private EntityRef<Pv> _Pv;
+		
+		private EntityRef<Product> _Product;
+		
+    #region Definizioni metodo Extensibility
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnPvTankIdChanging(System.Guid value);
+    partial void OnPvTankIdChanged();
+    partial void OnpvIDChanging(System.Guid value);
+    partial void OnpvIDChanged();
+    partial void OnProductIdChanging(System.Guid value);
+    partial void OnProductIdChanged();
+    partial void OnModelloChanging(string value);
+    partial void OnModelloChanged();
+    partial void OnLastDateChanging(System.DateTime value);
+    partial void OnLastDateChanged();
+    partial void OnCapienzaChanging(int value);
+    partial void OnCapienzaChanged();
+    partial void OnGiacenzaChanging(int value);
+    partial void OnGiacenzaChanged();
+    partial void OnDescrizioneChanging(string value);
+    partial void OnDescrizioneChanged();
+    #endregion
+		
+		public PvTank()
+		{
+			this._PvCali = new EntitySet<PvCali>(new Action<PvCali>(this.attach_PvCali), new Action<PvCali>(this.detach_PvCali));
+			this._Pv = default(EntityRef<Pv>);
+			this._Product = default(EntityRef<Product>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PvTankId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid PvTankId
+		{
+			get
+			{
+				return this._PvTankId;
+			}
+			set
+			{
+				if ((this._PvTankId != value))
+				{
+					this.OnPvTankIdChanging(value);
+					this.SendPropertyChanging();
+					this._PvTankId = value;
+					this.SendPropertyChanged("PvTankId");
+					this.OnPvTankIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pvID", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid pvID
+		{
+			get
+			{
+				return this._pvID;
+			}
+			set
+			{
+				if ((this._pvID != value))
+				{
+					if (this._Pv.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnpvIDChanging(value);
+					this.SendPropertyChanging();
+					this._pvID = value;
+					this.SendPropertyChanged("pvID");
+					this.OnpvIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ProductId
+		{
+			get
+			{
+				return this._ProductId;
+			}
+			set
+			{
+				if ((this._ProductId != value))
+				{
+					if (this._Product.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductId = value;
+					this.SendPropertyChanged("ProductId");
+					this.OnProductIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Modello", DbType="NVarChar(14)")]
+		public string Modello
+		{
+			get
+			{
+				return this._Modello;
+			}
+			set
+			{
+				if ((this._Modello != value))
+				{
+					this.OnModelloChanging(value);
+					this.SendPropertyChanging();
+					this._Modello = value;
+					this.SendPropertyChanged("Modello");
+					this.OnModelloChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastDate", DbType="DateTime NOT NULL")]
+		public System.DateTime LastDate
+		{
+			get
+			{
+				return this._LastDate;
+			}
+			set
+			{
+				if ((this._LastDate != value))
+				{
+					this.OnLastDateChanging(value);
+					this.SendPropertyChanging();
+					this._LastDate = value;
+					this.SendPropertyChanged("LastDate");
+					this.OnLastDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Capienza", DbType="Int NOT NULL")]
+		public int Capienza
+		{
+			get
+			{
+				return this._Capienza;
+			}
+			set
+			{
+				if ((this._Capienza != value))
+				{
+					this.OnCapienzaChanging(value);
+					this.SendPropertyChanging();
+					this._Capienza = value;
+					this.SendPropertyChanged("Capienza");
+					this.OnCapienzaChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Giacenza", DbType="Int NOT NULL")]
+		public int Giacenza
+		{
+			get
+			{
+				return this._Giacenza;
+			}
+			set
+			{
+				if ((this._Giacenza != value))
+				{
+					this.OnGiacenzaChanging(value);
+					this.SendPropertyChanging();
+					this._Giacenza = value;
+					this.SendPropertyChanged("Giacenza");
+					this.OnGiacenzaChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Descrizione", DbType="NVarChar(MAX)")]
+		public string Descrizione
+		{
+			get
+			{
+				return this._Descrizione;
+			}
+			set
+			{
+				if ((this._Descrizione != value))
+				{
+					this.OnDescrizioneChanging(value);
+					this.SendPropertyChanging();
+					this._Descrizione = value;
+					this.SendPropertyChanged("Descrizione");
+					this.OnDescrizioneChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PvTank_PvCali", Storage="_PvCali", ThisKey="PvTankId", OtherKey="PvTankId")]
+		public EntitySet<PvCali> PvCali
+		{
+			get
+			{
+				return this._PvCali;
+			}
+			set
+			{
+				this._PvCali.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Pv_PvTank", Storage="_Pv", ThisKey="pvID", OtherKey="pvID", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public Pv Pv
+		{
+			get
+			{
+				return this._Pv.Entity;
+			}
+			set
+			{
+				Pv previousValue = this._Pv.Entity;
+				if (((previousValue != value) 
+							|| (this._Pv.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Pv.Entity = null;
+						previousValue.PvTank.Remove(this);
+					}
+					this._Pv.Entity = value;
+					if ((value != null))
+					{
+						value.PvTank.Add(this);
+						this._pvID = value.pvID;
+					}
+					else
+					{
+						this._pvID = default(System.Guid);
+					}
+					this.SendPropertyChanged("Pv");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_PvTank", Storage="_Product", ThisKey="ProductId", OtherKey="ProductId", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public Product Product
+		{
+			get
+			{
+				return this._Product.Entity;
+			}
+			set
+			{
+				Product previousValue = this._Product.Entity;
+				if (((previousValue != value) 
+							|| (this._Product.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Product.Entity = null;
+						previousValue.PvTank.Remove(this);
+					}
+					this._Product.Entity = value;
+					if ((value != null))
+					{
+						value.PvTank.Add(this);
+						this._ProductId = value.ProductId;
+					}
+					else
+					{
+						this._ProductId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Product");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_PvCali(PvCali entity)
+		{
+			this.SendPropertyChanging();
+			entity.PvTank = this;
+		}
+		
+		private void detach_PvCali(PvCali entity)
+		{
+			this.SendPropertyChanging();
+			entity.PvTank = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Product")]
+	public partial class Product : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _ProductId;
+		
+		private string _Nome;
+		
+		private float _Peso;
+		
+		private float _Prezzo;
+		
+		private EntitySet<PvTank> _PvTank;
+		
+    #region Definizioni metodo Extensibility
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnProductIdChanging(System.Guid value);
+    partial void OnProductIdChanged();
+    partial void OnNomeChanging(string value);
+    partial void OnNomeChanged();
+    partial void OnPesoChanging(float value);
+    partial void OnPesoChanged();
+    partial void OnPrezzoChanging(float value);
+    partial void OnPrezzoChanged();
+    #endregion
+		
+		public Product()
+		{
+			this._PvTank = new EntitySet<PvTank>(new Action<PvTank>(this.attach_PvTank), new Action<PvTank>(this.detach_PvTank));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid ProductId
+		{
+			get
+			{
+				return this._ProductId;
+			}
+			set
+			{
+				if ((this._ProductId != value))
+				{
+					this.OnProductIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductId = value;
+					this.SendPropertyChanged("ProductId");
+					this.OnProductIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Nome", DbType="NVarChar(12)")]
+		public string Nome
+		{
+			get
+			{
+				return this._Nome;
+			}
+			set
+			{
+				if ((this._Nome != value))
+				{
+					this.OnNomeChanging(value);
+					this.SendPropertyChanging();
+					this._Nome = value;
+					this.SendPropertyChanged("Nome");
+					this.OnNomeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Peso", DbType="Real NOT NULL")]
+		public float Peso
+		{
+			get
+			{
+				return this._Peso;
+			}
+			set
+			{
+				if ((this._Peso != value))
+				{
+					this.OnPesoChanging(value);
+					this.SendPropertyChanging();
+					this._Peso = value;
+					this.SendPropertyChanged("Peso");
+					this.OnPesoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Prezzo", DbType="Real NOT NULL")]
+		public float Prezzo
+		{
+			get
+			{
+				return this._Prezzo;
+			}
+			set
+			{
+				if ((this._Prezzo != value))
+				{
+					this.OnPrezzoChanging(value);
+					this.SendPropertyChanging();
+					this._Prezzo = value;
+					this.SendPropertyChanged("Prezzo");
+					this.OnPrezzoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Product_PvTank", Storage="_PvTank", ThisKey="ProductId", OtherKey="ProductId")]
+		public EntitySet<PvTank> PvTank
+		{
+			get
+			{
+				return this._PvTank;
+			}
+			set
+			{
+				this._PvTank.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_PvTank(PvTank entity)
+		{
+			this.SendPropertyChanging();
+			entity.Product = this;
+		}
+		
+		private void detach_PvTank(PvTank entity)
+		{
+			this.SendPropertyChanging();
+			entity.Product = null;
 		}
 	}
 }

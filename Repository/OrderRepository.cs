@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Web;
-using SystemWeb.Dto;
-//using SystemWeb.Models;
-using SystemWeb.Models.LinqToSql;
+using SystemWeb.Models;
 
 namespace SystemWeb.Repository
 {
     public static class OrderRepository
     {
+        /*
         public static IList<CaricoDto> GetAllRecords()
         {
             IList<CaricoDto> orders = (IList<CaricoDto>)HttpContext.Current.Session["Orders"];
@@ -17,7 +16,8 @@ namespace SystemWeb.Repository
             if (orders == null)
             {
                 var context = new SystemWebDataContext();
-                HttpContext.Current.Session["Orders"] = orders = (from ord in context.Carico
+                int number = int.MaxValue;
+                HttpContext.Current.Session["Orders"] = orders = (from ord in context.Carico.Take(number)
                                                                   join year in context.Year on ord.yearId equals year.yearId
                                                                   join pv in context.Pv on ord.pvID equals pv.pvID
                                                                   select new CaricoDto
@@ -39,19 +39,23 @@ namespace SystemWeb.Repository
                 
             }
             return orders;
-        }
+        }*/
 
-        public static void Add(CaricoDto order)
+        public static void Add(Carico order)
         {
-            GetAllRecords().Add(order);
+            var context = new MyDbContext();
+            context.Carico.Add(order);
         }
 
-        public static void Add(List<CaricoDto> order)
+        public static void Add(List<Carico> order)
         {
             foreach (var temp in order)
-                GetAllRecords().Add(temp);
+            {
+                var context = new MyDbContext();
+                context.Carico.Add(temp);
+            }
         }
-
+        /*
         public static void Delete(Guid Id)
         {
             CaricoDto result = GetAllRecords().Where(o => o.Id == Id).FirstOrDefault();
@@ -65,15 +69,15 @@ namespace SystemWeb.Repository
                 CaricoDto result = GetAllRecords().Where(o => o.Id == temp.Id).FirstOrDefault();
                 GetAllRecords().Remove(result);
             }
-        }
+        }*/
 
-        public static void Update(CaricoDto order)
+        public static void Update(Carico order)
         {
-            CaricoDto result = GetAllRecords().Where(o => o.Id == order.Id).FirstOrDefault();
+            var context = new MyDbContext();
+            Carico result = context.Carico.Where(o => o.Id == order.Id).FirstOrDefault();
             if (result != null)
             {
                 result.Id = order.Id;
-                result.pvName = order.pvName;
                 result.yearId = order.yearId;
                 result.Ordine = order.Ordine;
                 result.cData = order.cData;
@@ -84,18 +88,22 @@ namespace SystemWeb.Repository
                 result.Benzina = order.Benzina;
                 result.Gasolio = order.Gasolio;
                 result.Note = order.Note;
+
+                context.Entry(result).CurrentValues.SetValues(order);
+                context.Entry(result).State = EntityState.Modified;
+                context.SaveChanges();
             }
         }
 
-        public static void Update(List<CaricoDto> order)
+        public static void Update(List<Carico> order)
         {
             foreach (var temp in order)
             {
-                CaricoDto result = GetAllRecords().Where(o => o.Id == temp.Id).FirstOrDefault();
+                var context = new MyDbContext();
+                Carico result = context.Carico.Where(o => o.Id == temp.Id).FirstOrDefault();
                 if (result != null)
                 {
                     result.Id = temp.Id;
-                    result.pvName = temp.pvName;
                     result.yearId = temp.yearId;
                     result.Ordine = temp.Ordine;
                     result.cData = temp.cData;
@@ -106,6 +114,10 @@ namespace SystemWeb.Repository
                     result.Benzina = temp.Benzina;
                     result.Gasolio = temp.Gasolio;
                     result.Note = temp.Note;
+
+                    context.Entry(result).CurrentValues.SetValues(temp);
+                    context.Entry(result).State = EntityState.Modified;
+                    context.SaveChanges();
                 }
             }
         }

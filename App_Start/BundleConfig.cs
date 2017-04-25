@@ -131,6 +131,10 @@ namespace SystemWeb
 
             bundles.Add(new ScriptBundle("~/bundles/sorting").Include(
                 "~/Scripts/sortable.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/GridOption").Include(
+                "~/Scripts/ActionComplete.js",
+                "~/Scripts/ejDatePickerOption.js"));
             #endregion
         }
     }

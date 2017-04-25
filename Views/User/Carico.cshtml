@@ -50,47 +50,31 @@
                         border-width: 0px !important;
                     }
                 </style>
-
-                <script type="text/javascript">
-                    function ActionComplete(args, sender) {
-                        var gridObj = $("#FlatGrid").ejGrid("instance");
-                        this.getContent().addClass("e-widget");
-                        var browserDetails = gridObj.getBrowserDetails();
-                        if (browserDetails.browser == "msie" && parseInt(browserDetails.version, 10) <= 9)
-                            $("#FlatGrid").ejGrid("model.enableResponsiveRow", false);
-                        if (args.requestType == "filtering" || args.requestType == "searching") {
-                            var proxy = this;
-                            setTimeout(function () { proxy.windowonresize(); }, 30);
-                        }
-
-                        if (args.requestType == "BeginEdit") {
-
-                            var date = $("#" + sender._ID + "cData" + "rData").val();
-
-                            $("#" + sender._ID + "cData" + "rData").val($.ejDatePicker.formatDate("mm/dd/yy", new Date(date)));
-
-                        }
-                    }
-
-                </script>
-
-                @(Html.EJ().Grid<CaricoDto>("FlatGrid")
-                    .Datasource(ds => ds.URL("carico/caricogetdata")
-                    .BatchURL("carico/batchupdate")
-                    .Adaptor(AdaptorType.UrlAdaptor))
-
+                <script src="@Url.Content("~/Scripts/ej/i18n/ej.culture.it-IT.min.js")"></script>
+                @(Html.EJ().Grid<Carico>("FlatGrid")
+                    .Locale("it-IT")
+                    .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
+                    .UpdateURL("updatecarico")
+                    .InsertURL("insertcarico")
+                    .RemoveURL("removecarico")
+                    .Adaptor(AdaptorType.RemoteSaveAdaptor))
+                    .AllowGrouping()
                     .AllowPaging()
                     .EnableAltRow()
                     .PageSettings(p => p.PageCount(2).PageSize(10))
                     .IsResponsive(true)
                     .EnableResponsiveRow(false)
                     .AllowSorting()
-                    //.AllowFiltering()
-                    //.FilterSettings(filter => filter.FilterType(FilterType.FilterBar).FilterBarMode(FilterBarMode.OnEnter))
+                    .AllowFiltering()
+                                    .FilterSettings(filter =>
+                                    {
+                                        filter.FilterType(FilterType.Excel);
+                                    })
+
                     .AllowMultiSorting()
                     .ClientSideEvents(eve => eve.ActionComplete("ActionComplete"))
                     .MinWidth(600)
-                    .EditSettings(d => d.AllowAdding(false).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.InlineForm))
+                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.ExternalForm))
                     .ToolbarSettings(toolbar =>
                     {
                         toolbar.ShowToolbar().ToolbarItems(items =>
@@ -99,18 +83,25 @@
                             items.AddTool(ToolBarItems.Delete);
                             items.AddTool(ToolBarItems.Update);
                             items.AddTool(ToolBarItems.Cancel);
-                            //items.AddTool(ToolBarItems.Search);
+                            items.AddTool(ToolBarItems.Search);
+                            items.AddTool(ToolBarItems.ExcelExport);
+                            items.AddTool(ToolBarItems.WordExport);
+                            items.AddTool(ToolBarItems.PdfExport);
                         });
                     })
+
+                    .Mappers(map => map.ExportToExcelAction("CaricoExcell")
+                                    .ExportToPdfAction("CaricoPdf")
+                                    .ExportToWordAction("CaricoWord"))
                     .Columns(col =>
                     {
                         col.Field(p => p.Id).HeaderText("ID Ordine").IsPrimaryKey(true).Visible(false).Add();
 
-                        col.Field(p => p.pvName).HeaderText("Punto Vendita")//.ForeignKeyField("pvID").ForeignKeyValue("pvName")
-                        .DataSource((List<object>)ViewData["PVID"]).TextAlign(TextAlign.Left).Width(100).EditType(EditingType.Dropdown).Add();
+                        col.Field(p => p.pvID).HeaderText("PV").ForeignKeyField("pvID").ForeignKeyValue("pvName")
+                        .DataSource((IEnumerable<object>)ViewBag.datasource3).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
 
-                        col.Field(p => p.yearId).HeaderText("Anno")//.ForeignKeyField("yearId").ForeignKeyValue("Anno")
-                        .DataSource((List<object>)ViewData["YearID"]).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
+                        col.Field(p => p.yearId).HeaderText("Anno").ForeignKeyField("yearId").ForeignKeyValue("Anno")
+                        .DataSource((IEnumerable<object>)ViewBag.datasource2).TextAlign(TextAlign.Left).Width(75).Format("{0:yyyy}").EditType(EditingType.Dropdown).Add();
 
                         col.Field(p => p.Ordine).HeaderText("Ordine").Width("50").Add();
                         col.Field(p => p.cData).HeaderText("Scarico").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
@@ -127,25 +118,31 @@
         </div>
     </div>
 </section>
-            @section Scripts{
-                @Scripts.Render("~/bundles/jqueryval")
-                <script type="text/javascript">
-
-                    $(function () {
-                        $("#from").ejDatePicker({
-                            onClose: function (selectedDate) {
-                                $("#to").ejDatePicker(@*"option",*@ "minDate", selectedDate);
-
-                            }
-                        });
-                        $("#to").ejDatePicker({
-                            onClose: function (selectedDate) {
-                                $("#from").ejDatePicker(@*"option",*@ "maxDate", selectedDate);
-
-                            },
-                        });
-                    });
-                </script>
-            }
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/GridOption")
+<script type="text/javascript">
+    ej.Grid.Locale["it-IT"] = {
+        EmptyRecord: "Nessun record da visualizzare",
+        GroupDropArea: "Trascinare una colonna qui",
+        DeleteOperationAlert: "Nessuna voce selezionata per l'eliminazione",
+        EditOperationAlert: "Entrate selezionate per operazione di modifica",
+        SaveButton: "Salva",
+        CancelButton: "Annulla",
+        EditFormTitle: "Modifica",
+        GroupCaptionFormat: "{{:field}}: {{:key}} - {{:count}} {{if count == 1}}Oggetto{{else}}Oggetti{{/if}}",
+        UnGroup: "Clicca qui per separare"
+    };
+    ej.Pager.Locale["it-IT"] = {
+        pagerInfo: "{0} di {1} Pagine ({2} Oggetti)",
+        firstPageTooltip: "Per la prima pagina",
+        lastPageTooltip: "L'ultima pagina",
+        nextPageTooltip: "Pagina successiva",
+        previousPageTooltip: "Pagina precedente",
+        nextPagerTooltip: "Alla prossima pagina",
+        previousPagerTooltip: "Pagina precedente"
+    };
+</script>
+    }
 
 

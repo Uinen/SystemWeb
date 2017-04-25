@@ -1,11 +1,4 @@
-﻿@model PagedList.IPagedList<SystemWeb.Models.PvErogatori>
-@using PagedList.Mvc;
-<link href="~/Contenuti/css/PagedList.min.css" rel="stylesheet" type="text/css" />
-
-@{
-    ViewBag.Title = "Index";
-}
-<section id="pverogatori" class="block">
+﻿<section id="pverogatori" class="block">
     <div class="container">
             <div class="row">
                 <div class="center-block">
@@ -15,14 +8,6 @@
                     @using (Html.BeginForm("PvErogatori", "User", FormMethod.Get))
                     {
                         <div class="grid-filter">
-                            <div class="inner">
-                                <div class="item">
-                                    <p class="text-primary">
-                                        Cerca per data: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-                                        <input type="submit" value="Cerca" />
-                                    </p>
-                                </div>
-                            </div>
                             <form id="date-range-form" action="@Url.Action("PvErogatori", "User")" method="post">
                                 <h5 class="alert alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma del erogatoi sul impianto in funzione del range selezionato.</h5>
                                 <h5 class="alert alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
@@ -33,10 +18,6 @@
                                 <div class="item">
                                     <label for="to">Data 2</label>
                                     <input type="text" id="to" name="dateTo">
-                                </div>
-                                <div class="item">
-                                    <label>Lista erogatori</label>
-                                    @Html.DropDownList("DispenserId", null, htmlAttributes: new { @class = "form-control" })
                                 </div>
                                 <input type='submit' value='Ricerca' />
                             </form>
@@ -50,117 +31,110 @@
                             </table>
                         </div>
                     </div>
-                    <div><h4 class="alert alert-info">@Html.ActionLink("Crea nuovo", "PvErogatoriCreate")</h4></div>
-                    <div id="no-more-tables">
-                        <table class="col-md-12 table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Codice Punto vendita
-                                    </th>
-                                    <th>
-                                        Anno finanziario
-                                    </th>
-                                    <th>
-                                        Modello
-                                    </th>
-                                    <th>
-                                        Prodotto
-                                    </th>
-                                    <th>
-                                        Valore
-                                    </th>
-                                    <th>
-                                        @Html.ActionLink("Data", "PvErogatori", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
-                                    </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            @foreach (var item in Model)
-                            {
-                                <tbody>
-                                    <tr>
-                                        <td data-title="Punto vendita">
-                                            @Html.DisplayFor(modelItem => item.Pv.pvName)
-                                        </td>
-                                        <td data-title="Anno finanziario">
-                                            @Html.DisplayFor(modelItem => item.FieldDate.Year)
-                                        </td>
-                                        <td data-title="Modello">
-                                            @Html.DisplayFor(modelItem => item.Dispenser.Modello)
-                                        </td>
-                                        <td data-title="Prodotto">
-                                            @Html.DisplayFor(modelItem => item.Product.Nome)
-                                        </td>
-                                        <td data-title="Contatore">
-                                            @Html.DisplayFor(modelItem => item.Value)
-                                        </td>
-                                        <td data-title="Data contabile">
-                                            @Html.DisplayFor(modelItem => item.FieldDate)
-                                        </td>
-                                        <td>
-                                            @Html.ActionLink("Modifica", "PvErogatoriEdit", new { id = item.PvErogatoriId }) |
-                                        @Html.ActionLink("Dettagli", "PvErogatoriDetails", new { id = item.PvErogatoriId }) |
-                                        @Html.ActionLink("Cancella", "PvErogatoriDelete", new { id = item.PvErogatoriId })
-                                    </td>
-                                </tr>
-                            </tbody>
-                            @*<tr>
-                                <td colspan="4">
-                                <br />
-                                <br />
-                                <input type="submit" value="Esporta in Excell" class="button" />
-                                </td>
-                              </tr>
-                            *@                     
-                            }
-                        </table>
-                        <br />
-                        Pagina @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) di @Model.PageCount
-                        @Html.PagedListPager(Model, page => Url.Action("PvErogatori",
-                       new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
-                    </div>
                 </div>
-
             </div>
     </div>
 </section>
+<section id="adaptive">
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                <style type="text/css">
+                    ::-ms-clear {
+                        display: none;
+                    }
+
+                    .e-gridAdaptive {
+                        border-width: 0px !important;
+                    }
+                </style>
+                <script src="@Url.Content("~/Scripts/ej/i18n/ej.culture.it-IT.min.js")"></script>
+                @(Html.EJ().Grid<PvErogatori>("FlatGridErogatori")
+                    .Locale("it-IT")
+                    .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
+                    .UpdateURL("updateerogatori")
+                    .InsertURL("inserterogatori")
+                    .RemoveURL("removeerogatori")
+                    .Adaptor(AdaptorType.RemoteSaveAdaptor))
+                    .AllowGrouping()
+                    .AllowPaging()
+                    .EnableAltRow()
+                    .PageSettings(p => p.PageCount(2).PageSize(10))
+                    .IsResponsive(true)
+                    .EnableResponsiveRow(false)
+                    .AllowSorting()
+                    .AllowFiltering()
+                                    .FilterSettings(filter =>
+                                    {
+                                        filter.FilterType(FilterType.Excel);
+                                    })
+
+                    .AllowMultiSorting()
+                    .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteErogatori"))
+                    .MinWidth(600)
+                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.ExternalForm))
+                    .ToolbarSettings(toolbar =>
+                    {
+                        toolbar.ShowToolbar().ToolbarItems(items =>
+                        {
+                            items.AddTool(ToolBarItems.Edit);
+                            items.AddTool(ToolBarItems.Delete);
+                            items.AddTool(ToolBarItems.Update);
+                            items.AddTool(ToolBarItems.Cancel);
+                            items.AddTool(ToolBarItems.Search);
+                            items.AddTool(ToolBarItems.ExcelExport);
+                            items.AddTool(ToolBarItems.WordExport);
+                            items.AddTool(ToolBarItems.PdfExport);
+                        });
+                    })
+
+                    .Mappers(map => map.ExportToExcelAction("PvErogatoriExcell")
+                                    .ExportToPdfAction("PvErogatoriPdf")
+                                    .ExportToWordAction("PvErogatoriWord"))
+                    .Columns(col =>
+                    {
+                        col.Field(p => p.PvErogatoriId).HeaderText("ID Rilevazione").IsPrimaryKey(true).Visible(false).Add();
+
+                        col.Field(p => p.pvID).HeaderText("PV").ForeignKeyField("pvID").ForeignKeyValue("pvName")
+                        .DataSource((IEnumerable<object>)ViewBag.datasource2).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
+
+                        col.Field(p => p.ProductId).HeaderText("Prodotto").ForeignKeyField("ProductId").ForeignKeyValue("Nome")
+                        .DataSource((IEnumerable<object>)ViewBag.datasource3).TextAlign(TextAlign.Left).Width(75).Format("{0:yyyy}").EditType(EditingType.Dropdown).Add();
+
+                        col.Field(p => p.DispenserId).HeaderText("Dispenser").ForeignKeyField("DispenserId").ForeignKeyValue("Modello")
+                        .DataSource((IEnumerable<object>)ViewBag.datasource4).Width("50").EditType(EditingType.Dropdown).Add();
+
+                        col.Field(p => p.Value).HeaderText("Valore").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.FieldDate).HeaderText("Data").Format("{0:MM/dd/yyyy}").Width("50").EditType(EditingType.Datepicker).Add();
+                    })
+                )
+            </div>
+        </div>
+    </div>
+</section>
 @section Scripts{
-    @*@Scripts.Render("~/bundles/jqueryval")*@
-
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/GridOption")
     <script type="text/javascript">
-
-    $(function () {
-        $("#from").datepicker({
-            duration:'fast',
-            showAnim:'drop',
-            dateFormat: "mm/dd/yy", @*yy/mm/dd - Localhost*@
-            maxDate:  '0',
-            showOn: 'button',
-            buttonImage: '/Content/img/calendar.png',
-            buttonImageOnly: true,
-            changeMonth: true,
-            changeYear: true,
-            onClose: function (selectedDate) {
-                $("#to").datepicker("option", "minDate", selectedDate);
-
-            }
-        });
-        $("#to").datepicker({
-            duration: 'fast',
-            showAnim: 'drop',
-            dateFormat: "mm/dd/yy", @*yy/mm/dd - Localhost*@
-            maxDate: '0',
-            showOn: 'button',
-            buttonImage: '/Content/img/calendar.png',
-            buttonImageOnly: true,
-            changeMonth: true,
-            changeYear: true,
-            onClose: function (selectedDate) {
-                $("#from").datepicker("option", "maxDate", selectedDate);
-
-            },
-        });
-    });
+    ej.Grid.Locale["it-IT"] = {
+        EmptyRecord: "Nessun record da visualizzare",
+        GroupDropArea: "Trascinare una colonna qui",
+        DeleteOperationAlert: "Nessuna voce selezionata per l'eliminazione",
+        EditOperationAlert: "Entrate selezionate per operazione di modifica",
+        SaveButton: "Salva",
+        CancelButton: "Annulla",
+        EditFormTitle: "Modifica",
+        GroupCaptionFormat: "{{:field}}: {{:key}} - {{:count}} {{if count == 1}}Oggetto{{else}}Oggetti{{/if}}",
+        UnGroup: "Clicca qui per separare"
+    };
+    ej.Pager.Locale["it-IT"] = {
+        pagerInfo: "{0} di {1} Pagine ({2} Oggetti)",
+        firstPageTooltip: "Per la prima pagina",
+        lastPageTooltip: "L'ultima pagina",
+        nextPageTooltip: "Pagina successiva",
+        previousPageTooltip: "Pagina precedente",
+        nextPagerTooltip: "Alla prossima pagina",
+        previousPagerTooltip: "Pagina precedente"
+    };
     </script>
 }

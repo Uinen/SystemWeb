@@ -271,7 +271,6 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UsersImageController.cs" />
-    <Compile Include="Dto\CaricoDto.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Helpers\Application.cs" />
     <Compile Include="Helpers\CacheProfileName.cs" />
@@ -323,14 +322,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SystemWeb.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Repository\CaliRepository.cs" />
     <Compile Include="Repository\CaricoRepository.cs" />
+    <Compile Include="Repository\ContatoriRepository.cs" />
     <Compile Include="Repository\Interface\iCaricoRepository.cs" />
     <Compile Include="Repository\Interface\iProductRepository.cs" />
+    <Compile Include="Repository\Interface\iPvCaliRepository.cs" />
     <Compile Include="Repository\Interface\iPvErogatoriRepository.cs" />
     <Compile Include="Repository\Interface\iPvRepository.cs" />
     <Compile Include="Repository\Interface\iUsersImageRepository.cs" />
     <Compile Include="Repository\OrderRepository.cs" />
     <Compile Include="Repository\ProductRepository.cs" />
+    <Compile Include="Repository\PvCaliRepository.cs" />
     <Compile Include="Repository\PvErogatoriRepository.cs" />
     <Compile Include="Repository\PvRepository.cs" />
     <Compile Include="Repository\UsersImageRepository.cs" />
@@ -811,6 +814,7 @@
     <Content Include="fonts\IONICONS.TTF" />
     <Content Include="fonts\ionicons.woff" />
     <Content Include="packages.config" />
+    <Content Include="Scripts\ActionComplete.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Contenuti\ej\web\office-365\ej.theme.less" />
@@ -864,6 +868,7 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\ej\web\ej.web.all.min.intellisense.js" />
     <None Include="Scripts\ej\web\ej.web.all-vsdoc.js" />
+    <Content Include="Scripts\ejDatePickerOption.js" />
     <Content Include="Scripts\ej\common\ej.core.min.js" />
     <Content Include="Scripts\ej\common\ej.data.min.js" />
     <Content Include="Scripts\ej\common\ej.draggable.min.js" />
@@ -891,6 +896,7 @@
     <Content Include="Scripts\ej\i18n\ej.culture.ar-AE.min.js" />
     <Content Include="Scripts\ej\i18n\ej.culture.de-DE.min.js" />
     <Content Include="Scripts\ej\i18n\ej.culture.en-US.min.js" />
+    <Content Include="Scripts\ej\i18n\ej.culture.it-IT.min.js" />
     <Content Include="Scripts\ej\i18n\ej.culture.es-ES.min.js" />
     <Content Include="Scripts\ej\i18n\ej.culture.fr-FR.min.js" />
     <Content Include="Scripts\ej\i18n\ej.culture.vi-VN.min.js" />
