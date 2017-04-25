@@ -57,13 +57,12 @@
 
                     }
                 </style>
-                <script src="@Url.Content("~/Scripts/ej/i18n/ej.culture.it-IT.min.js")"></script>
                                 @(Html.EJ().Grid<PvCali>("FlatGridCali")
                                     .Locale("it-IT")
                                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
-                                    .UpdateURL("updatecalo")
-                                    .InsertURL("insertcalo")
-                                    .RemoveURL("removecalo")
+                                    .UpdateURL("update")
+                                    .InsertURL("insert")
+                                    .RemoveURL("remove")
                                     .Adaptor(AdaptorType.RemoteSaveAdaptor))
                                     .AllowPaging()
                                     .PageSettings(p => p.PageCount(2).PageSize(10))
@@ -99,9 +98,9 @@
                                         filter.FilterType(FilterType.Excel);
                                     })
 
-                                    .Mappers(map => map.ExportToExcelAction("CaliExcell")
-                                    .ExportToPdfAction("CaliPdf")
-                                    .ExportToWordAction("CaliWord"))
+                                    .Mappers(map => map.ExportToExcelAction("cali/caliexcell")
+                                    .ExportToPdfAction("cali/calipdf")
+                                    .ExportToWordAction("cali/caliword"))
                                     .Columns(col =>
                                     {
                                         col.Field(p => p.PvCaliId).HeaderText("ID Calo").IsPrimaryKey(true).Visible(false).Width(45).Add();

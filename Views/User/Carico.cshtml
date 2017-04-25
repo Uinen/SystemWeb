@@ -50,13 +50,12 @@
                         border-width: 0px !important;
                     }
                 </style>
-                <script src="@Url.Content("~/Scripts/ej/i18n/ej.culture.it-IT.min.js")"></script>
                 @(Html.EJ().Grid<Carico>("FlatGrid")
                     .Locale("it-IT")
                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
-                    .UpdateURL("updatecarico")
-                    .InsertURL("insertcarico")
-                    .RemoveURL("removecarico")
+                    .UpdateURL("update")
+                    .InsertURL("insert")
+                    .RemoveURL("remove")
                     .Adaptor(AdaptorType.RemoteSaveAdaptor))
                     .AllowGrouping()
                     .AllowPaging()
@@ -90,9 +89,9 @@
                         });
                     })
 
-                    .Mappers(map => map.ExportToExcelAction("CaricoExcell")
-                                    .ExportToPdfAction("CaricoPdf")
-                                    .ExportToWordAction("CaricoWord"))
+                    .Mappers(map => map.ExportToExcelAction("ordini/caricoexcell")
+                                    .ExportToPdfAction("ordini/caricopdf")
+                                    .ExportToWordAction("ordini/caricoword"))
                     .Columns(col =>
                     {
                         col.Field(p => p.Id).HeaderText("ID Ordine").IsPrimaryKey(true).Visible(false).Add();

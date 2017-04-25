@@ -420,7 +420,7 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region Carico
-        [Route("user/carico")]
+        [Route("user/ordini")]
         public ActionResult Carico(DateTime? dateFrom, DateTime? dateTo)
         {
             #region Initial var
@@ -554,7 +554,7 @@ namespace SystemWeb.Controllers
             var data = OrderRepository.GetAllRecords();
             return Json(data, JsonRequestBehavior.AllowGet);
         }*/
-        [Route("user/carico/updatecarico")]
+        [Route("user/ordini/update")]
         public ActionResult UpdateCarico(Carico value)
         {
             #region Initial var
@@ -569,7 +569,7 @@ namespace SystemWeb.Controllers
             var data = context.Carico.Include(i => i.Pv).Include(i => i.Year).Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(ly));
             return Json(value, JsonRequestBehavior.AllowGet);
         }
-        [Route("user/carico/insertcarico")]
+        [Route("user/ordini/insert")]
         public ActionResult InsertCarico(Carico value)
         {
             #region Initial var
@@ -585,7 +585,7 @@ namespace SystemWeb.Controllers
             return Json(value, JsonRequestBehavior.AllowGet);
         }
 
-        [Route("user/carico/removecarico")]
+        [Route("user/ordini/remove")]
         public ActionResult RemoveCarico(Guid key)
         {
             #region Initial var
@@ -603,8 +603,8 @@ namespace SystemWeb.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        [Route("user/carico/caricoexcell")]
-        public void CaricoExcell(string GridModel)
+        [Route("user/ordini/caricoexcell")]
+        public ActionResult CaricoExcell(string GridModel)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -616,18 +616,19 @@ namespace SystemWeb.Controllers
             ExcelExport exp = new ExcelExport();
             MyDbContext context = new MyDbContext();
             Guid now = Guid.NewGuid();
-            IEnumerable DataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).ToList();
+            IEnumerable DataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).OrderBy(o => o.Ordine).ToList();
 
             GridProperties obj = ConvertGridObject(GridModel);
 
             obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
             obj.Columns[2].DataSource = context.Year.Where(a => a.Anno.Year.ToString().Contains(ly)).ToList();
 
-            exp.Export(obj, DataSource, now.ToString() + " - Carico.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            exp.Export(obj, DataSource, now.ToString() + " - Ordini.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        [Route("user/carico/caricoword")]
-        public void CaricoWord(string GridModel)
+        [Route("user/ordini/caricoword")]
+        public ActionResult CaricoWord(string GridModel)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -640,18 +641,19 @@ namespace SystemWeb.Controllers
             Guid now = Guid.NewGuid();
             WordExport exp = new WordExport();
 
-            IEnumerable DataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).ToList();
+            IEnumerable DataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).OrderBy(o => o.Ordine).ToList();
 
             GridProperties obj = ConvertGridObject(GridModel);
 
             obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
             obj.Columns[2].DataSource = context.Year.Where(a => a.Anno.Year.ToString().Contains(ly)).ToList();
 
-            exp.Export(obj, DataSource, now.ToString() + " - Carico.docx", false, false, "flat-saffron");
+            exp.Export(obj, DataSource, now.ToString() + " - Ordini.docx", false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        [Route("user/carico/caricopdf")]
-        public void CaricoPdf(string GridModel)
+        [Route("user/ordini/caricopdf")]
+        public ActionResult CaricoPdf(string GridModel)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -666,14 +668,16 @@ namespace SystemWeb.Controllers
 
             PdfExport exp = new PdfExport();
 
-            IEnumerable DataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).ToList();
+            IEnumerable DataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(ly))).OrderBy(o => o.Ordine).ToList();
 
             GridProperties obj = ConvertGridObject(GridModel);
 
             obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
             obj.Columns[2].DataSource = context.Year.Where(a => a.Anno.Year.ToString().Contains(ly)).ToList();
 
-            exp.Export(obj, DataSource, now.ToString() + " - Carico.pdf", false, false, "flat-saffron");
+            exp.Export(obj, DataSource, now.ToString() + " - Ordini.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult CaricoChart()
@@ -855,6 +859,7 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvErogatori
+        [Route("user/contatori")]
         public ActionResult PvErogatori(DateTime? dateFrom, DateTime? dateTo)
         {
             #region Initial var
@@ -954,7 +959,7 @@ namespace SystemWeb.Controllers
             return View();
         }
 
-        [Route("user/carico/updateerogatori")]
+        [Route("user/contatori/update")]
         public ActionResult UpdateErogatori(PvErogatori value)
         {
             #region Initial var
@@ -969,7 +974,7 @@ namespace SystemWeb.Controllers
             var data = context.PvErogatori.Include(i => i.Pv).Include(i => i.Product).Include(i => i.Dispenser).Where(c => currentUser.pvID == c.pvID && c.FieldDate.Year.ToString().Contains(ly));
             return Json(value, JsonRequestBehavior.AllowGet);
         }
-        [Route("user/carico/inserterogatori")]
+        [Route("user/contatori/insert")]
         public ActionResult InsertErogatori(PvErogatori value)
         {
             #region Initial var
@@ -985,7 +990,7 @@ namespace SystemWeb.Controllers
             return Json(value, JsonRequestBehavior.AllowGet);
         }
 
-        [Route("user/carico/removeerogatori")]
+        [Route("user/contatori/remove")]
         public ActionResult RemoveErogatori(Guid key)
         {
             #region Initial var
@@ -1003,8 +1008,8 @@ namespace SystemWeb.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        [Route("user/carico/erogatoriexcell")]
-        public void PvErogatoriExcell(string GridModel)
+        [Route("user/contatori/erogatoriexcell")]
+        public ActionResult PvErogatoriExcell(string GridModel)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -1016,7 +1021,7 @@ namespace SystemWeb.Controllers
             ExcelExport exp = new ExcelExport();
             MyDbContext context = new MyDbContext();
             Guid now = Guid.NewGuid();
-            IEnumerable DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.Value).ToList();
+            IEnumerable DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
 
             GridProperties obj = ConvertGridObject(GridModel);
 
@@ -1024,11 +1029,13 @@ namespace SystemWeb.Controllers
             obj.Columns[3].DataSource = context.Product.ToList();
             obj.Columns[4].DataSource = context.Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
 
-            exp.Export(obj, DataSource, now.ToString() + " - Carico.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            exp.Export(obj, DataSource, now.ToString() + " - Contatori.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        [Route("user/carico/erogatoriword")]
-        public void PvErogatoriWord(string GridModel)
+        [Route("user/contatori/erogatoriword")]
+        public ActionResult PvErogatoriWord(string GridModel)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -1041,7 +1048,7 @@ namespace SystemWeb.Controllers
             Guid now = Guid.NewGuid();
             WordExport exp = new WordExport();
 
-            IEnumerable DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.Value).ToList();
+            IEnumerable DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
 
             GridProperties obj = ConvertGridObject(GridModel);
 
@@ -1049,11 +1056,13 @@ namespace SystemWeb.Controllers
             obj.Columns[3].DataSource = context.Product.ToList();
             obj.Columns[4].DataSource = context.Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
 
-            exp.Export(obj, DataSource, now.ToString() + " - Carico.docx", false, false, "flat-saffron");
+            exp.Export(obj, DataSource, now.ToString() + " - Contatori.docx", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        [Route("user/carico/erogatoripdf")]
-        public void PvErogatoriPdf(string GridModel)
+        [Route("user/contatori/erogatoripdf")]
+        public ActionResult PvErogatoriPdf(string GridModel)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -1068,7 +1077,7 @@ namespace SystemWeb.Controllers
 
             PdfExport exp = new PdfExport();
 
-            IEnumerable DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.Value).ToList();
+            IEnumerable DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
 
             GridProperties obj = ConvertGridObject(GridModel);
 
@@ -1076,7 +1085,9 @@ namespace SystemWeb.Controllers
             obj.Columns[3].DataSource = context.Product.ToList();
             obj.Columns[4].DataSource = context.Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
 
-            exp.Export(obj, DataSource, now.ToString() + " - Carico.pdf", false, false, "flat-saffron");
+            exp.Export(obj, DataSource, now.ToString() + " - Contatori.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult PvErogatoriChart()
@@ -1876,7 +1887,7 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvCali
-        //[Route("user/pvcali")]
+        [Route("user/cali")]
         public ActionResult PvCali(/*string sortOrder, string currentFilter, string searchString, int? page, */DateTime? dateFrom, DateTime? dateTo)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -1887,7 +1898,7 @@ namespace SystemWeb.Controllers
             //System.Web.HttpContext.Current.Session["Cali"] = null;
             //ViewData["PVTANKID"] = PVTANKID;
             //MyDbContext context = new MyDbContext();
-            IEnumerable DataSource = new MyDbContext().PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
+            IEnumerable DataSource = new MyDbContext().PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
             ViewBag.datasource = DataSource;
 
             IEnumerable DataSource2 = new MyDbContext().PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
@@ -2047,7 +2058,7 @@ namespace SystemWeb.Controllers
             }
         }
         */
-        //[Route("user/pvcali/updatecalo")]
+        [Route("user/cali/update")]
         public ActionResult UpdateCalo(PvCali value)
         {
             #region Initial var
@@ -2063,7 +2074,7 @@ namespace SystemWeb.Controllers
             return Json(value, JsonRequestBehavior.AllowGet);
         }
 
-        //[Route("user/pvcali/insertcalo")]
+        [Route("user/cali/insert")]
         public ActionResult InsertCalo(PvCali value)
         {
             #region Initial var
@@ -2079,7 +2090,7 @@ namespace SystemWeb.Controllers
             return Json(value, JsonRequestBehavior.AllowGet);
         }
 
-        //[Route("user/pvcali/removecalo")]
+        [Route("user/cali/remove")]
         public ActionResult RemoveCalo(Guid key)
         {
             #region Initial var
@@ -2100,8 +2111,8 @@ namespace SystemWeb.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public void CaliExcell(string GridModel)
-
+        [Route("user/cali/caliexcell")]
+        public ActionResult CaliExcell(string GridModel)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -2113,7 +2124,7 @@ namespace SystemWeb.Controllers
             ExcelExport exp = new ExcelExport();
             MyDbContext context = new MyDbContext();
             Guid now = Guid.NewGuid();
-            IEnumerable DataSource = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
+            IEnumerable DataSource = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
 
             GridProperties obj = ConvertGridObject(GridModel);
 
@@ -2121,10 +2132,11 @@ namespace SystemWeb.Controllers
 
             exp.Export(obj, DataSource, now.ToString() + " - Cali.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
 
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        public void CaliWord(string GridModel)
-
+        [Route("user/cali/caliword")]
+        public ActionResult CaliWord(string GridModel)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -2137,7 +2149,7 @@ namespace SystemWeb.Controllers
             Guid now = Guid.NewGuid();
             WordExport exp = new WordExport();
 
-            IEnumerable DataSource = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
+            IEnumerable DataSource = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
 
             GridProperties obj = ConvertGridObject(GridModel);
 
@@ -2145,10 +2157,11 @@ namespace SystemWeb.Controllers
 
             exp.Export(obj, DataSource, now.ToString() + " - Cali.docx", false, false, "flat-saffron");
 
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        public void CaliPdf(string GridModel)
-
+        [Route("user/cali/calipdf")]
+        public ActionResult CaliPdf(string GridModel)
         {
             #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -2163,7 +2176,7 @@ namespace SystemWeb.Controllers
 
             PdfExport exp = new PdfExport();
 
-            IEnumerable DataSource = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
+            IEnumerable DataSource = context.PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
 
             GridProperties obj = ConvertGridObject(GridModel);
 
@@ -2171,7 +2184,7 @@ namespace SystemWeb.Controllers
 
             exp.Export(obj, DataSource, now.ToString() + " - Cali.pdf", false, false, "flat-saffron");
 
-
+            return Json(JsonRequestBehavior.AllowGet);
         }
         private GridProperties ConvertGridObject(string gridProperty)
         {

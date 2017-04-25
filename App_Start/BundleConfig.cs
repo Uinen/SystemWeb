@@ -134,7 +134,9 @@ namespace SystemWeb
 
             bundles.Add(new ScriptBundle("~/bundles/GridOption").Include(
                 "~/Scripts/ActionComplete.js",
-                "~/Scripts/ejDatePickerOption.js"));
+                "~/Scripts/ejDatePickerOption.js",
+                "~/Scripts/ej/i18n/ej.culture.it-IT.min.js"));
+
             #endregion
         }
     }

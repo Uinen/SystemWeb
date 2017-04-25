@@ -48,13 +48,12 @@
                         border-width: 0px !important;
                     }
                 </style>
-                <script src="@Url.Content("~/Scripts/ej/i18n/ej.culture.it-IT.min.js")"></script>
                 @(Html.EJ().Grid<PvErogatori>("FlatGridErogatori")
                     .Locale("it-IT")
                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
-                    .UpdateURL("updateerogatori")
-                    .InsertURL("inserterogatori")
-                    .RemoveURL("removeerogatori")
+                    .UpdateURL("update")
+                    .InsertURL("insert")
+                    .RemoveURL("remove")
                     .Adaptor(AdaptorType.RemoteSaveAdaptor))
                     .AllowGrouping()
                     .AllowPaging()
@@ -88,9 +87,9 @@
                         });
                     })
 
-                    .Mappers(map => map.ExportToExcelAction("PvErogatoriExcell")
-                                    .ExportToPdfAction("PvErogatoriPdf")
-                                    .ExportToWordAction("PvErogatoriWord"))
+                    .Mappers(map => map.ExportToExcelAction("contatori/erogatoriexcell")
+                                    .ExportToPdfAction("contatori/erogatoripdf")
+                                    .ExportToWordAction("contatori/erogatoriword"))
                     .Columns(col =>
                     {
                         col.Field(p => p.PvErogatoriId).HeaderText("ID Rilevazione").IsPrimaryKey(true).Visible(false).Add();
