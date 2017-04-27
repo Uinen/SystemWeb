@@ -8,14 +8,6 @@
                 @using (Html.BeginForm("PvCali", "User", FormMethod.Get))
                 {
                     <div class="grid-filter">
-                        <div class="inner">
-                            <div class="item">
-                                <p class="text-primary">
-                                    Cerca per data: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-                                    <input type="submit" value="Cerca" />
-                                </p>
-                            </div>
-                        </div>
                         <form id="date-range-form" action="@Url.Action("PvCali", "User")" method="post">
                             <h5 class="alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma dei cali sul impianto in funzione del range selezionato.</h5>
                             <h5 class="alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
@@ -76,19 +68,12 @@
                                     .ToolbarSettings(toolBar => toolBar.ShowToolbar().ToolbarItems(items =>
                                     {
                                         items.AddTool(ToolBarItems.Add);
-
                                         items.AddTool(ToolBarItems.Edit);
-
                                         items.AddTool(ToolBarItems.Delete);
-
                                         items.AddTool(ToolBarItems.Cancel);
-
                                         items.AddTool(ToolBarItems.Search);
-
                                         items.AddTool(ToolBarItems.ExcelExport);
-
                                         items.AddTool(ToolBarItems.WordExport);
-
                                         items.AddTool(ToolBarItems.PdfExport);
 
                                     }))
@@ -98,9 +83,9 @@
                                         filter.FilterType(FilterType.Excel);
                                     })
 
-                                    .Mappers(map => map.ExportToExcelAction("cali/caliexcell")
-                                    .ExportToPdfAction("cali/calipdf")
-                                    .ExportToWordAction("cali/caliword"))
+                                    .Mappers(map => map.ExportToExcelAction("caliexcell")
+                                    .ExportToPdfAction("calipdf")
+                                    .ExportToWordAction("caliword"))
                                     .Columns(col =>
                                     {
                                         col.Field(p => p.PvCaliId).HeaderText("ID Calo").IsPrimaryKey(true).Visible(false).Width(45).Add();

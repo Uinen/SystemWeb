@@ -8,96 +8,50 @@ namespace SystemWeb.Repository
 {
     public static class OrderRepository
     {
-        /*
-        public static IList<CaricoDto> GetAllRecords()
-        {
-            IList<CaricoDto> orders = (IList<CaricoDto>)HttpContext.Current.Session["Orders"];
-
-            if (orders == null)
-            {
-                var context = new SystemWebDataContext();
-                int number = int.MaxValue;
-                HttpContext.Current.Session["Orders"] = orders = (from ord in context.Carico.Take(number)
-                                                                  join year in context.Year on ord.yearId equals year.yearId
-                                                                  join pv in context.Pv on ord.pvID equals pv.pvID
-                                                                  select new CaricoDto
-                                                                  {
-                                                                      Id = ord.Id,
-                                                                      pvID = ord.pvID,
-                                                                      pvName = pv.pvName,
-                                                                      yearId = year.Anno.Year,
-                                                                      Ordine = ord.Ordine,
-                                                                      cData = ord.cData,
-                                                                      Documento = ord.Documento,
-                                                                      Numero = ord.Numero,
-                                                                      rData = ord.rData,
-                                                                      Emittente = ord.Emittente,
-                                                                      Benzina = ord.Benzina,
-                                                                      Gasolio = ord.Gasolio,
-                                                                      Note = ord.Note
-                                                                  }).ToList();
-                
-            }
-            return orders;
-        }*/
-
-        public static void Add(Carico order)
+        public static void Add(Carico value)
         {
             var context = new MyDbContext();
-            context.Carico.Add(order);
+            context.Carico.Add(value);
+            context.SaveChanges();
         }
 
-        public static void Add(List<Carico> order)
+        public static void Add(List<Carico> value)
         {
-            foreach (var temp in order)
+            foreach (var temp in value)
             {
                 var context = new MyDbContext();
                 context.Carico.Add(temp);
+                context.SaveChanges();
             }
         }
-        /*
-        public static void Delete(Guid Id)
-        {
-            CaricoDto result = GetAllRecords().Where(o => o.Id == Id).FirstOrDefault();
-            GetAllRecords().Remove(result);
-        }
 
-        public static void Delete(List<CaricoDto> order)
-        {
-            foreach (var temp in order)
-            {
-                CaricoDto result = GetAllRecords().Where(o => o.Id == temp.Id).FirstOrDefault();
-                GetAllRecords().Remove(result);
-            }
-        }*/
-
-        public static void Update(Carico order)
+        public static void Update(Carico value)
         {
             var context = new MyDbContext();
-            Carico result = context.Carico.Where(o => o.Id == order.Id).FirstOrDefault();
+            Carico result = context.Carico.Where(o => o.Id == value.Id).FirstOrDefault();
             if (result != null)
             {
-                result.Id = order.Id;
-                result.yearId = order.yearId;
-                result.Ordine = order.Ordine;
-                result.cData = order.cData;
-                result.Documento = order.Documento;
-                result.Numero = order.Numero;
-                result.rData = order.rData;
-                result.Emittente = order.Emittente;
-                result.Benzina = order.Benzina;
-                result.Gasolio = order.Gasolio;
-                result.Note = order.Note;
+                result.Id = value.Id;
+                result.yearId = value.yearId;
+                result.Ordine = value.Ordine;
+                result.cData = value.cData;
+                result.Documento = value.Documento;
+                result.Numero = value.Numero;
+                result.rData = value.rData;
+                result.Emittente = value.Emittente;
+                result.Benzina = value.Benzina;
+                result.Gasolio = value.Gasolio;
+                result.Note = value.Note;
 
-                context.Entry(result).CurrentValues.SetValues(order);
+                context.Entry(result).CurrentValues.SetValues(value);
                 context.Entry(result).State = EntityState.Modified;
                 context.SaveChanges();
             }
         }
 
-        public static void Update(List<Carico> order)
+        public static void Update(List<Carico> value)
         {
-            foreach (var temp in order)
+            foreach (var temp in value)
             {
                 var context = new MyDbContext();
                 Carico result = context.Carico.Where(o => o.Id == temp.Id).FirstOrDefault();

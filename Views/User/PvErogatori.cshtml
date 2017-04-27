@@ -76,6 +76,7 @@
                     {
                         toolbar.ShowToolbar().ToolbarItems(items =>
                         {
+                            items.AddTool(ToolBarItems.Add);
                             items.AddTool(ToolBarItems.Edit);
                             items.AddTool(ToolBarItems.Delete);
                             items.AddTool(ToolBarItems.Update);
@@ -87,9 +88,9 @@
                         });
                     })
 
-                    .Mappers(map => map.ExportToExcelAction("contatori/erogatoriexcell")
-                                    .ExportToPdfAction("contatori/erogatoripdf")
-                                    .ExportToWordAction("contatori/erogatoriword"))
+                    .Mappers(map => map.ExportToExcelAction("erogatoriexcell")
+                                    .ExportToPdfAction("erogatoripdf")
+                                    .ExportToWordAction("erogatoriword"))
                     .Columns(col =>
                     {
                         col.Field(p => p.PvErogatoriId).HeaderText("ID Rilevazione").IsPrimaryKey(true).Visible(false).Add();

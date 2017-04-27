@@ -267,10 +267,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdaptiveController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PayPalController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UsersImageController.cs" />
+    <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Helpers\Application.cs" />
     <Compile Include="Helpers\CacheProfileName.cs" />
@@ -323,7 +327,10 @@
       <DependentUpon>SystemWeb.dbml</DependentUpon>
     </Compile>
     <Compile Include="Repository\CaliRepository.cs" />
-    <Compile Include="Repository\CaricoRepository.cs" />
+    <Compile Include="Repository\DeficienzeRepository.cs" />
+    <Compile Include="Repository\DispenserRepository.cs" />
+    <Compile Include="Repository\Interface\iPvDeficienzeRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\CaricoRepository.cs" />
     <Compile Include="Repository\ContatoriRepository.cs" />
     <Compile Include="Repository\Interface\iCaricoRepository.cs" />
     <Compile Include="Repository\Interface\iProductRepository.cs" />
@@ -332,11 +339,13 @@
     <Compile Include="Repository\Interface\iPvRepository.cs" />
     <Compile Include="Repository\Interface\iUsersImageRepository.cs" />
     <Compile Include="Repository\OrderRepository.cs" />
-    <Compile Include="Repository\ProductRepository.cs" />
-    <Compile Include="Repository\PvCaliRepository.cs" />
-    <Compile Include="Repository\PvErogatoriRepository.cs" />
-    <Compile Include="Repository\PvRepository.cs" />
-    <Compile Include="Repository\UsersImageRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\ProductRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\PvCaliRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\PvDeficienzeRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\PvErogatoriRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\PvRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\UsersImageRepository.cs" />
+    <Compile Include="Repository\TankRepository.cs" />
     <Compile Include="Services\BrowserConfig\BrowserConfigService.cs" />
     <Compile Include="Services\BrowserConfig\IBrowserConfigService.cs" />
     <Compile Include="Services\Cache\CacheService.cs" />
@@ -357,9 +366,6 @@
     <Compile Include="Services\Sitemap\SitemapService.cs" />
     <Compile Include="ViewModels\IRegistrationViewModel.cs" />
     <Compile Include="ViewModels\MapDesignerViewModel.cs" />
-    <Compile Include="Controllers\PayPalController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1076,10 +1082,6 @@
     <Content Include="Views\User\TaskDetails.cshtml" />
     <Content Include="Views\User\TaskEdit.cshtml" />
     <Content Include="Views\User\Task.cshtml" />
-    <Content Include="Views\User\DispenserCreate.cshtml" />
-    <Content Include="Views\User\DispenserDelete.cshtml" />
-    <Content Include="Views\User\DispenserDetails.cshtml" />
-    <Content Include="Views\User\DispenserEdit.cshtml" />
     <Content Include="Views\User\Dispenser.cshtml" />
     <Content Include="Views\Admin\FlagsCreate.cshtml" />
     <Content Include="Views\Admin\FlagsDelete.cshtml" />
@@ -1107,9 +1109,6 @@
     <Content Include="Views\Admin\ProductsEdit.cshtml" />
     <Content Include="Views\Admin\Products.cshtml" />
     <Content Include="Views\User\PvErogatoriCreate.cshtml" />
-    <Content Include="Views\User\PvErogatoriDelete.cshtml" />
-    <Content Include="Views\User\PvErogatoriDetails.cshtml" />
-    <Content Include="Views\User\PvErogatoriEdit.cshtml" />
     <Content Include="Views\User\PvErogatori.cshtml" />
     <Content Include="Views\User\PvProfilesCreate.cshtml" />
     <Content Include="Views\User\PvProfilesDelete.cshtml" />
@@ -1117,10 +1116,6 @@
     <Content Include="Views\User\PvProfilesEdit.cshtml" />
     <Content Include="Views\User\PvProfiles.cshtml" />
     <Content Include="Views\User\PvProfilesError.cshtml" />
-    <Content Include="Views\User\PvTanksCreate.cshtml" />
-    <Content Include="Views\User\PvTanksDelete.cshtml" />
-    <Content Include="Views\User\PvTanksDetails.cshtml" />
-    <Content Include="Views\User\PvTanksEdit.cshtml" />
     <Content Include="Views\User\PvTanks.cshtml" />
     <Content Include="Views\User\PvCreate.cshtml" />
     <Content Include="Views\User\PvDelete.cshtml" />
@@ -1157,7 +1152,6 @@
     <Content Include="Views\User\_TotalPartial.cshtml" />
     <Content Include="Views\User\CaricoChart.cshtml" />
     <Content Include="Views\Shared\_TotalPartialErog.cshtml" />
-    <Content Include="Views\User\PvErogatoriChart.cshtml" />
     <Content Include="Views\Admin\YearsCreate.cshtml" />
     <Content Include="Views\Admin\YearsDelete.cshtml" />
     <Content Include="Views\Admin\YearsDetails.cshtml" />
@@ -1172,15 +1166,9 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Error\Unknown.cshtml" />
     <Content Include="Views\User\PvDeficienzeCreate.cshtml" />
-    <Content Include="Views\User\PvDeficienzeDelete.cshtml" />
-    <Content Include="Views\User\PvDeficienzeDetails.cshtml" />
-    <Content Include="Views\User\PvDeficienzeEdit.cshtml" />
     <Content Include="Views\User\PvDeficienze.cshtml" />
     <Content Include="Views\Shared\_TotalPartialDef.cshtml" />
     <Content Include="Views\User\PvCaliCreate.cshtml" />
-    <Content Include="Views\User\PvCaliDelete.cshtml" />
-    <Content Include="Views\User\PvCaliDetails.cshtml" />
-    <Content Include="Views\User\PvCaliEdit.cshtml" />
     <Content Include="Views\User\PvCali.cshtml" />
     <Content Include="Views\Shared\_TotalPartialCal.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />

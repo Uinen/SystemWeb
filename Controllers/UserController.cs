@@ -35,6 +35,7 @@ namespace SystemWeb.Controllers
         private iPvRepository _PvRepository;
         private iPvErogatoriRepository _PvErogatoriRepository;
         private iPvCaliRepository _PvCaliRepository;
+        private iPvDeficienzeRepository _PvDeficienzeRepository;
         public string ly { get; set; }
 
         public UserController()
@@ -43,6 +44,7 @@ namespace SystemWeb.Controllers
             this._PvRepository = new PvRepository(new MyDbContext());
             this._PvErogatoriRepository = new PvErogatoriRepository(new MyDbContext());
             this._PvCaliRepository = new PvCaliRepository(new MyDbContext());
+            this._PvDeficienzeRepository = new PvDeficienzeRepository(new MyDbContext());
         }
 
         public UserController(ApplicationUserManager userManager)
@@ -869,7 +871,7 @@ namespace SystemWeb.Controllers
             ly = lastYear.ToString();
             #endregion
 
-            var DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
+            var DataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(ly)) && c.Dispenser.isActive == true).OrderBy(o => o.FieldDate).ToList();
             ViewBag.datasource = DataSource;
 
             IEnumerable DataSource2 = new MyDbContext().Pv.Where(a => currentUser.pvID == a.pvID).ToList();
@@ -878,7 +880,7 @@ namespace SystemWeb.Controllers
             IEnumerable DataSource3 = new MyDbContext().Product.ToList();
             ViewBag.datasource3 = DataSource3;
 
-            IEnumerable DataSource4 = new MyDbContext().Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+            IEnumerable DataSource4 = new MyDbContext().Dispenser/*.Include(c => c.PvTank)*/.Where(a => currentUser.pvID == a.PvTank.pvID && a.isActive == true).ToList();
             ViewBag.datasource4 = DataSource4;
 
             #region IF dateFrom == null | dateTo == null
@@ -971,7 +973,7 @@ namespace SystemWeb.Controllers
 
             MyDbContext context = new MyDbContext();
             ContatoriRepository.Update(value);
-            var data = context.PvErogatori.Include(i => i.Pv).Include(i => i.Product).Include(i => i.Dispenser).Where(c => currentUser.pvID == c.pvID && c.FieldDate.Year.ToString().Contains(ly));
+            var data = context.PvErogatori/*.Include(i => i.Pv).Include(i => i.Product).Include(i => i.Dispenser)*/.Where(c => currentUser.pvID == c.pvID && c.FieldDate.Year.ToString().Contains(ly));
             return Json(value, JsonRequestBehavior.AllowGet);
         }
         [Route("user/contatori/insert")]
@@ -986,7 +988,7 @@ namespace SystemWeb.Controllers
 
             MyDbContext context = new MyDbContext();
             ContatoriRepository.Add(value);
-            var data = context.PvErogatori.Include(i => i.Pv).Include(i => i.Product).Include(i => i.Dispenser).Where(c => currentUser.pvID == c.pvID && c.FieldDate.Year.ToString().Contains(ly));
+            var data = context.PvErogatori/*.Include(i => i.Pv).Include(i => i.Product).Include(i => i.Dispenser)*/.Where(c => currentUser.pvID == c.pvID && c.FieldDate.Year.ToString().Contains(ly));
             return Json(value, JsonRequestBehavior.AllowGet);
         }
 
@@ -1027,7 +1029,7 @@ namespace SystemWeb.Controllers
 
             obj.Columns[2].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
             obj.Columns[3].DataSource = context.Product.ToList();
-            obj.Columns[4].DataSource = context.Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+            obj.Columns[4].DataSource = context.Dispenser/*.Include(c => c.PvTank)*/.Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
 
             exp.Export(obj, DataSource, now.ToString() + " - Contatori.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
 
@@ -1054,7 +1056,7 @@ namespace SystemWeb.Controllers
 
             obj.Columns[2].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
             obj.Columns[3].DataSource = context.Product.ToList();
-            obj.Columns[4].DataSource = context.Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+            obj.Columns[4].DataSource = context.Dispenser/*.Include(c => c.PvTank)*/.Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
 
             exp.Export(obj, DataSource, now.ToString() + " - Contatori.docx", false, false, "flat-saffron");
 
@@ -1083,7 +1085,7 @@ namespace SystemWeb.Controllers
 
             obj.Columns[2].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
             obj.Columns[3].DataSource = context.Product.ToList();
-            obj.Columns[4].DataSource = context.Dispenser.Include(c => c.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+            obj.Columns[4].DataSource = context.Dispenser/*.Include(c => c.PvTank)*/.Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
 
             exp.Export(obj, DataSource, now.ToString() + " - Contatori.pdf", false, false, "flat-saffron");
 
@@ -1483,117 +1485,154 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvTanks
-      
+        [Route("user/tank")]
         public ActionResult PvTanks()
         {
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName");
+            #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<SystemWeb.Models.PvTank> pvTank = db.PvTank
-                .Where(c => currentUser.pvID == c.pvID)
-                .Include(p => p.Product)
-                .Include(p => p.Pv);
-            var sql = pvTank.ToString();
-            return View(pvTank.ToList());
-        }
-      
-        public ActionResult PvTanksDetails(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.PvTank pvTank = db.PvTank.Find(id);
-            if (pvTank == null)
-            {
-                return HttpNotFound();
-            }
-            return View(pvTank);
-        }
-       
-        public ActionResult PvTanksCreate()
-        {
-            ViewBag.ProductId = new SelectList(db.Product, "ProductId", "Nome");
-            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<SystemWeb.Models.Pv> pv = db.Pv
-                .Where(c => currentUser.pvID == c.pvID);
-            var sql = pv.ToList();
-            ViewBag.pvID = new SelectList(pv, "pvID", "pvName");
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            var DataSource = new MyDbContext().PvTank.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.Modello).ToList();
+            ViewBag.datasource = DataSource;
+
+            IEnumerable DataSource2 = new MyDbContext().Pv.Where(c => currentUser.pvID == c.pvID).ToList();
+            ViewBag.datasource2 = DataSource2;
+
+            IEnumerable DataSource3 = new MyDbContext().Product.ToList();
+            ViewBag.datasource3 = DataSource3;
+
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult PvTanksCreate([Bind(Include = "PvTankId,pvID,ProductId,Modello,Anno,Capienza,Giacenza,Descrizione")] SystemWeb.Models.PvTank pvTank)
+        [Route("user/tank/update")]
+        public ActionResult UpdatePvTanks(PvTank value)
         {
-            if (ModelState.IsValid)
-            {
-                pvTank.PvTankId = Guid.NewGuid();
-                db.PvTank.Add(pvTank);
-                db.SaveChanges();
-                return RedirectToAction("PvTanks");
-            }
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
 
-            ViewBag.ProductId = new SelectList(db.Product, "ProductId", "Nome", pvTank.ProductId);
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName", pvTank.pvID);
-            return View(pvTank);
+            MyDbContext context = new MyDbContext();
+            TankRepository.Update(value);
+            var data = context.PvTank.Where(c => currentUser.pvID == c.pvID);
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
-    
-        public ActionResult PvTanksEdit(Guid? id)
+        [Route("user/tank/insert")]
+        public ActionResult InsertPvTanks(PvTank value)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.PvTank pvTank = db.PvTank.Find(id);
-            if (pvTank == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.ProductId = new SelectList(db.Product, "ProductId", "Nome", pvTank.ProductId);
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName", pvTank.pvID);
-            return View(pvTank);
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            TankRepository.Add(value);
+            var data = context.PvTank.Where(c => currentUser.pvID == c.pvID);
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult PvTanksEdit([Bind(Include = "PvTankId,pvID,ProductId,Modello,Anno,Capienza,Giacenza,Descrizione")] SystemWeb.Models.PvTank pvTank)
+        [Route("user/tank/remove")]
+        public ActionResult RemovePvTanks(Guid key)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(pvTank).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("PvTanks");
-            }
-            ViewBag.ProductId = new SelectList(db.Product, "ProductId", "Nome", pvTank.ProductId);
-            ViewBag.pvID = new SelectList(db.Pv, "pvID", "pvName", pvTank.pvID);
-            return View(pvTank);
-        }
-       
-        public ActionResult PvTanksDelete(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.PvTank pvTank = db.PvTank.Find(id);
-            if (pvTank == null)
-            {
-                return HttpNotFound();
-            }
-            return View(pvTank);
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            context.PvTank.Remove(context.PvTank.Single(o => o.PvTankId == key));
+            context.SaveChanges();
+
+            var data = context.PvTank.Where(c => currentUser.pvID == c.pvID);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost, ActionName("PvTanksDelete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult PvTanksDeleteConfirmed(Guid id)
+        [Route("user/tank/tanksexcell")]
+        public ActionResult PvTanksExcell(string GridModel)
         {
-            SystemWeb.Models.PvTank pvTank = db.PvTank.Find(id);
-            db.PvTank.Remove(pvTank);
-            db.SaveChanges();
-            return RedirectToAction("PvTanks");
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            ExcelExport exp = new ExcelExport();
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            IEnumerable DataSource = context.PvTank.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.Modello).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = context.Product.ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - PvTank.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
         }
+
+        [Route("user/tank/tanksword")]
+        public ActionResult PvTanksWord(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            WordExport exp = new WordExport();
+
+            IEnumerable DataSource = context.PvTank.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.Modello).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = context.Product.ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - PvTank.docx", false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/tank/tankspdf")]
+        public ActionResult PvTanksPdf(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+
+            Guid now = Guid.NewGuid();
+
+            PdfExport exp = new PdfExport();
+
+            IEnumerable DataSource = context.PvTank.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.Modello).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = context.Product.ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - PvTank.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region PvTanksDesc
@@ -1697,17 +1736,28 @@ namespace SystemWeb.Controllers
 
         #region PvDeficienze
    
-        public ActionResult PvDeficienze(string sortOrder, string currentFilter, string searchString, int? page, DateTime? dateFrom, DateTime? dateTo)
+        public ActionResult PvDeficienze(DateTime? dateFrom, DateTime? dateTo)
         {
+            #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            IEnumerable DataSource = new MyDbContext().PvDeficienze.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
+            ViewBag.datasource = DataSource;
+
+            IEnumerable DataSource2 = new MyDbContext().PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            ViewBag.dataSource2 = DataSource2;
 
             if (dateFrom == null | dateTo == null)
             {
                 dateFrom = new DateTime(2016, 12, 31);
                 dateTo = DateTime.Now;
 
-                var getAll = from a in db.PvDeficienze.ToList()
+                var getAll = from a in _PvDeficienzeRepository.GetRecords().ToList()
                              where (Convert.ToDateTime(a.FieldDate) >= dateFrom)
                                    && (Convert.ToDateTime(a.FieldDate) <= dateTo)
                              select a;
@@ -1729,7 +1779,7 @@ namespace SystemWeb.Controllers
 
             if (dateFrom != null | dateTo != null)
             {
-                var getAll = from a in db.PvDeficienze.ToList()
+                var getAll = from a in _PvDeficienzeRepository.GetRecords().ToList()
                              where (currentUser.pvID == a.PvTank.pvID
                                    && (Convert.ToDateTime(a.FieldDate) >= dateFrom)
                                    && (Convert.ToDateTime(a.FieldDate) <= dateTo))
@@ -1747,68 +1797,136 @@ namespace SystemWeb.Controllers
                 ViewBag.PvDeficienzeSumBByDate = SumB;
             }
 
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Deficienze_Desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewBag.PvTank = new SelectList(db.PvTank, "pvID", "pvName");
+            return View();
+        }
 
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
 
-            ViewBag.CurrentFilter = searchString;
-
+        [Route("user/deficienze/update")]
+        public ActionResult UpdateDeficienze(PvDeficienze value)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
             lastYear = DateTime.Today.Year;
             ly = lastYear.ToString();
+            #endregion
 
-            IQueryable<SystemWeb.Models.PvDeficienze> pvDeficienze = (from r in db.PvDeficienze
-                                                   select r)
-                .Where(c => currentUser.pvID == c.PvTank.pvID && c.FieldDate.Year.ToString().Contains(ly))
-                .Include(c => c.PvTank)
-                .OrderBy(q => (q.FieldDate));
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                pvDeficienze = pvDeficienze.Where(s => s.FieldDate.ToString().Contains(searchString.ToUpper()));
-                //pvErogatori = pvErogatori.Where(s => s.Value.ToString().Contains(searchString.ToUpper()));
-            }
-
-            switch (sortOrder)
-            {
-                case "date_desc":
-                    pvDeficienze = pvDeficienze.OrderByDescending(s => s.FieldDate);
-                    //pvErogatori = pvErogatori.OrderByDescending(s => s.Value);
-                    break;
-                default:
-                    pvDeficienze = pvDeficienze.OrderBy(s => s.FieldDate);
-                    //pvErogatori = pvErogatori.OrderBy(s => s.Value);
-                    break;
-            }
-            int pageSize = 10;
-            int pageNumber = (page ?? 1);
-
-            return View(pvDeficienze.ToPagedList(pageNumber, pageSize));
+            MyDbContext context = new MyDbContext();
+            DeficienzeRepository.Update(value);
+            var data = context.PvDeficienze.Include(i => i.PvTank).Where(c => currentUser.pvID == c.PvTank.pvID && c.FieldDate.ToString().Contains(ly));
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult PvDeficienzeDetails(Guid? id)
+        [Route("user/deficienze/insert")]
+        public ActionResult InsertDeficienze(PvDeficienze value)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.PvDeficienze pvDeficienze = db.PvDeficienze.Find(id);
-            if (pvDeficienze == null)
-            {
-                return HttpNotFound();
-            }
-            return View(pvDeficienze);
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            DeficienzeRepository.Add(value);
+            var data = context.PvDeficienze.Include(i => i.PvTank).Where(c => currentUser.pvID == c.PvTank.pvID && c.FieldDate.ToString().Contains(ly));
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
 
-    
+        [Route("user/deficienze/remove")]
+        public ActionResult RemoveDeficienze(Guid key)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            context.PvDeficienze.Remove(context.PvDeficienze.Single(o => o.PvDefId == key));
+            context.SaveChanges();
+
+            var data = context.PvDeficienze.Where(c => currentUser.pvID == c.PvTank.pvID && c.FieldDate.ToString().Contains(ly));
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/deficienze/deficienzeexcell")]
+        public ActionResult DeficienzeExcell(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            ExcelExport exp = new ExcelExport();
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            IEnumerable DataSource = context.PvDeficienze.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Deficienze.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/deficienze/deficienzeword")]
+        public ActionResult DeficienzeWord(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            WordExport exp = new WordExport();
+
+            IEnumerable DataSource = context.PvDeficienze.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Deficienze.docx", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/deficienze/deficienzepdf")]
+        public ActionResult DeficienzePdf(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+
+            Guid now = Guid.NewGuid();
+
+            PdfExport exp = new PdfExport();
+
+            IEnumerable DataSource = context.PvDeficienze.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Deficienze.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult PvDeficienzeCreate()
         {
             ViewBag.PvTankId = new SelectList(db.PvTank, "PvTankId", "Modello");
@@ -1830,74 +1948,18 @@ namespace SystemWeb.Controllers
             ViewBag.PvTankId = new SelectList(db.PvTank, "PvTankId", "Modello", pvDeficienze.PvTankId);
             return View(pvDeficienze);
         }
-
-
-        public ActionResult PvDeficienzeEdit(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.PvDeficienze pvDeficienze = db.PvDeficienze.Find(id);
-            if (pvDeficienze == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.PvTankId = new SelectList(db.PvTank, "PvTankId", "Modello", pvDeficienze.PvTankId);
-            return View(pvDeficienze);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult PvDeficienzeEdit([Bind(Include = "PvDefId,PvTankId,Value,FieldDate")] SystemWeb.Models.PvDeficienze pvDeficienze)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(pvDeficienze).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.PvTankId = new SelectList(db.PvTank, "PvTankId", "Modello", pvDeficienze.PvTankId);
-            return View(pvDeficienze);
-        }
- 
-        public ActionResult PvDeficienzeDelete(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.PvDeficienze pvDeficienze = db.PvDeficienze.Find(id);
-            if (pvDeficienze == null)
-            {
-                return HttpNotFound();
-            }
-            return View(pvDeficienze);
-        }
-
-        [HttpPost, ActionName("PvDeficienzeDelete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult PvDeficienzeDeleteConfirmed(Guid id)
-        {
-            SystemWeb.Models.PvDeficienze pvDeficienze = db.PvDeficienze.Find(id);
-            db.PvDeficienze.Remove(pvDeficienze);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        
         #endregion
 
         #region PvCali
         [Route("user/cali")]
-        public ActionResult PvCali(/*string sortOrder, string currentFilter, string searchString, int? page, */DateTime? dateFrom, DateTime? dateTo)
+        public ActionResult PvCali(DateTime? dateFrom, DateTime? dateTo)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
             lastYear = DateTime.Today.Year;
             ly = lastYear.ToString();
-
-            //System.Web.HttpContext.Current.Session["Cali"] = null;
-            //ViewData["PVTANKID"] = PVTANKID;
-            //MyDbContext context = new MyDbContext();
+            
             IEnumerable DataSource = new MyDbContext().PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(ly))).OrderBy(o => o.FieldDate).ToList();
             ViewBag.datasource = DataSource;
 
@@ -1905,6 +1967,7 @@ namespace SystemWeb.Controllers
 
             ViewBag.dataSource2 = DataSource2;
 
+            #region DateFrom == Null
             if (dateFrom == null | dateTo == null)
             {
                 dateFrom = new DateTime(2016, 12, 31);
@@ -1930,7 +1993,9 @@ namespace SystemWeb.Controllers
                 ViewBag.PvCaliSumG = SumG;
                 ViewBag.PvCaliSumB = SumB;
             }
+            #endregion
 
+            #region DateFrom != null
             if (dateFrom != null | dateTo != null)
             {
                 var getAll = from a in _PvCaliRepository.GetRecords()
@@ -1950,114 +2015,11 @@ namespace SystemWeb.Controllers
                 ViewBag.PvCaliSumGByDate = SumG;
                 ViewBag.PvCaliSumBByDate = SumB;
             }
-
-            #region Old method
-            /*
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Cali_Desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewBag.PvTank = new SelectList(db.PvTank, "pvID", "pvName");
-
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            ViewBag.CurrentFilter = searchString;
-
-            lastYear = DateTime.Today.Year;
-            ly = lastYear.ToString();
-
-            IQueryable<SystemWeb.Models.PvCali> pvCali = (from r in db.PvCali
-                                                     select r)
-                .Where(c => currentUser.pvID == c.PvTank.pvID && c.FieldDate.Year.ToString().Contains(ly))
-                .Include(c => c.PvTank)
-                .OrderBy(q => (q.FieldDate));
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                pvCali = pvCali.Where(s => s.FieldDate.ToString().Contains(searchString.ToUpper()));
-                //pvErogatori = pvErogatori.Where(s => s.Value.ToString().Contains(searchString.ToUpper()));
-            }
-
-            switch (sortOrder)
-            {
-                case "date_desc":
-                    pvCali = pvCali.OrderByDescending(s => s.FieldDate);
-                    //pvErogatori = pvErogatori.OrderByDescending(s => s.Value);
-                    break;
-                default:
-                    pvCali = pvCali.OrderBy(s => s.FieldDate);
-                    //pvErogatori = pvErogatori.OrderBy(s => s.Value);
-                    break;
-            }
-            int pageSize = 10;
-            int pageNumber = (page ?? 1);
-
-            return View(pvCali.ToPagedList(pageNumber, pageSize));*/
-            #endregion
-
+            #endregion 
+            
             return View();
         }
-        /*
-        [Route("user/pvcali/pvcaligetdata")]
-        public ActionResult PvCaliGetData(DataManager dm)
-        {
-            #region Initial var
-            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = userManager.FindById(User.Identity.GetUserId());
-            lastYear = DateTime.Today.Year;
-            ly = lastYear.ToString();
-            MyDbContext context = new MyDbContext();
-            #endregion
-
-            IEnumerable DataSource = CaliRepository.GetAllRecords().Where(c => currentUser.pvID == c.pvID && (c.FieldDate.ToString().Contains(ly))).ToList();
-
-            DataResult result = new DataResult();
-            DataOperations operation = new DataOperations();
-            result.result = DataSource;
-
-            if (dm.Sorted != null && dm.Sorted.Count > 0) //Sorting 
-            {
-                result.result = operation.PerformSorting(result.result, dm.Sorted);
-            }
-
-            result.count = result.result.AsQueryable().Count();
-
-            if (dm.Skip > 0)  // for paging  
-
-                result.result = operation.PerformSkip(result.result, dm.Skip);
-
-            if (dm.Take > 0)
-
-                result.result = operation.PerformTake(result.result, dm.Take);
-
-            return Json(new { result = result.result, count = result.count }, JsonRequestBehavior.AllowGet);
-        }*/
-        /*
-        public List<object> PVTANKID
-        {
-            get
-            {
-                #region Initial var
-                var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                var currentUser = userManager.FindById(User.Identity.GetUserId());
-                #endregion
-
-                MyDbContext context = new MyDbContext();
-                IEnumerable pvtankID = context.PvCali.Include(i => i.PvTank).Where(a => currentUser.pvID == a.PvTank.pvID).Select(s => s.PvTankId).Distinct().ToList();
-                var PVTANKID = new List<object>();
-                foreach (var id in pvtankID)
-                {
-                    PVTANKID.Add(new { value = id, text = id });
-                }
-                return PVTANKID;
-            }
-        }
-        */
+       
         [Route("user/cali/update")]
         public ActionResult UpdateCalo(PvCali value)
         {
@@ -2099,9 +2061,6 @@ namespace SystemWeb.Controllers
             lastYear = DateTime.Today.Year;
             ly = lastYear.ToString();
             #endregion
-
-            /*MyDbContext context = new MyDbContext();
-            CaliRepository.Delete(id);*/
 
             MyDbContext context = new MyDbContext();
             context.PvCali.Remove(context.PvCali.Single(o => o.PvCaliId == key));
@@ -2186,6 +2145,7 @@ namespace SystemWeb.Controllers
 
             return Json(JsonRequestBehavior.AllowGet);
         }
+
         private GridProperties ConvertGridObject(string gridProperty)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -2204,21 +2164,7 @@ namespace SystemWeb.Controllers
             }
             return gridProp;
         }
-
-        public ActionResult PvCaliDetails(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.PvCali pvCali = db.PvCali.Find(id);
-            if (pvCali == null)
-            {
-                return HttpNotFound();
-            }
-            return View(pvCali);
-        }
-
+        
         public ActionResult PvCaliCreate()
         {
             ViewBag.PvTankId = new SelectList(db.PvTank, "PvTankId", "Modello");
@@ -2238,59 +2184,6 @@ namespace SystemWeb.Controllers
 
             ViewBag.PvTankId = new SelectList(db.PvTank, "PvTankId", "Modello", pvCali.PvTankId);
             return View(pvCali);
-        }
-    
-        public ActionResult PvCaliEdit(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.PvCali pvCali = db.PvCali.Find(id);
-            if (pvCali == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.PvTankId = new SelectList(db.PvTank, "PvTankId", "Modello", pvCali.PvTankId);
-            return View(pvCali);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult PvCaliEdit([Bind(Include = "PvCaliId,PvTankId,Value,FieldDate")] SystemWeb.Models.PvCali pvCali)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(pvCali).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.PvTankId = new SelectList(db.PvTank, "PvTankId", "Modello", pvCali.PvTankId);
-            return View(pvCali);
-        }
-     
-        public ActionResult PvCaliDelete(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.PvCali pvCali = db.PvCali.Find(id);
-            if (pvCali == null)
-            {
-                return HttpNotFound();
-            }
-            return View(pvCali);
-        }
-
-        [HttpPost, ActionName("PvCaliDelete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult PvCaliDeleteConfirmed(Guid id)
-        {
-            SystemWeb.Models.PvCali pvCali = db.PvCali.Find(id);
-            db.PvCali.Remove(pvCali);
-            db.SaveChanges();
-            return RedirectToAction("Index");
         }
 
         #endregion 
@@ -2631,47 +2524,149 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region Dispenser
- 
-        public ActionResult Dispenser(string sortOrder, string currentFilter, string searchString, int? page)
+        [Route("user/dispenser")]
+        public ActionResult Dispenser()
         {
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "Dispenser_Desc" : "";
-            ViewBag.PvTankId = new SelectList(db.PvTank, "pvTankId", "Modello");
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            ViewBag.CurrentFilter = searchString;
+            #region Initial var
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<Dispenser> dispenser = (from r in db.Dispenser
-                                               select r)
-                .Where(c => currentUser.pvID == c.PvTank.pvID)
-                .Include(c => c.PvTank)
-                .OrderBy(q => (q.Modello));
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                dispenser = dispenser.Where(s => s.Modello.ToString().Contains(searchString.ToUpper()));
-            }
-            switch (sortOrder)
-            {
-                case "Dispenser_Desc":
-                    dispenser = dispenser.OrderByDescending(s => s.Modello);
-                    break;
-                default:
-                    dispenser = dispenser.OrderBy(s => s.Modello);
-                    break;
-            }
-            int pageSize = 9;
-            int pageNumber = (page ?? 1);
-            return View(dispenser.ToPagedList(pageNumber, pageSize));
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            var DataSource = new MyDbContext().Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID).OrderBy(o => o.Modello).ToList();
+            ViewBag.datasource = DataSource;
+
+            IEnumerable DataSource2 = new MyDbContext().PvTank.Where(c => currentUser.pvID == c.pvID).ToList();
+            ViewBag.datasource2 = DataSource2;
+            
+            return View();
         }
-      
+
+        [Route("user/dispenser/update")]
+        public ActionResult UpdateDispenser(Dispenser value)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            DispenserRepository.Update(value);
+            var data = context.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+        [Route("user/dispenser/insert")]
+        public ActionResult InsertDispenser(Dispenser value)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            DispenserRepository.Add(value);
+            var data = context.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/dispenser/remove")]
+        public ActionResult RemoveDispenser(Guid key)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            context.Dispenser.Remove(context.Dispenser.Single(o => o.DispenserId == key));
+            context.SaveChanges();
+
+            var data = context.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/dispenser/dispenserexcell")]
+        public ActionResult DispenserExcell(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            ExcelExport exp = new ExcelExport();
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            IEnumerable DataSource = context.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID).OrderBy(o => o.Modello).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Dispenser.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/dispenser/dispenserword")]
+        public ActionResult DispenserWord(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            Guid now = Guid.NewGuid();
+            WordExport exp = new WordExport();
+
+            IEnumerable DataSource = context.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID).OrderBy(o => o.Modello).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Dispenser.docx", false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/dispenser/dispenserpdf")]
+        public ActionResult DispenserPdf(string GridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+
+            Guid now = Guid.NewGuid();
+
+            PdfExport exp = new PdfExport();
+
+            IEnumerable DataSource = context.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID).OrderBy(o => o.Modello).ToList();
+
+            GridProperties obj = ConvertGridObject(GridModel);
+
+            obj.Columns[1].DataSource = context.PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, DataSource, now.ToString() + " - Dispenser.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        /*
         public ActionResult DispenserDetails(Guid? id)
         {
             if (id == null)
@@ -2760,7 +2755,8 @@ namespace SystemWeb.Controllers
             db.Dispenser.Remove(dispenser);
             db.SaveChanges();
             return RedirectToAction("Dispenser");
-        }
+        }*/
+
         #endregion
 
         #region Companies

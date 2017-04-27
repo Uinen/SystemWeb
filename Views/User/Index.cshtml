@@ -37,14 +37,7 @@
                                 <p class="text-success">Benzina: @ViewBag.SSPBTotalAmount Litri</p>
                                 <p class="text-danger">Diesel: @ViewBag.DieselTotalAmount Litri</p>
                                 <p class="text-warning"><strong>Totale:</strong> @ViewBag.TotalAmount Litri</p>
-                            </div>@*
-                            <div class="clearfix visible-sm-block"></div>
-                            <div class="col-sm-4 col-md-2">
-                                <p class="text-uppercase"><strong>ANNO PRECEDENTE</strong></p>
-                                <p class="text-success">Benzina: @ViewBag.SSPBTotalAmount2 Litri</p>
-                                <p class="text-danger">Diesel: @ViewBag.DieselTotalAmount2 Litri</p>
-                                <p class="text-warning"><strong>Totale:</strong> @ViewBag.TotalAmount2 Litri</p>
-                            </div>*@
+                            </div>
                             <div class="clearfix visible-sm-block"></div>
                             <div class="col-lg-4 col-md-2">
                                 <p class="text-uppercase"><strong>Obiettivo di vendita</strong></p>
@@ -63,21 +56,21 @@
                                                 <th></th>
                                                 <th></th>
                                                 <th></th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                @*<td data-title="1">@Html.ActionLink("Inserimento Password", "Area")</td>*@
                                                 <td data-title="1">@Html.ActionLink("Lista Ordini", "Carico")</td>
-                                                @*<td data-title="2">@Html.ActionLink("Gestione Azienda", "Companies")</td>*@
                                                 <td data-title="2">@Html.ActionLink("Inserimento Totalizzatori", "PvErogatoriCreate", "User")</td>
-                                                @*<td data-title="5">@Html.ActionLink("Consistenza Cassa", "Task")</td>*@
                                                 <td data-title="3">@Html.ActionLink("Inserimento Deficienze", "PvDeficienzeCreate")</td>
                                                 <td data-title="4">@Html.ActionLink("Lista Deficienze", "PvDeficienze")</td>
                                                 <td data-title="5">@Html.ActionLink("Inserimento Cali", "PvCaliCreate")</td>
                                                 <td data-title="6">@Html.ActionLink("Lista Cali", "PvCali")</td>
                                                 <td data-title="7">@Html.ActionLink("Lista Contatori", "PvErogatori")</td>
                                                 <td data-title="8">@Html.ActionLink("Upload Documenti", "File")</td>
+                                                <td data-title="9">@Html.ActionLink("Lista Dispenser", "Dispenser")</td>
+                                                <td data-title="10">@Html.ActionLink("Lista Cisterne", "PvTanks")</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -114,156 +107,5 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="center-block">
-                @using (Html.BeginForm("Dispenser", "User", FormMethod.Get))
-                {
-                    <div class="header-content">
-                        <h4 class="alert alert-info">
-                            Dispenser Assegnati
-                        </h4>
-                        <p class="text-primary">
-                            Trova il Modello: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-                            <input type="submit" value="Cerca" />
-                        </p>
-                    </div>
-                }
-            </div>
-        </div>
-        <div class="row">
-            <div class="center-block">
-                <div id="no-more-table">
-                    <table class="col-md-12 table-bordered table-striped table-condensed">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Cisterna collegata al Dispenser
-                                </th>
-                                <th>
-                                    @Html.ActionLink("Modello Dispenser", "Dispenser", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
-                                </th>
-                            </tr>
-                        </thead>
-                        @foreach (var item in Model.dispenser)
-                        {
-                            <tbody>
-                                <tr>
-                                    <td data-title="Cisterna">
-                                        @Html.DisplayFor(modelItem => item.PvTank.Modello)
-                                    </td>
-                                    <td data-title="Modello">
-                                        @Html.DisplayFor(modelItem => item.Modello)
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="center-block">
-                <div class="header-content">
-                    <h4 class="alert alert-info">
-                        Cisterne Assegnate
-                    </h4>
-                </div>
-                <br />
-                <div id="no-more-tables">
-                    <table class="col-md-12 table-bordered table-striped table-condensed">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Prodotto
-                                </th>
-                                <th>
-                                    Punto Vendita
-                                </th>
-                                <th>
-                                    Modello
-                                </th>
-                                <th>
-                                    Ultima Riconciliazione
-                                </th>
-                                <th>
-                                    Giacenza
-                                </th>
-                                <th>
-                                    Capienza
-                                </th>
-                                <th>
-                                    Descrizione
-                                </th>
-                            </tr>
-                        </thead>
-                        @foreach (SystemWeb.Models.PvTank item in Model.pvtank)
-                        {
-                            <tbody>
-                                <tr>
-                                    <td data-title="Prodotto">
-                                        @Html.DisplayFor(modelItem => item.Product.Nome)
-                                    </td>
-                                    <td data-title="Punto Vendita">
-                                        @Html.DisplayFor(modelItem => item.Pv.pvName)
-                                    </td>
-                                    <td data-title="Modello">
-                                        @Html.DisplayFor(modelItem => item.Modello)
-                                    </td>
-                                    <td data-title="Ultima Riconciliazione">
-                                        @Html.DisplayFor(modelItem => item.LastDate)
-                                    </td>
-                                    <td data-title="Giacenza">
-                                        @Html.DisplayFor(modelItem => item.Giacenza)
-                                    </td>
-                                    <td data-title="Capienza">
-                                        @Html.DisplayFor(modelItem => item.Capienza)
-                                    </td>
-                                    <td data-title="Descrizione">
-                                        @Html.DisplayFor(modelItem => item.Descrizione)
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
-                </div>
-                <!--
-            <div class="item">
-                <canvas id="myCanvas" width="144" height="50"></canvas>
-            </div>
-            <script>
-                    var canvas = document.getElementById('myCanvas');
-                    var context = canvas.getContext('2d');
-                    context.canvas.width = window.innerWidth;
-                    context.canvas.height = window.innerHeight;
-
-                    var width = Math.ceil(window.innerWidth / 16);
-                    var height = Math.ceil(window.innerHeight / 16);
-                    var imgs = [];
-                    var imgIndex = 0;
-                    for (var x = 0; x < width; x++) {
-                        for (var y = 0; y < height; y++) {
-                            var rand = Math.floor(Math.random() * 11);
-                            var texLoc = "http://4vector.com/i/free-vector-gas-pump-clip-art_110105_Gas_Pump_clip_art_hight.png";
-
-                            imgs[imgIndex] = new Image();
-
-                            imgs[imgIndex].onload = $.getJSON("Url.Action("MapDesigner", "User")", null, function (mapData) {
-                                $.each(mapData, function (i, item) {
-                                    var thisX = x * 16;
-                                    var thisY = y * 16;
-                                    return function () {
-                                        context.drawImage(this, thisX, thisY);
-                                    };
-                                });
-                            });
-                            imgs[imgIndex].src = texLoc;
-                            imgIndex += 1;
-                        }
-                    }
-            </script>-->
-
-            </div>
-        </div>
-    </div>
 </section>
 }

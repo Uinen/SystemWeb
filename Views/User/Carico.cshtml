@@ -78,6 +78,7 @@
                     {
                         toolbar.ShowToolbar().ToolbarItems(items =>
                         {
+                            items.AddTool(ToolBarItems.Add);
                             items.AddTool(ToolBarItems.Edit);
                             items.AddTool(ToolBarItems.Delete);
                             items.AddTool(ToolBarItems.Update);
@@ -89,9 +90,9 @@
                         });
                     })
 
-                    .Mappers(map => map.ExportToExcelAction("ordini/caricoexcell")
-                                    .ExportToPdfAction("ordini/caricopdf")
-                                    .ExportToWordAction("ordini/caricoword"))
+                    .Mappers(map => map.ExportToExcelAction("caricoexcell")
+                                    .ExportToPdfAction("caricopdf")
+                                    .ExportToWordAction("caricoword"))
                     .Columns(col =>
                     {
                         col.Field(p => p.Id).HeaderText("ID Ordine").IsPrimaryKey(true).Visible(false).Add();

@@ -7,43 +7,45 @@ namespace SystemWeb.Repository
 {
     public static class ContatoriRepository
     {
-        public static void Add(PvErogatori order)
+        public static void Add(PvErogatori value)
         {
             var context = new MyDbContext();
-            context.PvErogatori.Add(order);
+            context.PvErogatori.Add(value);
+            context.SaveChanges();
         }
 
-        public static void Add(List<PvErogatori> order)
+        public static void Add(List<PvErogatori> value)
         {
-            foreach (var temp in order)
+            foreach (var temp in value)
             {
                 var context = new MyDbContext();
                 context.PvErogatori.Add(temp);
+                context.SaveChanges();
             }
         }
 
-        public static void Update(PvErogatori order)
+        public static void Update(PvErogatori value)
         {
             var context = new MyDbContext();
-            PvErogatori result = context.PvErogatori.Where(o => o.PvErogatoriId == order.PvErogatoriId).FirstOrDefault();
+            PvErogatori result = context.PvErogatori.Where(o => o.PvErogatoriId == value.PvErogatoriId).FirstOrDefault();
             if (result != null)
             {
-                result.PvErogatoriId = order.PvErogatoriId;
-                result.ProductId = order.ProductId;
-                result.DispenserId = order.DispenserId;
-                result.pvID = order.pvID;
-                result.Value = order.Value;
-                result.FieldDate = order.FieldDate;
+                result.PvErogatoriId = value.PvErogatoriId;
+                result.ProductId = value.ProductId;
+                result.DispenserId = value.DispenserId;
+                result.pvID = value.pvID;
+                result.Value = value.Value;
+                result.FieldDate = value.FieldDate;
 
-                context.Entry(result).CurrentValues.SetValues(order);
+                context.Entry(result).CurrentValues.SetValues(value);
                 context.Entry(result).State = EntityState.Modified;
                 context.SaveChanges();
             }
         }
 
-        public static void Update(List<PvErogatori> order)
+        public static void Update(List<PvErogatori> value)
         {
-            foreach (var temp in order)
+            foreach (var temp in value)
             {
                 var context = new MyDbContext();
                 PvErogatori result = context.PvErogatori.Where(o => o.PvErogatoriId == temp.PvErogatoriId).FirstOrDefault();
