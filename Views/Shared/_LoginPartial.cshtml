@@ -8,7 +8,7 @@
             <li class="text-success">
                 @Html.Display("Benvenuto " + User.Identity.GetUserName())
             </li>
-            <li><a class="text-warning" href="javascript:document.getElementById('logoutForm').submit()">Disconnettiti</a></li>
+            <li><a href="javascript:document.getElementById('logoutForm').submit()"><span aria-hidden="true" class="fa fa-sign-out"></span> Disconnettiti</a></li>
     }
 }
 else

@@ -1,111 +1,111 @@
 ﻿@using SystemWeb.Models
-@using Microsoft.AspNet.Identity
 
 @model UserIndexViewModel
 
+@{
+    Layout = "~/Views/Shared/_SecondLayout.cshtml";
+}
+
 @if (Request.IsAuthenticated)
 {
-<section id="message" class="block">
-    <div class="container">
-            <div class="center-block">
-                <div class="header-content">
-                    <h3 class="alert alert-info"><strong>Dashboard Utente</strong></h3>
-                    <p class="alert alert-info text-uppercase">@ViewBag.Flag - @ViewBag.PvNamee, @ViewBag.PvCity - @ViewBag.PvInd</p>
-                        <div class="row">
-                            @if (Model.usersimage.Any(f => f.FileType == FileType.Avatar))
-                            {
-                                <div class="col-sm-4 col-md-2">
-                                    <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:120px;height:120px;background: #FFFFFF;margin: auto;-moz-border-radius: 60px;border-radius: 10px;padding: 6px;box-shadow: 0px 0px 20px #888;" />
-                                    <p class="text-uppercase text-info"><strong>@ViewBag.ProfileFullName</strong></p>
-                                    <p class="text-faded">@ViewBag.FullAdress</p>
-                                </div>
-                                    <div class="clearfix visible-sm-block"></div>
-                            }
-                            <div class="col-lg-6 col-md-4">
-                                @if (User.IsInRole("Administrator"))
-                                {
-                                    <p class="text-warning">Appartieni al ruolo amministratori, puoi configurare i parametri avanzati del sistema alla  @Html.ActionLink("seguente", "index", "admin") pagina</p>
-                                }
-                                else
-                                {
-                                    <p class="text-info">Appartieni al ruolo utenti</p>
-                                }
-                            </div>
-                            <div class="clearfix visible-sm-block"></div>
-                            <div class="col-lg-4 col-md-2">
-                                <p class="text-uppercase"><strong>Statistiche di vendita</strong></p>
-                                <p class="text-success">Benzina: @ViewBag.SSPBTotalAmount Litri</p>
-                                <p class="text-danger">Diesel: @ViewBag.DieselTotalAmount Litri</p>
-                                <p class="text-warning"><strong>Totale:</strong> @ViewBag.TotalAmount Litri</p>
-                            </div>
-                            <div class="clearfix visible-sm-block"></div>
-                            <div class="col-lg-4 col-md-2">
-                                <p class="text-uppercase"><strong>Obiettivo di vendita</strong></p>
-                                <p class="text-warning"><strong>Totale:</strong> @ViewBag.TotalAmountDifference Litri</p>
-                            </div>
-                            
-                                <div id="no-more-tables">
-                                    <table class="col-md-12 table-bordered table-striped table-condensed">
-                                        <thead>
-                                            <tr>
-                                                <th>Link Utili</th>
-                                                <th></th>
-                                                <th></th>
-                                                <th></th>
-                                                <th></th>
-                                                <th></th>
-                                                <th></th>
-                                                <th></th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td data-title="1">@Html.ActionLink("Lista Ordini", "Carico")</td>
-                                                <td data-title="2">@Html.ActionLink("Inserimento Totalizzatori", "PvErogatoriCreate", "User")</td>
-                                                <td data-title="3">@Html.ActionLink("Inserimento Deficienze", "PvDeficienzeCreate")</td>
-                                                <td data-title="4">@Html.ActionLink("Lista Deficienze", "PvDeficienze")</td>
-                                                <td data-title="5">@Html.ActionLink("Inserimento Cali", "PvCaliCreate")</td>
-                                                <td data-title="6">@Html.ActionLink("Lista Cali", "PvCali")</td>
-                                                <td data-title="7">@Html.ActionLink("Lista Contatori", "PvErogatori")</td>
-                                                <td data-title="8">@Html.ActionLink("Upload Documenti", "File")</td>
-                                                <td data-title="9">@Html.ActionLink("Lista Dispenser", "Dispenser")</td>
-                                                <td data-title="10">@Html.ActionLink("Lista Cisterne", "PvTanks")</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                </div>
-            </div>
+    <div class="row">
+        @if (User.IsInRole("Administrator"))
+        {
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item active">@ViewBag.Flag - @ViewBag.PvNamee, @ViewBag.PvCity - @ViewBag.PvInd</li>
+                <li class="breadcrumb-item alert alert-info">Il sistema ha rilevato che la tua utenza appartiene al Ruolo Amministratori, al seguente <a href="/admin">Link</a> puoi accedere ai servizi avanzati al momento disponibili.</li> 
+            </ol>
+        }
+        else
+        {
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item active">@ViewBag.Flag - @ViewBag.PvNamee, @ViewBag.PvCity - @ViewBag.PvInd</li>
+            </ol>
+        }
     </div>
-</section>
-<section id="features">
-    <div class="container">
-        <div class="row">
-            <div class="center-block">
-                <div class="header-content">
-                    <h4 class="alert alert-info">Trend Ordini</h4>
+    <div class="row">
+        @if (Model.usersimage.Any(f => f.FileType == FileType.Avatar))
+        {
+            <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="card card-header card-success">
+                    <div class="card-block">
+                        <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:140px; height:140px" />
+                        <p class="text-uppercase"><strong> @ViewBag.ProfileFullName </strong></p>
+                        <p class="text-lowercase text-capitalize">@ViewBag.FullAdress</p>
+                    </div>
                 </div>
-                <br />
-                <div>
-                    @Html.Partial("CaricoChart")
+            </div>
+            <div class="col-sm-6 col-lg-5 mb-4">
+                <div class="card card-inverse card-success o-hidden h-100">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <p class="text-info text-uppercase"><strong>Statistiche di vendita - anno corrente</strong></p>
+                        </div>
+                        <div class="mb-4">
+                            <p>
+                                Sono stati venduti @ViewBag.SSPBTotalAmount lt di <strong>Benzina Super Senza Piombo</strong> e
+                                @ViewBag.DieselTotalAmount di <strong>Diesel</strong> per un totale di <strong> @ViewBag.TotalAmount </strong> lt venduti
+                            </p>
+                        </div>
+                        <div class="card-header">
+                            <p class="text-info text-uppercase"><strong>Obiettivo di vendita</strong></p>
+                        </div>
+                        <div class="mb-4">
+                            <p>Il punto vendita ha venduto <strong> @ViewBag.TotalAmountDifference </strong> lt rispetto al anno precedente</p>
+                        </div>
+                    </div>
+                    <a href="#" class="card-footer clearfix small z-1">
+                        <span class="float-left">Esporta</span>
+                        <span class="float-right"><i class="fa fa-angle-right"></i></span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm-4 col-lg-3 mb-4">
+                <div class="card card-header card-success">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <p class="text-danger text-uppercase"><strong>Ultime notizie</strong></p>
+                        </div>
+                        <div class="mb-3">
+                            <p>Feed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="grid-filter">
+            <div class="col-sm-6 col-lg-12 mb-3">
+                <div class="card card-inverse card-danger o-hidden h-100">
+                    <div class="card-header">
+                        <i class="fa fa-area-chart"></i> Diagramma Ordini
+                    </div>
+                    <div class="card-block">
+                        @Html.Partial("CaricoChart")
+                    </div>
+                    <div class="card-footer small text-muted">
+
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="center-block">
-                <div class="header-content">
-                    <h4 class="alert alert-info">Registra Ordine</h4>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="center-block">
-                <div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 mb-3">
+            <div class="card card-inverse card-info o-hidden h-100">
+                <div class="card-block">
+                    <div class="card-block-icon">
+                        <i class="fa fa-fw fa-send"></i>
+                    </div>
+                    <div class="card-header">
+                        <i class="fa fa-file-text"></i> Invia Ordine
+                    </div>
                     @Html.Partial("CaricoCreate", new SystemWeb.Models.Carico { })
                 </div>
             </div>
         </div>
-</section>
+    </div>
 }

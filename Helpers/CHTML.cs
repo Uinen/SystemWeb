@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace SystemWeb
 {
-    public static class CHTML
+    public static class Chtml
     {
         public static MvcHtmlString HiddenClassFor<TModel, TProperty>(this HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression)
         {

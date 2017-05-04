@@ -18,94 +18,114 @@ namespace SystemWeb
             CssRewriteUrlTransform rewrite = new CssRewriteUrlTransform();
 
             #region Style
-            bundles.Add(new StyleBundle("~/Content/bootstrap").Include(
-                "~/Contenuti/bootstrap.css", rewrite));
+            bundles.Add(new StyleBundle("~/Content/bootstrapV3", 
+                ContentDeliveryNetwork.Gestionidirette.BootstrapUrl).Include(
+                "~/Contenuti/Bootstrap/bootstrap.min.css"));
 
-            bundles.Add(new StyleBundle("~/Content/bootstrap-theme").Include(
-                "~/Contenuti/bootstrap-theme.css", rewrite));
+            bundles.Add(new StyleBundle("~/Content/bootstrapV4",
+                ContentDeliveryNetwork.Gestionidirette.Bootstrap4Url).Include(
+                "~/Contenuti/bootstrap.css"));
 
-            bundles.Add(new StyleBundle("~/Content/ejBootstrap-Themes").Include(
-                "~/Contenuti/ej/web/bootstrap-theme/ej.web.all.min.css", rewrite));
+            bundles.Add(new StyleBundle("~/Content/style",
+                ContentDeliveryNetwork.Gestionidirette.StyleUrl).Include(
+                "~/Contenuti/css/style.min.css"));
 
-            bundles.Add(new StyleBundle("~/Content/ejWidgets-Core").Include(
-                "~/Contenuti/ej/web/ej.widgets.core.min", rewrite));
+            bundles.Add(new StyleBundle("~/Content/custom",
+                ContentDeliveryNetwork.Gestionidirette.CustomUrl).Include(
+                "~/Contenuti/css/colors/custom.min.css"));
 
-            bundles.Add(new StyleBundle("~/Content/ejTheme").Include(
-                "~/Contenuti/ej/web/flat-saffron/ej.theme.min.css", rewrite));
+            bundles.Add(new StyleBundle("~/Content/ionicons",
+                ContentDeliveryNetwork.Gestionidirette.IonIconsUrl).Include(
+                "~/Contenuti/css/ionicons.min.css"));
 
-            bundles.Add(new StyleBundle("~/Content/ejResponsive").Include(
-                "~/Contenuti/ej/web/responsive-css/ej.responsive.css", rewrite));
+            bundles.Add(new StyleBundle("~/Content/animate",
+                ContentDeliveryNetwork.Gestionidirette.AnimateUrl).Include(
+                "~/Contenuti/css/animate.min.css"));
 
-            bundles.Add(new StyleBundle("~/Content/ejGridResponsive").Include(
-                "~/Contenuti/ej/web/responsive-css/ejgrid.responsive.css", rewrite));
+            bundles.Add(new StyleBundle("~/Content/owlcarousel",
+                ContentDeliveryNetwork.Gestionidirette.OwlCarouselUrl).Include(
+                "~/Contenuti/css/owl.carousel.min.css"));
 
-            bundles.Add(new StyleBundle("~/Content/style").Include(
-                "~/Contenuti/css/style.css"));
+            bundles.Add(new StyleBundle("~/Content/owlcarousel-theme",
+                ContentDeliveryNetwork.Gestionidirette.OwlCarouselThemeUrl).Include(
+                "~/Contenuti/css/owl.theme.min.css"));
 
-            bundles.Add(new StyleBundle("~/Content/custom").Include(
-                "~/Contenuti/colors/custom.css", rewrite));
+            bundles.Add(new StyleBundle("~/Content/nivolightbox",
+                ContentDeliveryNetwork.Gestionidirette.NivoLightBoxUrl).Include(
+                "~/Contenuti/css/nivo-lightbox/nivo-lightbox.css"));
 
-            bundles.Add(new StyleBundle("~/Content/ionicons").Include(
-                "~/Contenuti/css/ionicons.css", rewrite));
-
-            bundles.Add(new StyleBundle("~/Content/animate").Include(
-                "~/Contenuti/css/animate.css", rewrite));
-
-            bundles.Add(new StyleBundle("~/Content/owlcarousel").Include(
-                "~/Contenuti/css/owl.carousel.css", rewrite));
-
-            bundles.Add(new StyleBundle("~/Content/owlcarousel-theme").Include(
-                "~/Contenuti/css/owl.theme.css", rewrite));
-
-            bundles.Add(new StyleBundle("~/Content/pagedlist").Include(
-                "~/Contenuti/css/PagedList.css", rewrite));
-
-            bundles.Add(new StyleBundle("~/Content/nivolightbox").Include(
-                "~/Contenuti/nivo-lightbox/nivo-lightbox.css", rewrite));
-
-            bundles.Add(new StyleBundle("~/Content/fontawesome", 
+            bundles.Add(new StyleBundle("~/Content/fontawesome",
                 ContentDeliveryNetwork.MaxCdn.FontAwesomeUrl).Include(
-                      "~/MainFont/font-awesome.css", rewrite));
+                      "~/MainFont/font-awesome.css" /*,rewrite*/));
+
+            bundles.Add(new StyleBundle("~/Content/EjWidgets",
+                ContentDeliveryNetwork.Gestionidirette.EjWidgetsUrl).Include(
+                      "~/Contenuti/ej/web/ej.widgets.core.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/EjTheme",
+                ContentDeliveryNetwork.Gestionidirette.EjThemeUrl).Include(
+                      "~/Contenuti/ej/web/default-theme/ej.theme.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/EjResponsive",
+                ContentDeliveryNetwork.Gestionidirette.EjResponsiveUrl).Include(
+                      "~/Contenuti/ej/web/responsive-css/ej.responsive.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/EjGridResponsive",
+                ContentDeliveryNetwork.Gestionidirette.EjGridResponsiveUrl).Include(
+                      "~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css"));
+
             #endregion
         }
 
         private static void AddJavaScript(BundleCollection bundles)
         {
             #region Script
-            bundles.Add(new ScriptBundle("~/bundles/jquery", ContentDeliveryNetwork.Google.JQueryUrl).Include(
+
+            bundles.Add(new ScriptBundle("~/bundles/jquery", 
+                ContentDeliveryNetwork.Google.JQueryUrl).Include(
                 "~/Scripts/jquery-1.10.2.js"
                 ));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryeasing").Include(
-                "~/Scripts/jquery.easing-{version}.js"
+            bundles.Add(new ScriptBundle("~/bundles/jqueryeasing",
+                ContentDeliveryNetwork.Cdnjs.JQueryEasingUrl).Include(
+                "~/Scripts/jquery.easing-{version}.min.js"
                 ));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryglobalize").Include(
-                "~/Scripts/jquery.globalize.js"
+            bundles.Add(new ScriptBundle("~/bundles/jqueryglobalize",
+                ContentDeliveryNetwork.Gestionidirette.JQueryGlobalizeUrl).Include(
+                "~/Scripts/jquery.globalize.min.js"
                 ));
 
-            bundles.Add(new ScriptBundle("~/bundles/jsrender").Include(
-                "~/Scripts/jsrender.js"
+            bundles.Add(new ScriptBundle("~/bundles/jsrender",
+                ContentDeliveryNetwork.Gestionidirette.JsRender).Include(
+                "~/Scripts/jsrender.min.js"
                 ));
 
-            bundles.Add(new ScriptBundle("~/bundles/jquerybrowser").Include(
-                "~/Scripts/jquery.browser.js"
+            bundles.Add(new ScriptBundle("~/bundles/jquerybrowser",
+                ContentDeliveryNetwork.Gestionidirette.JQueryBrowser).Include(
+                "~/Scripts/jquery.browser.min.js"
                 ));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryajaxchimp").Include(
+            bundles.Add(new ScriptBundle("~/bundles/jqueryajaxchimp",
+                ContentDeliveryNetwork.Gestionidirette.JQueryAjaxChimp).Include(
                 "~/Scripts/jquery.ajaxchimp.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval",
                 ContentDeliveryNetwork.Microsoft.JQueryValidateUrl).Include(
-                "~/Scripts/jquery.validate.js",
-                "~/Scripts/jquery.validate.unobtrusive.js"));
+                "~/Scripts/jquery.validate.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryvalunobtrusive",
                 ContentDeliveryNetwork.Microsoft.JQueryValidateUnobtrusiveUrl).Include(
                 "~/Scripts/jquery.validate.unobtrusive.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/ej").Include(
+            bundles.Add(new ScriptBundle("~/bundles/ej",
+                ContentDeliveryNetwork.Gestionidirette.SyncFusionScriptsUrl).Include(
                 "~/Scripts/ej/web/ej.web.all.min.js"
+                ));
+
+            bundles.Add(new ScriptBundle("~/bundles/ejunobtrusive",
+                ContentDeliveryNetwork.Gestionidirette.EjUnobtrusiveUrl).Include(
+                "~/Scripts/ej/common/ej.unobtrusive.min.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/microsoft").Include(
@@ -114,27 +134,32 @@ namespace SystemWeb
                 "~/Scripts/MicrosoftMvcValidation.js"
                         ));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap",
+            bundles.Add(new ScriptBundle("~/bundles/bootstrapV3",
                 ContentDeliveryNetwork.Microsoft.BootstrapUrl).Include(
-                "~/Scripts/bootstrap.js"));
+                "~/Scripts/bootstrap/v3/bootstrap.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/bootstrapV4",
+                ContentDeliveryNetwork.Microsoft.BootstrapUrl).Include(
+                "~/Scripts/bootstrap/v4/bootstrap.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/modernizr",
                 ContentDeliveryNetwork.Microsoft.ModernizrUrl).Include(
                 "~/Scripts/modernizr-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/theme").Include(
-                "~/Scripts/WOW.js",
-                "~/Scripts/owl.carousel.js",
-                "~/Scripts/nivo-lightbox.js",
-                "~/Scripts/smoothscroll.js",
-                "~/Scripts/script.js"));
+            bundles.Add(new ScriptBundle("~/bundles/theme",
+                ContentDeliveryNetwork.Gestionidirette.ThemeUrl).Include(
+                "~/Scripts/Theme.min.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/sorting").Include(
+            bundles.Add(new ScriptBundle("~/bundles/sorting",
+                ContentDeliveryNetwork.Gestionidirette.SortableUrl).Include(
                 "~/Scripts/sortable.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/GridOption").Include(
-                "~/Scripts/ActionComplete.js",
-                "~/Scripts/ejDatePickerOption.js",
+            bundles.Add(new ScriptBundle("~/bundles/GridOption",
+                ContentDeliveryNetwork.Gestionidirette.ActionCompleteUrl).Include(
+                "~/Scripts/ActionComplete.min.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/EjCulture",
+                ContentDeliveryNetwork.Gestionidirette.EjCultureUrl).Include(
                 "~/Scripts/ej/i18n/ej.culture.it-IT.min.js"));
 
             #endregion

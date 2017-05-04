@@ -26,26 +26,26 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Default(RegisterBindingModel model, IOwinContext context)
         {
-            var UserManager = new ApplicationUserManager(new UserStore<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>(context.Get<MyDbContext>()));
+            var userManager = new ApplicationUserManager(new UserStore<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>(context.Get<MyDbContext>()));
             
             // The default Validators that the UserManager uses are UserValidator and MinimumLengthValidator
             // You can tweak some of the settings as follows
             // This example sets the Password length to be 3 characters
-            UserManager.UserValidator = new UserValidator<ApplicationUser>(UserManager)
+            userManager.UserValidator = new UserValidator<ApplicationUser>(userManager)
             {
                 AllowOnlyAlphanumericUserNames = false
             };
-             UserManager.PasswordValidator = new MinimumLengthValidator(3);
+             userManager.PasswordValidator = new MinimumLengthValidator(3);
 
 
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser() { UserName = model.Username };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     var authManager = HttpContext.GetOwinContext().Authentication;
-                    var claimsIdentity = UserManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+                    var claimsIdentity = userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
                     authManager.SignIn(claimsIdentity);
                     return RedirectToAction("Index", "Home");
                 }
@@ -67,23 +67,23 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Customize(RegisterBindingModel model, IOwinContext context)
         {
-            var UserManager = new ApplicationUserManager(new UserStore<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>(context.Get<MyDbContext>()));
+            var userManager = new ApplicationUserManager(new UserStore<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>(context.Get<MyDbContext>()));
 
             // The default Validators that the UserManager uses are UserValidator and MinimumLengthValidator
             // If you want to have complete control over validation then you can write your own validators.
-            UserManager.UserValidator = new MyUserValidation();
-            UserManager.PasswordValidator = new MyPasswordValidation();
-            UserManager.PasswordHasher = new PasswordHasher();
+            userManager.UserValidator = new MyUserValidation();
+            userManager.PasswordValidator = new MyPasswordValidation();
+            userManager.PasswordHasher = new PasswordHasher();
 
 
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser() { UserName = model.Username };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     var authManager = HttpContext.GetOwinContext().Authentication;
-                    var claimsIdentity = UserManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+                    var claimsIdentity = userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
                     authManager.SignIn(claimsIdentity);
                     return RedirectToAction("Index", "Home");
                 }

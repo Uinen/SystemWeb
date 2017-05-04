@@ -89,20 +89,22 @@ namespace SystemWeb
         public Task SendAsync(IdentityMessage message)
         {
             // Credentials:
-            var credentialUserName = "no.reply@gestionidirette.com";
-            var sentFrom = "no.reply@gestionidirette.com";
-            var pwd = "morgana92";
+            const string credentialUserName = "no.reply@gestionidirette.com";
+            const string sentFrom = "no.reply@gestionidirette.com";
+            const string pwd = "morgana92";
 
             // Configure the client:
-            System.Net.Mail.SmtpClient client =
-                new System.Net.Mail.SmtpClient("smtp.gestionidirette.com");
+            var client =
+                new System.Net.Mail.SmtpClient("smtp.gestionidirette.com")
+                {
+                    Port = 587,
+                    DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false
+                };
 
-            client.Port = 587;
-            client.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
-            client.UseDefaultCredentials = false;
 
             // Creatte the credentials:
-            System.Net.NetworkCredential credentials =
+            var credentials =
                 new System.Net.NetworkCredential(credentialUserName, pwd);
 
             client.EnableSsl = false;
@@ -110,10 +112,12 @@ namespace SystemWeb
 
             // Create the message:
             var mail =
-                new System.Net.Mail.MailMessage(sentFrom, message.Destination);
+                new System.Net.Mail.MailMessage(sentFrom, message.Destination)
+                {
+                    Subject = message.Subject,
+                    Body = message.Body
+                };
 
-            mail.Subject = message.Subject;
-            mail.Body = message.Body;
 
             // Send:
             return client.SendMailAsync(mail);

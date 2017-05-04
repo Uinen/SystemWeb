@@ -1,23 +1,19 @@
-﻿@model PagedList.IPagedList<SystemWeb.Models.PvDeficienze>
-@using PagedList.Mvc;
-<link href="~/Contenuti/css/PagedList.min.css" rel="stylesheet" type="text/css" />
-
-@{
-    ViewBag.Title = "Index";
+﻿@{
+    Layout = "~/Views/Shared/_SecondLayout.cshtml";
 }
 <section id="pvdeficienze" class="block">
     <div class="container">
         <div class="row">
             <div class="center-block">
                 <div class="header-content">
-                    <h4 class="alert-info">Lista di tutte le deficienze del punto vendita</h4>
+                    <h4 class="alert alert-info">Lista di tutte le deficienze del punto vendita</h4>
                 </div>
                 @using (Html.BeginForm("PvDeficienze", "User", FormMethod.Get))
                 {
                     <div class="grid-filter">
                         <form id="date-range-form" action="@Url.Action("PvDeficienze", "User")" method="post">
-                            <h5 class="alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma del erogatoi sul impianto in funzione del range selezionato.</h5>
-                            <h5 class="alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
+                            <h5 class="alert alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma del erogatoi sul impianto in funzione del range selezionato.</h5>
+                            <h5 class="alert alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
                             <div class="item">
                                 <label for="from">Data 1</label>
                                 <input type="text" id="from" name="dateFrom">
@@ -31,13 +27,17 @@
                     </div>
                 }
                 <div id="no-more-tables">
-                    <h4 class="alert-info">Statistiche sul erogato</h4>
+                    <h4 class="alert alert-info">Statistiche sul erogato</h4>
                     <div id="totali">
                         <table class="col-md-12 table-bordered table-striped table-condensed">
                             @Html.Partial("_TotalPartialDef")
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
 </section>
 <section id="adaptive">
     <div class="container">
@@ -60,14 +60,14 @@
                                     .RemoveURL("remove")
                                     .Adaptor(AdaptorType.RemoteSaveAdaptor))
                                     .AllowPaging()
-                                    .PageSettings(p => p.PageCount(2).PageSize(10))
+                                    .PageSettings(p => p.PageCount(2).PageSize(5))
                                     .IsResponsive(true)
-                                    .EnableResponsiveRow(false)
+                                    .EnableResponsiveRow(true)
                                     .AllowSorting()
                                     .AllowMultiSorting()
                                     .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteDeficienze"))
-                                    .MinWidth(600)
-                                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.ExternalForm))
+                                    .MinWidth(400)
+                                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog))
                                     .ToolbarSettings(toolBar => toolBar.ShowToolbar().ToolbarItems(items =>
                                     {
                                         items.AddTool(ToolBarItems.Add);
@@ -104,10 +104,43 @@
         </div>
     </div>
 </section>
+@section Styles{
+    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
+}
+
 @section Scripts{
-    @*@Scripts.Render("~/bundles/jqueryval")*@
+
+    @Scripts.Render("~/bundles/jqueryeasing")
+    @Scripts.Render("~/bundles/jsrender")
+    @Scripts.Render("~/bundles/jqueryglobalize")
+    @Scripts.Render("~/bundles/jquerybrowser")
+    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
+    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
+    @Html.EJ().ScriptManager()
+
     <script type="text/javascript">
+    $(function () {
+        $("#from").ejDatePicker({
+            locale: "it-IT",
+            onClose: function (selectedDate) {
+                $("#to").ejDatePicker("minDate", selectedDate);
+
+            }
+        });
+        $("#to").ejDatePicker({
+            locale: "it-IT",
+            onClose: function (selectedDate) {
+                $("#from").ejDatePicker("maxDate", selectedDate);
+
+            },
+        });
+    });
+
     ej.Grid.Locale["it-IT"] = {
         EmptyRecord: "Nessun record da visualizzare",
         GroupDropArea: "Trascinare una colonna qui",

@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <title>@ViewBag.Title</title>
-
     <!-- meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,143 +9,51 @@
     <meta name="keywords" content="Distributori, Benzina, Gasolio, Kuwait, Petrolio, Stazione di Servizio, Stazioni, Carburante, Carburanti">
     <meta name="author" content="Valentino Fabbri">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!--favicon-->
-    <link rel="shortcut icon" href="~/img/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="~/img/favicon.ico" type="image/x-icon">
-
-    @Styles.Render("~/Content/bootstrap")
-    @Styles.Render("~/Content/bootstrap-theme")
+    <link rel="shortcut icon" href="http://static.gestionidirette.com/Contenuti/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="http://static.gestionidirette.com/Contenuti/img/favicon.ico" type="image/x-icon">
+    @Styles.Render("~/Content/bootstrapV3")
     @Styles.Render("~/Content/style")
     @Styles.Render("~/Content/custom")
-    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.css")" rel="stylesheet" />
-   @* @Styles.Render("~/Content/ejBootstrap-Themes") *@
     @Styles.Render("~/Content/ionicons")
     @Styles.Render("~/Content/animate")
     @Styles.Render("~/Content/owlcarousel")
     @Styles.Render("~/Content/owlcarousel-theme")
-    @Styles.Render("~/Content/pagedlist")
     @Styles.Render("~/Content/nivolightbox")
     @Styles.Render("~/Content/fontawesome")
+    @RenderSection("Styles", false)
+</head>
+<body style="overflow:hidden">
+    @*
+    <!--- Secure Site Seal - DO NOT EDIT --->
+    <span id="ss_img_wrapper_115-55_image_en"><a href="http://www.alphassl.com/ssl-certificates/wildcard-ssl.html" target="_blank" title="SSL Certificates"><img alt="Wildcard SSL Certificates" border=0 id="ss_img" src="//seal.alphassl.com/SiteSeal/images/alpha_noscript_115-55_en.gif" title="SSL Certificate"></a></span>
+    <script type="text/javascript" src="//seal.alphassl.com/SiteSeal/alpha_image_115-55_en.js"></script>
+    <!--- Secure Site Seal - DO NOT EDIT --->*@
+
+    <!-- ****************************** Preloader ************************** -->
+    <div id="preloader"></div> 
+    <!-- ****************************** Sidebar ************************** -->
+    @Html.Partial("_Sidebar")
+    <!-- ****************************** Header ************************** -->
+    @Html.Partial("_FrontHeader")
+    <!-- ****************************** Banner ************************** -->
+    @Html.Partial("_Banner")
+    <!-- ****************************** Scripts ****************************** -->
     <!--[if lt IE 9]>
         <script src="@Url.Content("https://code.jquery.com/jquery-1.11.3.min.js")"></script>
         <![endif]-->
     <!--[if gte IE 9]><!-->
     <script src="@Url.Content("https://code.jquery.com/jquery-2.1.4.min.js")"></script>
     <!--<![endif]-->
-   @* @Scripts.Render("~/bundles/jquery") *@
-    @Scripts.Render("~/bundles/jqueryeasing")
-    @Scripts.Render("~/bundles/jsrender")
-    @Scripts.Render("~/bundles/jqueryglobalize")
-    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
-    @Scripts.Render("~/bundles/jquerybrowser") 
-    @Scripts.Render("~/bundles/jqueryajaxchimp") 
-   @* @Scripts.Render("~/bundles/jqueryval") *@
-    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
-   @* @Scripts.Render("~/bundles/ej") *@
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/microsoft")
+    @Scripts.Render("~/bundles/bootstrapV3")
+   @* @Scripts.Render("~/bundles/microsoft") *@
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/theme")
     @Scripts.Render("~/bundles/sorting")
-
-</head>
-<body style="overflow:hidden">
-    <!-- ****************************** Preloader ************************** -->
-    <div id="preloader"></div> 
-
-    <!-- ****************************** Sidebar ************************** -->
-    <nav id="sidebar-wrapper">
-        <a id="menu-close" href="#" class="close-btn toggle">Chiudi<i class="ion-log-in"></i></a>
-        <ul class="sidebar-nav">
-            <li>@Html.ActionLink("Home", "Index", "Home")</li>@*
-            <li><a href="@Url.RouteUrl(HomeControllerRoute.GetAbout)"><span aria-hidden="true" class="fa fa-users"></span> About</a></li>
-            <li><a href="@Url.RouteUrl(HomeControllerRoute.GetContact)"><span aria-hidden="true" class="fa fa-phone"></span> Contact</a></li>
-            <li><a href="@Url.RouteUrl(HomeControllerRoute.GetFeed)"><span aria-hidden="true" class="fa fa-rss"></span> RSS</a></li>*@
-            @using (Html.BeginForm("Index", "User", FormMethod.Get))
-            {
-                if (User.Identity.IsAuthenticated)
-                {
-                    <li>@Html.ActionLink("Dashboard", "Index", "User", null , new { id = ViewBag.profileId })</li>
-                    
-                }
-            }
-            @Html.Partial("_LoginPartial")
-            @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
-            {
-                <li><a href="@Url.RouteUrl(HomeControllerRoute.GetFeed)"><span aria-hidden="true" class="fa fa-rss"></span> RSS</a></li>
-                <li><a href="/@System.Configuration.ConfigurationManager.AppSettings["elmah.mvc.route"]"><span aria-hidden="true" class="fa fa-life-ring"></span> Elmah</a></li>
-                <li><a href="/glimpse.axd"><span aria-hidden="true" class="fa fa-line-chart"></span> Glimpse</a></li>
-                <li><a href="/trace.axd"><span aria-hidden="true" class="fa fa-heart"></span> Tracing</a></li>
-            }
-        </ul>
-    </nav>
-
-    <!-- ****************************** Header ************************** -->
-    <header class="sticky" id="header">
-        <div class="container">
-            <div class="row" id="logo_menu">
-                <div class="col-xs-6"><a class="logo" href="@Url.RouteUrl(HomeControllerRoute.GetIndex)">Home</a></div>
-                <div class="col-xs-6"><a id="menu-toggle" class="toggle" role="button" title="Menu" data-toggle="tooltip" data-placement="left"><i class="ion-navicon"></i></a></div>
-            </div>
-        </div>
-    </header>
-
-    <!-- ****************************** Banner ************************** -->
-    <section id="banner">
-        <div class="banner-overlay"></div>
-        <div class="container">
-            <a class="slidedown wow animated zoomIn" data-wow-delay="1s" href="#testimonial"><i class="ion-ios-download-outline"></i></a>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="headings">
-                        <h1 class="wow animated fadeInLeft">Gestioni Dirette</h1>
-                        <h2 class="wow animated bounceInUp">SystemWeb @ViewContext.Controller.GetType().Assembly.GetName().Version</h2>
-                        <p class="wow animated fadeInRight">Tool progettato per gestire in modo intuitivo e dinamico una stazione di servizio.</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6 hidden-xs hidden-sm">
-                    <div class="hand-container">
-                        <img class="iphone-hand img_res wow animated bounceInUp" data-wow-duration="1.2s" src="@Url.Content("~/img/2-iphone-right.png")" alt="">
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ****************************** Scripts ****************************** -->
     @RenderSection("Scripts", false)
-    @Html.EJ().ScriptManager()
+    @Scripts.Render("~/bundles/jqueryajaxchimp")
     @RenderBody()
-
-
-    <section id="footer" class="block">
-        <div class="container text-center">
-            <div class="footer-logo">
-                <h1>G E S T I O N I</h1>
-                <h2> D I R E T T E</h2>
-            </div>
-            <ul class="social-icons">
-                <li class="wow animated fadeInLeft facebook"><a href="#"><i class="ion-social-facebook"></i></a></li>
-                <li class="wow animated fadeInRight twitter"><a href="#"><i class="ion-social-twitter"></i></a>
-                <li class="wow animated fadeInLeft linkedin"><a href="#"><i class="ion-social-linkedin"></i></a></li>
-                <li class="wow animated fadeInRight googleplus"><a href="#"><i class="ion-social-googleplus-outline"></i></a></li>
-                <li class="wow animated fadeInRight github"><a href="#"><i class="ion-social-github"></i></a>
-            </ul>
-            <div class="copyright">
-                <div class="credits">
-                    Versione: @ViewContext.Controller.GetType().Assembly.GetName().Version |
-                    Ultimo Aggiornamento: @File.GetCreationTime(ViewContext.Controller.GetType().Assembly.Location)
-                </div>
-                <div class="credits">@DateTime.Now - Gestioni Dirette&trade; Tutti i diritti riservati</div>
-            </div>
-        </div><!-- container -->
-    </section>
+    @Html.Partial("_Footer")
     <!-- ****************************** Back to top ************************** -->
     <a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" data-toggle="tooltip" data-placement="left"><span class="glyphicon glyphicon-chevron-up"></span></a>
 </body>

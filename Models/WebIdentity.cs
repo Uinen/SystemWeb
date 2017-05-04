@@ -5,31 +5,19 @@ namespace SystemWeb.Models
 {
     public class WebIdentity : IIdentity
     {
-        private FormsAuthenticationTicket ticket;
+        private readonly FormsAuthenticationTicket _ticket;
 
         public WebIdentity(FormsAuthenticationTicket ticket)
         {
-            this.ticket = ticket;
+            _ticket = ticket;
         }
 
-        public string AuthenticationType
-        {
-            get { return "WebUser"; }
-        }
+        public string AuthenticationType => "WebUser";
 
-        public bool IsAuthenticated
-        {
-            get { return true; }
-        }
+        public bool IsAuthenticated => true;
 
-        public string Name
-        {
-            get { return ticket.Name; }
-        }
+        public string Name => _ticket.Name;
 
-        public string FriendlyName
-        {
-            get { return ticket.UserData; }
-        }
+        public string FriendlyName => _ticket.UserData;
     }
 }

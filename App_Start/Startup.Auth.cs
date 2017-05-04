@@ -17,7 +17,7 @@ namespace SystemWeb
     {
         public void ConfigureContainer(IAppBuilder app)
         {
-            IContainer container = CreateContainer();
+            var container = CreateContainer();
             app.UseAutofacMiddleware(container);
             app.UseAutofacMvc();
 
@@ -76,7 +76,7 @@ namespace SystemWeb
             RegisterServices(builder);
             RegisterMvc(builder, assembly);
 
-            IContainer container = builder.Build();
+            var container = builder.Build();
 
             SetMvcDependencyResolver(container);
 

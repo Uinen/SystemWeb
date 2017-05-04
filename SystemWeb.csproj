@@ -252,6 +252,10 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="TidyNetPortable, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\TidyNetPortable.1.0.0\lib\TidyNetPortable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
       <Private>True</Private>
@@ -261,14 +265,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionFilters\CompressFilter.cs" />
+    <Compile Include="ActionFilters\ETagActionFilter.cs" />
+    <Compile Include="ActionFilters\SearchBotFilter.cs" />
+    <Compile Include="ActionFilters\TidyHtml.cs" />
+    <Compile Include="ActionFilters\WhitespaceFilter.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\AdaptiveController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CartissimaController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PayPalController.cs" />
@@ -318,6 +327,18 @@
     <Compile Include="Migrations\201704021345085_8.Designer.cs">
       <DependentUpon>201704021345085_8.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705031932562_9.cs" />
+    <Compile Include="Migrations\201705031932562_9.Designer.cs">
+      <DependentUpon>201705031932562_9.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705032010212_10.cs" />
+    <Compile Include="Migrations\201705032010212_10.Designer.cs">
+      <DependentUpon>201705032010212_10.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705041812195_11.cs" />
+    <Compile Include="Migrations\201705041812195_11.Designer.cs">
+      <DependentUpon>201705041812195_11.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\CodeFirst\AppModel.cs" />
     <Compile Include="Models\EditParams.cs" />
     <Compile Include="Models\FileType.cs" />
@@ -329,7 +350,10 @@
     <Compile Include="Repository\CaliRepository.cs" />
     <Compile Include="Repository\DeficienzeRepository.cs" />
     <Compile Include="Repository\DispenserRepository.cs" />
+    <Compile Include="Repository\CartissimaRepository.cs" />
+    <Compile Include="Repository\Interface\iCartissimaInterface.cs" />
     <Compile Include="Repository\Interface\iPvDeficienzeRepository.cs" />
+    <Compile Include="Repository\ProductRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\CaricoRepository.cs" />
     <Compile Include="Repository\ContatoriRepository.cs" />
     <Compile Include="Repository\Interface\iCaricoRepository.cs" />
@@ -339,6 +363,7 @@
     <Compile Include="Repository\Interface\iPvRepository.cs" />
     <Compile Include="Repository\Interface\iUsersImageRepository.cs" />
     <Compile Include="Repository\OrderRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\CartissimaRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\ProductRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\PvCaliRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\PvDeficienzeRepository.cs" />
@@ -364,7 +389,6 @@
     <Compile Include="Services\SitemapPinger\SitemapPingerService.cs" />
     <Compile Include="Services\Sitemap\ISitemapService.cs" />
     <Compile Include="Services\Sitemap\SitemapService.cs" />
-    <Compile Include="ViewModels\IRegistrationViewModel.cs" />
     <Compile Include="ViewModels\MapDesignerViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -385,12 +409,27 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\ProfileImageViewModel.cs" />
     <Compile Include="ViewModels\PvErogatoriViewModel.cs" />
-    <Compile Include="ViewModels\RegistrationViewModel.cs" />
-    <Compile Include="ViewModels\RegistrationViewModelBinder.cs" />
     <Compile Include="ViewModels\UserIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Contenuti\Bootstrap\bootstrap-theme.css" />
+    <Content Include="Contenuti\Bootstrap\bootstrap-theme.min.css" />
+    <Content Include="Contenuti\Bootstrap\bootstrap.css" />
+    <Content Include="Contenuti\Bootstrap\bootstrap.min.css" />
+    <Content Include="Contenuti\css\colors\custom.min.css">
+      <DependentUpon>custom.css</DependentUpon>
+    </Content>
+    <Content Include="Contenuti\css\Dashboard\dashboard.css" />
+    <Content Include="Contenuti\css\Dashboard\dashboard.min.css">
+      <DependentUpon>dashboard.css</DependentUpon>
+    </Content>
+    <Content Include="Contenuti\css\ionicons.min.css">
+      <DependentUpon>ionicons.css</DependentUpon>
+    </Content>
+    <Content Include="Contenuti\css\STYLE.min.CSS">
+      <DependentUpon>style.CSS</DependentUpon>
+    </Content>
     <Content Include="Contenuti\ej\mobile\android-theme\ej.mobile.android-core.min.css" />
     <Content Include="Contenuti\ej\mobile\android-theme\ej.mobile.android.min.css" />
     <Content Include="Contenuti\ej\mobile\ej.mobile.all.min.css" />
@@ -672,96 +711,99 @@
     <Content Include="Contenuti\ej\web\office-365\images\slider-tick.png" />
     <Content Include="Contenuti\ej\web\office-365\images\waitingpopup.gif" />
     <Content Include="Contenuti\ej\web\responsive-css\ej.responsive.css" />
+    <Content Include="Contenuti\ej\web\responsive-css\ej.responsive.min.css">
+      <DependentUpon>ej.responsive.css</DependentUpon>
+    </Content>
     <Content Include="Contenuti\ej\web\responsive-css\ejgrid.responsive.css" />
+    <Content Include="Contenuti\ej\web\responsive-css\ejgrid.responsive.min.css">
+      <DependentUpon>ejgrid.responsive.css</DependentUpon>
+    </Content>
     <Content Include="Contenuti\ej\web\ribbon-css\ej.icons.css" />
-    <Content Include="Contenuti\bootstrap-theme.css" />
-    <Content Include="Contenuti\bootstrap-theme.min.css" />
-    <Content Include="Contenuti\bootstrap.css" />
-    <Content Include="Contenuti\bootstrap.min.css" />
-    <Content Include="Contenuti\CSS\ajax-loader.gif" />
-    <Content Include="Contenuti\CSS\ANIMATE.CSS" />
-    <Content Include="Contenuti\CSS\animate.min.css" />
-    <Content Include="Contenuti\CSS\COLORS\CUSTOM.CSS" />
-    <Content Include="Contenuti\CSS\COLORS\custom.min.css" />
-    <Content Include="Contenuti\CSS\COLORS\CYAN.CSS" />
-    <Content Include="Contenuti\CSS\COLORS\DARK.CSS" />
-    <Content Include="Contenuti\CSS\COLORS\GRAY.CSS" />
-    <Content Include="Contenuti\CSS\COLORS\GREEN.CSS" />
-    <Content Include="Contenuti\CSS\COLORS\RED.CSS" />
-    <Content Include="Contenuti\CSS\CREATIVE.CSS" />
-    <Content Include="Contenuti\CSS\IONICONS.CSS" />
-    <Content Include="Contenuti\CSS\ionicons.min.css" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\.gitignore" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\changelog.txt" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\CLOSE%402X.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\CLOSE.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\Gulpfile.js" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\LICENSE.TXT" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\loading%402x.gif" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\LOADING.GIF" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\NEXT%402X.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\NEXT.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\nivo-lightbox-theme.css" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\nivo-lightbox.css" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\nivo-lightbox.min.css" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\PREV%402X.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\PREV.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\THEMES\DEFAULT\CLOSE%402X.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\THEMES\DEFAULT\CLOSE.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\THEMES\DEFAULT\DEFAULT.CSS" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\THEMES\DEFAULT\loading%402x.gif" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\THEMES\DEFAULT\LOADING.GIF" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\THEMES\DEFAULT\NEXT%402X.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\THEMES\DEFAULT\NEXT.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\THEMES\DEFAULT\PREV%402X.PNG" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\THEMES\DEFAULT\PREV.PNG" />
-    <Content Include="Contenuti\CSS\owl.carousel.css" />
-    <Content Include="Contenuti\CSS\owl.carousel.min.css" />
-    <Content Include="Contenuti\CSS\owl.theme.css" />
-    <Content Include="Contenuti\CSS\owl.theme.default.min.css" />
-    <Content Include="Contenuti\CSS\owl.theme.green.min.css" />
-    <Content Include="Contenuti\CSS\owl.theme.min.css" />
-    <Content Include="Contenuti\CSS\owl.video.play.png" />
-    <Content Include="Contenuti\CSS\PagedList.css" />
-    <Content Include="Contenuti\CSS\PagedList.min.css" />
-    <Content Include="Contenuti\CSS\REVEAL.CSS" />
-    <Content Include="Contenuti\CSS\STYLE.CSS" />
+    <Content Include="Contenuti\css\ajax-loader.gif" />
+    <Content Include="Contenuti\css\animate.css" />
+    <Content Include="Contenuti\css\animate.min.css" />
+    <Content Include="Contenuti\css\colors\custom.css" />
+    <Content Include="Contenuti\css\colors\CYAN.CSS" />
+    <Content Include="Contenuti\css\colors\DARK.CSS" />
+    <Content Include="Contenuti\css\colors\GRAY.CSS" />
+    <Content Include="Contenuti\css\colors\GREEN.CSS" />
+    <Content Include="Contenuti\css\colors\RED.CSS" />
+    <Content Include="Contenuti\css\creative.css" />
+    <Content Include="Contenuti\css\ionicons.css" />
+    <Content Include="Contenuti\css\nivo-lightbox\.gitignore" />
+    <Content Include="Contenuti\css\nivo-lightbox\changelog.txt" />
+    <Content Include="Contenuti\css\nivo-lightbox\CLOSE%402X.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\CLOSE.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\Gulpfile.js" />
+    <Content Include="Contenuti\css\nivo-lightbox\LICENSE.TXT" />
+    <Content Include="Contenuti\css\nivo-lightbox\loading%402x.gif" />
+    <Content Include="Contenuti\css\nivo-lightbox\LOADING.GIF" />
+    <Content Include="Contenuti\css\nivo-lightbox\NEXT%402X.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\NEXT.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\nivo-lightbox-theme.css" />
+    <Content Include="Contenuti\css\nivo-lightbox\nivo-lightbox.css" />
+    <Content Include="Contenuti\css\nivo-lightbox\nivo-lightbox.min.css" />
+    <Content Include="Contenuti\css\nivo-lightbox\PREV%402X.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\PREV.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\themes\default\CLOSE%402X.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\themes\default\CLOSE.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\themes\default\DEFAULT.CSS" />
+    <Content Include="Contenuti\css\nivo-lightbox\themes\default\loading%402x.gif" />
+    <Content Include="Contenuti\css\nivo-lightbox\themes\default\LOADING.GIF" />
+    <Content Include="Contenuti\css\nivo-lightbox\themes\default\NEXT%402X.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\themes\default\NEXT.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\themes\default\PREV%402X.PNG" />
+    <Content Include="Contenuti\css\nivo-lightbox\themes\default\PREV.PNG" />
+    <Content Include="Contenuti\css\owl.carousel.css" />
+    <Content Include="Contenuti\css\owl.carousel.min.css" />
+    <Content Include="Contenuti\css\owl.theme.css" />
+    <Content Include="Contenuti\css\owl.theme.default.min.css" />
+    <Content Include="Contenuti\css\owl.theme.green.min.css" />
+    <Content Include="Contenuti\css\owl.theme.min.css" />
+    <Content Include="Contenuti\css\owl.video.play.png" />
+    <Content Include="Contenuti\css\PagedList.css" />
+    <Content Include="Contenuti\css\PagedList.min.css" />
+    <Content Include="Contenuti\css\reveal.CSS" />
+    <Content Include="Contenuti\css\style.CSS" />
+    <Content Include="Contenuti\fonts\IONICONS.EOT" />
+    <Content Include="Contenuti\fonts\IONICONS.SVG" />
+    <Content Include="Contenuti\fonts\IONICONS.TTF" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\fontawesome-webfont.svg" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="fonts\IONICONS.SVG" />
-    <Content Include="img\bg.jpg" />
-    <Content Include="img\preloader.gif" />
+    <Content Include="Contenuti\fonts\fontawesome-webfont.svg" />
+    <Content Include="Contenuti\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Contenuti\img\2-iphone-right.jpg" />
+    <Content Include="Contenuti\img\bg.jpg" />
+    <Content Include="Contenuti\img\preloader.gif" />
     <Content Include="MainFont\font-awesome.css" />
     <Content Include="MainFont\css\font-awesome.min.css" />
     <Content Include="MainFont\fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
-    <Content Include="img\2-iphone-left.png" />
-    <Content Include="img\2-iphone-right.png" />
-    <Content Include="img\client-four.png" />
-    <Content Include="img\client-one.png" />
-    <Content Include="img\client-three.png" />
-    <Content Include="img\client-two.png" />
-    <Content Include="img\dev-1.jpg" />
-    <Content Include="img\dev-2.jpg" />
-    <Content Include="img\dev-3.jpg" />
-    <Content Include="img\dev-4.jpg" />
-    <Content Include="img\favicon.ico" />
-    <Content Include="img\features_screen.png" />
-    <Content Include="img\iphone_hand.png" />
-    <Content Include="img\portfolio\1.jpg" />
-    <Content Include="img\portfolio\2.jpg" />
-    <Content Include="img\portfolio\3.jpg" />
-    <Content Include="img\portfolio\4.jpg" />
-    <Content Include="img\portfolio\5.jpg" />
-    <Content Include="img\portfolio\6.jpg" />
-    <Content Include="img\screenshots\1.jpg" />
-    <Content Include="img\screenshots\2.jpg" />
-    <Content Include="img\screenshots\3.jpg" />
-    <Content Include="img\screenshots\4.jpg" />
-    <Content Include="img\spark.png" />
-    <Content Include="img\stripBG.png" />
-    <Content Include="img\subs-bg.jpg" />
+    <Content Include="Contenuti\img\2-iphone-left.png" />
+    <Content Include="Contenuti\img\2-iphone-right.png" />
+    <Content Include="Contenuti\img\client-four.png" />
+    <Content Include="Contenuti\img\client-one.png" />
+    <Content Include="Contenuti\img\client-three.png" />
+    <Content Include="Contenuti\img\client-two.png" />
+    <Content Include="Contenuti\img\dev-1.jpg" />
+    <Content Include="Contenuti\img\dev-2.jpg" />
+    <Content Include="Contenuti\img\dev-3.jpg" />
+    <Content Include="Contenuti\img\dev-4.jpg" />
+    <Content Include="Contenuti\img\favicon.ico" />
+    <Content Include="Contenuti\img\features_screen.png" />
+    <Content Include="Contenuti\img\iphone_hand.png" />
+    <Content Include="Contenuti\img\portfolio\1.jpg" />
+    <Content Include="Contenuti\img\portfolio\2.jpg" />
+    <Content Include="Contenuti\img\portfolio\3.jpg" />
+    <Content Include="Contenuti\img\portfolio\4.jpg" />
+    <Content Include="Contenuti\img\portfolio\5.jpg" />
+    <Content Include="Contenuti\img\portfolio\6.jpg" />
+    <Content Include="Contenuti\img\screenshots\1.jpg" />
+    <Content Include="Contenuti\img\screenshots\2.jpg" />
+    <Content Include="Contenuti\img\screenshots\3.jpg" />
+    <Content Include="Contenuti\img\screenshots\4.jpg" />
+    <Content Include="Contenuti\img\spark.png" />
+    <Content Include="Contenuti\img\stripBG.png" />
+    <Content Include="Contenuti\img\subs-bg.jpg" />
     <Content Include="MainFont\fonts\fontawesome-webfont.eot" />
     <Content Include="MainFont\fonts\fontawesome-webfont.ttf" />
     <Content Include="MainFont\fonts\fontawesome-webfont.woff" />
@@ -793,36 +835,31 @@
     <Content Include="MainFont\scss\_rotated-flipped.scss" />
     <Content Include="MainFont\scss\_stacked.scss" />
     <Content Include="MainFont\scss\_variables.scss" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Contenuti\bootstrap-theme.css.map" />
-    <Content Include="Contenuti\bootstrap-theme.min.css.map" />
-    <Content Include="Contenuti\bootstrap.css.map" />
-    <Content Include="Contenuti\bootstrap.min.css.map" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\package.json" />
-    <Content Include="Contenuti\CSS\nivo-lightbox\README.MD" />
-    <Content Include="Contenuti\LESS\ionicons.less" />
-    <Content Include="Contenuti\LESS\_ionicons-font.less" />
-    <Content Include="Contenuti\LESS\_ionicons-icons.less" />
-    <Content Include="Contenuti\LESS\_ionicons-variables.less" />
-    <Content Include="Contenuti\SCSS\ionicons.scss" />
-    <Content Include="Contenuti\SCSS\_ionicons-font.scss" />
-    <Content Include="Contenuti\SCSS\_ionicons-icons.scss" />
-    <Content Include="Contenuti\SCSS\_ionicons-variables.scss" />
-    <Content Include="fonts\fontawesome-webfont.eot" />
-    <Content Include="fonts\fontawesome-webfont.ttf" />
-    <Content Include="fonts\fontawesome-webfont.woff" />
-    <Content Include="fonts\fontawesome-webfont.woff2" />
-    <Content Include="fonts\FontAwesome.otf" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="fonts\IONICONS.EOT" />
-    <Content Include="fonts\IONICONS.TTF" />
-    <Content Include="fonts\ionicons.woff" />
+    <Content Include="Contenuti\css\nivo-lightbox\package.json" />
+    <Content Include="Contenuti\css\nivo-lightbox\README.MD" />
+    <Content Include="Contenuti\less\ionicons.less" />
+    <Content Include="Contenuti\less\_ionicons-font.less" />
+    <Content Include="Contenuti\less\_ionicons-icons.less" />
+    <Content Include="Contenuti\less\_ionicons-variables.less" />
+    <Content Include="Contenuti\scss\ionicons.scss" />
+    <Content Include="Contenuti\scss\_ionicons-font.scss" />
+    <Content Include="Contenuti\scss\_ionicons-icons.scss" />
+    <Content Include="Contenuti\scss\_ionicons-variables.scss" />
+    <Content Include="Contenuti\fonts\fontawesome-webfont.eot" />
+    <Content Include="Contenuti\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Contenuti\fonts\fontawesome-webfont.woff" />
+    <Content Include="Contenuti\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Contenuti\fonts\FontAwesome.otf" />
+    <Content Include="Contenuti\fonts\ionicons.woff" />
     <Content Include="packages.config" />
     <Content Include="Scripts\ActionComplete.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\ActionComplete.min.js">
+      <DependentUpon>ActionComplete.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\bootstrap\v3\bootstrap.js" />
+    <Content Include="Scripts\bootstrap\v3\bootstrap.min.js">
+      <DependentUpon>bootstrap.js</DependentUpon>
+    </Content>
     <Content Include="Contenuti\ej\web\office-365\ej.theme.less" />
     <Content Include="Contenuti\ej\web\material\icons\ejicons.woff" />
     <Content Include="Contenuti\ej\web\material\icons\ejicons.ttf" />
@@ -867,6 +904,21 @@
       <LastGenOutput>SystemWeb.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
+    <None Include="bundleconfig.json" />
+    <Content Include="Contenuti\scss\sb-admin.scss" />
+    <Content Include="Contenuti\scss\_cards.scss" />
+    <Content Include="Contenuti\scss\_global.scss" />
+    <Content Include="Contenuti\scss\_mixins.scss" />
+    <Content Include="Contenuti\scss\_navbar.scss" />
+    <Content Include="Contenuti\scss\_variables.scss" />
+    <Content Include="Contenuti\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Contenuti\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Contenuti\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Contenuti\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Contenuti\Bootstrap\bootstrap.min.css.map" />
+    <Content Include="Contenuti\Bootstrap\bootstrap.css.map" />
+    <Content Include="Contenuti\Bootstrap\bootstrap-theme.min.css.map" />
+    <Content Include="Contenuti\Bootstrap\bootstrap-theme.css.map" />
     <None Include="NWebsecConfig\HttpHeaderSecurityModuleConfig.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -874,6 +926,7 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\ej\web\ej.web.all.min.intellisense.js" />
     <None Include="Scripts\ej\web\ej.web.all-vsdoc.js" />
+    <Content Include="Scripts\dataTables.bootstrap4.js" />
     <Content Include="Scripts\ejDatePickerOption.js" />
     <Content Include="Scripts\ej\common\ej.core.min.js" />
     <Content Include="Scripts\ej\common\ej.data.min.js" />
@@ -1010,18 +1063,26 @@
     <Content Include="Scripts\ej\web\ej.web.all.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
-    <None Include="Scripts\jquery-1.4.4-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.4.4.js" />
-    <Content Include="Scripts\jquery-1.4.4.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.min.js">
+      <DependentUpon>jquery-3.2.1.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\jquery.ajaxchimp.min.js" />
     <Content Include="Scripts\jquery.browser.js" />
     <Content Include="Scripts\jquery.browser.min.js" />
+    <Content Include="Scripts\jquery.dataTables.js" />
+    <Content Include="Scripts\jquery.dataTables.min.js">
+      <DependentUpon>jquery.dataTables.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\jquery.easing.1.3.js" />
     <Content Include="Scripts\jquery.easing.1.3.min.js" />
     <Content Include="Scripts\jquery.globalize.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-3.2.1.js" />
+    <Content Include="Scripts\jquery.globalize.min.js">
+      <DependentUpon>jquery.globalize.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -1036,18 +1097,12 @@
     <Content Include="Scripts\MicrosoftMvcValidation.js" />
     <Content Include="Scripts\MicrosoftMvcValidation.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\nivo-lightbox.js" />
-    <Content Include="Scripts\nivo-lightbox.min.js" />
-    <Content Include="Scripts\owl.carousel.js" />
-    <Content Include="Scripts\owl.carousel.min.js" />
-    <Content Include="Scripts\SCRIPT.JS" />
-    <Content Include="Scripts\script.min.js" />
-    <Content Include="Scripts\smoothscroll.js" />
-    <Content Include="Scripts\smoothscroll.min.js" />
     <Content Include="Scripts\SORTABLE.JS" />
     <Content Include="Scripts\sortable.min.js" />
-    <Content Include="Scripts\WOW.JS" />
-    <Content Include="Scripts\WOW.min.js" />
+    <Content Include="Scripts\Theme.js" />
+    <Content Include="Scripts\Theme.min.js">
+      <DependentUpon>Theme.js</DependentUpon>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1071,7 +1126,6 @@
     <Content Include="Views\Account\VerifyCode.cshtml" />
     <Content Include="Views\Account\EditorTemplates\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\User\CaricoCreate.cshtml" />
-    <Content Include="Views\User\Carico.cshtml" />
     <Content Include="Views\User\CompaniesCreate.cshtml" />
     <Content Include="Views\User\CompaniesDelete.cshtml" />
     <Content Include="Views\User\CompaniesDetails.cshtml" />
@@ -1103,10 +1157,6 @@
     <Content Include="Views\Admin\Notices.cshtml" />
     <Content Include="Views\PayPal\Index.cshtml" />
     <Content Include="Views\PayPal\ValidateCommand.cshtml" />
-    <Content Include="Views\Admin\ProductsCreate.cshtml" />
-    <Content Include="Views\Admin\ProductsDelete.cshtml" />
-    <Content Include="Views\Admin\ProductsDetails.cshtml" />
-    <Content Include="Views\Admin\ProductsEdit.cshtml" />
     <Content Include="Views\Admin\Products.cshtml" />
     <Content Include="Views\User\PvErogatoriCreate.cshtml" />
     <Content Include="Views\User\PvErogatori.cshtml" />
@@ -1177,16 +1227,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js.map" />
     <Content Include="Scripts\MicrosoftMvcAjax.min.js.map" />
     <Content Include="Scripts\MicrosoftMvcValidation.min.js.map" />
-    <Content Include="Scripts\owl.carousel.min.js.map" />
-    <Content Include="Scripts\script.min.js.map" />
-    <Content Include="Scripts\smoothscroll.min.js.map" />
-    <Content Include="Scripts\WOW.min.js.map" />
     <Content Include="Scripts\sortable.min.js.map" />
-    <Content Include="Views\User\PvMap.cshtml" />
-    <Content Include="Views\Account\RegisterStep1.cshtml" />
-    <Content Include="Views\Account\RegisterStep2.cshtml" />
-    <Content Include="Views\Account\RegisterStep3.cshtml" />
-    <Content Include="Views\Account\RegisterStep4.cshtml" />
     <Content Include="Views\User\Profiles.cshtml" />
     <Content Include="Views\User\DeleteProfiles.cshtml" />
     <Content Include="Views\User\EditProfiles.cshtml" />
@@ -1200,6 +1241,18 @@
     <Content Include="Views\Error\InternalServerError.cshtml" />
     <Content Include="Views\Error\MethodNotAllowed.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="Views\Account\New.cshtml" />
+    <Content Include="Views\Shared\_FrontHeader.cshtml" />
+    <Content Include="Views\Shared\_Banner.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_FrontStyles.cshtml" />
+    <Content Include="Views\Shared\_Sidebar.cshtml" />
+    <Content Include="Views\Shared\_SecondLayout.cshtml" />
+    <Content Include="Views\User\Carico.cshtml" />
+    <Content Include="Views\Shared\_ThirdLayout.cshtml" />
+    <Content Include="Views\Cartissima\List.cshtml" />
+    <Content Include="Views\Cartissima\Send.cshtml" />
+    <Content Include="Views\Cartissima\Success.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1235,6 +1288,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704021345085_8.resx">
       <DependentUpon>201704021345085_8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705031932562_9.resx">
+      <DependentUpon>201705031932562_9.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705032010212_10.resx">
+      <DependentUpon>201705032010212_10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705041812195_11.resx">
+      <DependentUpon>201705041812195_11.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Models\LinqToSql\SystemWeb.dbml.layout">
       <DependentUpon>SystemWeb.dbml</DependentUpon>

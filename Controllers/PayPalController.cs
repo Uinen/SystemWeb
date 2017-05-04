@@ -26,9 +26,11 @@ namespace SystemWeb.Controllers
         public ActionResult ValidateCommand(string product, string totalPrice)
         {
             bool useSandbox = Convert.ToBoolean(ConfigurationManager.AppSettings["IsSandbox"]);
-            var paypal = new PayPalModels(useSandbox);
-            paypal.item_name = product;
-            paypal.amount = totalPrice;
+            var paypal = new PayPalModels(useSandbox)
+            {
+                ItemName = product,
+                Amount = totalPrice
+            };
             return View(paypal);
         }
     }

@@ -12,15 +12,15 @@ using Microsoft.Owin.Security;
 using System;
 using System.Web.Security;
 using SystemWeb.ViewModels;
-using System.IO;
 using System.Collections.Generic;
-using System.Net;
+using System.Collections;
 
 namespace SystemWeb.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+        private readonly MyDbContext _db = new MyDbContext();
         public AccountController()
         {
         }
@@ -135,93 +135,21 @@ namespace SystemWeb.Controllers
             }
         }
 
-        private MyDbContext db = new MyDbContext();
-
-        [HttpGet]
         [AllowAnonymous]
-        [Route("Account/New")]
         public ActionResult New()
         {
-            RegistrationViewModel _model = new RegistrationViewModel()
-            {
-                WizardID = null,
-                WizardType = "UserInfo"
-            };
+            var model = new RegisterBindingModel();
+            IEnumerable dbFlag = (from f in _db.Flag select f);
+            IEnumerable dbRagioneSociale = (from f in _db.RagioneSociale select f);
+            model.RagioneSociale = new SelectList(dbRagioneSociale, "RagioneSocialeId", "Nome");
+            model.Flag = new SelectList(dbFlag, "PvFlagId", "Nome", 1);
 
-            return View("RegisterStep1", _model);
-        }
-        
-        /*
-        [HttpGet]
-        [Route("Account/edit/{wizardID:int}")]
-        public ActionResult Edit(int wizardID)
-        {
-            RegistrationViewModel _model = db.GetData(wizardID);
-
-            return View("Step1", _model);
-        }
-        */
-
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        [Route("Account/RegisterStep1")]
-        public ActionResult RegisterStep1(RegistrationViewModel model)
-        {
-            if (ModelState.IsValidField("RegisterStep1"))
-            {
-                return View("RegisterStep2", model);
-            }
-            return View("RegisterStep1", model);
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [Route("Account/RegisterStep2")]
-        public ActionResult RegisterStep2(RegistrationViewModel model)
-        {
-            if (ModelState.IsValidField("RegisterStep2"))
-            {
-                return View("RegisterStep3", model);
-            }
-            return View("RegisterStep2", model);
-        }
-
-        [AllowAnonymous]
-        public ActionResult RegisterStep3()
-        {
-            var rag = from a in db.RagioneSociale
-                      select a;
-            ViewBag.RagioneSocialeId = new SelectList(rag, "RagioneSocialeId", "Nome");
             return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("Account/RegisterStep3")]
-        public ActionResult RegisterStep3(RegistrationViewModel model)
-        {
-            if (ModelState.IsValidField("RegisterStep3"))
-            {
-                return View("RegisterStep4", model);
-            }
-            return View("RegisterStep3", model);
-        }
-
-        [AllowAnonymous]
-        public ActionResult RegisterStep4()
-        {
-            var company = db.Company.Include(c => c.RagioneSociale);
-            var pv = db.Pv.Include(p => p.Flag);
-            var flag = from a in db.Flag
-                       select a;
-            ViewBag.pvFlagId = new SelectList(flag, "pvFlagId", "Nome");
-            return View();
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<ActionResult> RegisterStep4(RegistrationViewModel model, HttpPostedFileBase upload)
+        public async Task<ActionResult> New(RegisterBindingModel model, HttpPostedFileBase upload)
         {
             if (ModelState.IsValid)
             {
@@ -245,25 +173,35 @@ namespace SystemWeb.Controllers
 
                 var user = new ApplicationUser()
                 {
-                    UserName = model.step1.Username,
-                    Email = model.step1.Email
+                    UserName = model.Username,
+                    Email = model.Email
                 };
                 
                 user.TwoFactorEnabled = false;
 
                 user.CreateDate = DateTime.Now;
 
+                user.UserProfiles = new UserProfiles()
+                {
+                    ProfileName = model.mProfileName,
+                    ProfileSurname = model.mProfileSurname,
+                    ProfileAdress = model.mProfileAdress,
+                    ProfileCity = model.mProfileCity,
+                    ProfileZipCode = model.mProfilezipCode,
+                    ProfileNation = model.mProfileNation
+                };
+
                 user.Company = new Company()
                 {
-                    Name = model.step3.name,
-                    PartitaIva = model.step3.iva,
-                    RagioneSocialeId = model.step3.RagioneSocialeId
+                    Name = model.name,
+                    PartitaIva = model.iva,
+                    RagioneSocialeId = model.RagioneSocialeId
                 };
 
                 user.Pv = new Pv()
                 {
-                    pvName = model.step4.PvName,
-                    pvFlagId = model.step4.PvFlagId
+                    pvName = model.PvName,
+                    pvFlagId = model.PvFlagId
                 };
 
                 if (upload != null && upload.ContentLength > 0)
@@ -281,21 +219,10 @@ namespace SystemWeb.Controllers
                         avatar.Content = reader.ReadBytes(upload.ContentLength);
                     }
 
-                    user.UserProfiles = new UserProfiles()
-                    {
-                        ProfileName = model.step2.mProfileName,
-                        ProfileSurname = model.step2.mProfileSurname,
-                        ProfileAdress = model.step2.mProfileAdress,
-                        ProfileCity = model.step2.mProfileCity,
-                        ProfileZipCode = model.step2.mProfilezipCode,
-                        ProfileNation = model.step2.mProfileNation,
-                        ProfileInfo = model.step2.mProfileInfo
-                    };
-
                     user.UserProfiles.UsersImage = new List<UsersImage> { avatar };
                 }
 
-                var result = await UserManager.CreateAsync(user, model.step1.Password);
+                var result = await UserManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {

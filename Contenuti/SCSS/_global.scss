@@ -1,0 +1,59 @@
+// Global styling for this template
+// Body padding for the fixed navbar and sidebar
+body {
+    background: $gray-dark;
+}
+
+body.fixed-nav {
+    padding-top: 54px;
+    @media (min-width: 992px) {
+        padding-top: 56px;
+    }
+}
+
+.content-wrapper {
+    background: white;
+    @media (min-width: 992px) {
+        margin-left: 250px;
+    }
+}
+
+// Scroll to top button
+.scroll-to-top {
+    display: none;
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    height: 50px;
+    width: 50px;
+    color: white;
+    text-align: center;
+    line-height: 45px;
+    background: fade-out($gray-dark, 0.5);
+    &:hover,
+    &:focus {
+        color: white;
+    }
+    &:hover {
+        background: $gray-dark;
+    }
+}
+
+// Additional Text Helper Class
+.smaller {
+    font-size: 0.7rem;
+}
+
+// Helper class for the overflow property
+.o-hidden {
+    overflow: hidden !important;
+}
+
+// Helper classes for z-index
+.z-0 {
+    z-index: 0;
+}
+
+.z-1 {
+    z-index: 1;
+}

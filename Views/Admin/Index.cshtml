@@ -1,163 +1,91 @@
 ﻿@using SystemWeb.Models
 @model AdminIndexViewModel
 
-<section id="testimonial" class="block">
-    <div class="container">
-        <div class="row">
-            <div class="center-block">
-                <div class="header-content-inner">
-                    <h3 class="alert-info">Lista di tutte le azioni sul sito</h3>
-                    <h4 class="alert-info">
-                        Prodotti registrati 
-                    </h4>
-                    <div id="no-more-tables">
-                        <table class="col-md-12 table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th><small>Link Utili</small></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td data-title="Link Utili">
-                                        <a href="#" data-reveal-id="myModal" data-animation="fadeAndPop" data-animationspeed="300" data-closeonbackgroundclick="true" data-dismissmodalclass="close-reveal-modal">Click for a modal</a>	
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+@{
+    Layout = "~/Views/Shared/_ThirdLayout.cshtml";
+    Page.Title = "Gestioni Dirette - Admin Dashboard";
+}
+
+@if (Request.IsAuthenticated && User.IsInRole("Administrator"))
+{
+    <div class="row">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Administration</a></li>
+                <li class="breadcrumb-item active">Dashboard with advanced services </li>
+            </ol>
+    </div>
+    <div class="row">
+            <div class="col-sm-6 col-lg-3 mb-4">
+                <div class="card card-header card-success">
+                    <div class="card-block">
                     </div>
                 </div>
-                <div id="no-more-tables">
-                    <table class="col-md-12 table-bordered table-striped table-condensed">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Nome
-                                </th>
-                                <th>
-                                    Peso
-                                </th>
-                                <th>
-                                    Prezzo
-                                </th>
-                                <th>
-                                </th>
-                            </tr>
-                        </thead>
-                        @foreach (Product item in Model.prodotto)
-                        {
-                            <tbody>
-                                <tr>
-                                    <td data-title="Nome">
-                                        @Html.DisplayFor(modelItem => item.Nome)
-                                    </td>
-                                    <td data-title="Peso">
-                                        @Html.DisplayFor(modelItem => item.Peso)
-                                    </td>
-                                    <td data-title="Prezzo">
-                                        @Html.DisplayFor(modelItem => item.Prezzo)
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Dettagli", "ProductsDetails", new { id = item.ProductId }) |
-                                        @Html.ActionLink("Modifica", "ProductsEdit", new { id = item.ProductId }) |
-                                        @Html.ActionLink("Cancella", "ProductsDelete", new { id = item.ProductId })
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
-                </div>
-                <hr />
-                <div id="no-more-tables">
-                    <div class="header-content-inner">
-                        <h4 class="alert-info">
-                            Bandiere registrate
-                        </h4>
-                        <div id="no-more-tables">
-                            <table class="col-md-12 table-bordered table-striped table-condensed">
-                                <thead>
-                                    <tr>
-                                        <th><small>Link Utili</small></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td data-title="Link Utili">
-                                            @Html.ActionLink("Nuova", "FlagsCreate")
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+            </div>
+            <div class="col-sm-6 col-lg-5 mb-4">
+                <div class="card card-inverse card-success o-hidden h-100">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <p class="text-info text-uppercase"><strong></strong></p>
+                        </div>
+                        <div class="mb-4">
+                           
+                        </div>
+                        <div class="card-header">
+                            <p class="text-info text-uppercase"><strong></strong></p>
+                        </div>
+                        <div class="mb-4">
+                           
                         </div>
                     </div>
-                    <table class="col-md-12 table-bordered table-striped table-condensed">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Nome
-                                </th>
-                                <th>
-                                    Descrizione
-                                </th>
-                                <th>
-                                </th>
-                            </tr>
-                        </thead>
-                        @foreach (Flag item in Model.flag)
-                        {
-                            <tbody>
-                                <tr>
-                                    <td data-title="Nome">
-                                        @Html.DisplayFor(modelItem => item.Nome)
-                                    </td>
-                                    <td data-title="Descrizione">
-                                        @Html.DisplayFor(modelItem => item.Descrizione)
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Dettagli", "FlagsDetails", new { id = item.pvFlagId })
-                                        @Html.ActionLink("Modifica", "FlagsEdit", new { id = item.pvFlagId })
-                                        @Html.ActionLink("Cancella", "FlagsDelete", new { id = item.pvFlagId })
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
+                    <a href="#" class="card-footer clearfix small z-1">
+                        <span class="float-left">Esporta</span>
+                        <span class="float-right"><i class="fa fa-angle-right"></i></span>
+                    </a>
                 </div>
-                <hr />
-                <div id="no-more-tables">
-                    <div class="header-content-inner">
-                        <h4 class="alert-info">
-                            Utenti registrati
-                        </h4>
-                        @using (Html.BeginForm("UserAdmin", "Admin", FormMethod.Get))
-                        {
-                            <p>
-                                Trova il nome utente: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-                                <input type="submit" value="Cerca" />
-                            </p>
-                        }
+            </div>
+            <div class="col-sm-4 col-lg-3 mb-4">
+                <div class="card card-header card-success">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <p class="text-danger text-uppercase"><strong>Ultime notizie</strong></p>
+                        </div>
+                        <div class="mb-3">
+                            <p>Feed</p>
+                        </div>
                     </div>
-                    <table class="col-md-12 table-bordered table-striped table-condensed">
-                        <thead>
-                            <tr>
-                                <th>
-                                    @Html.ActionLink("Utenti", "UserAdmin", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
-                                </th>
-                            </tr>
-                        </thead>
-                        @foreach (ApplicationUser item in Model.utente)
-                        {
-                            <tbody>
-                                <tr>
-                                    <td data-title="Utenti">
-                                        @Html.DisplayFor(modelItem => item.UserName)
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
+                </div>
+            </div>
+    </div>
+    <div class="row">
+        <div class="grid-filter">
+            <div class="col-sm-6 col-lg-12 mb-3">
+                <div class="card card-inverse card-danger o-hidden h-100">
+                    <div class="card-header">
+                        <i class="fa fa-area-chart"></i>
+                    </div>
+                    <div class="card-block">
+                    </div>
+                    <div class="card-footer small text-muted">
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
+    <div class="row">
+        <div class="col-lg-12 mb-3">
+            <div class="card card-inverse card-info o-hidden h-100">
+                <div class="card-block">
+                    <div class="card-block-icon">
+                        <i class="fa fa-fw fa-send"></i>
+                    </div>
+                    <div class="card-header">
+                        <i class="fa fa-file-text"></i> Invia Ordine
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -8,6 +7,7 @@ using System.Web.Helpers;
 using Boilerplate.Web.Mvc;
 using SystemWeb.Services;
 using NWebsec.Csp;
+using static System.Web.Mvc.DependencyResolver;
 
 namespace SystemWeb
 {
@@ -19,9 +19,8 @@ namespace SystemWeb
             ConfigureAntiForgeryTokens();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            ModelBinders.Binders.Add(typeof(IRegistrationViewModel), new RegistrationViewModelBinder());
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            Application["Version"] = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build/*, version.Revision */);
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            Application["Version"] = $"{version.Major}.{version.Minor}.{version.Build}";
         }
 
         /// <summary>
@@ -32,24 +31,12 @@ namespace SystemWeb
         protected void NWebsecHttpHeaderSecurityModule_CspViolationReported(object sender, CspViolationReportEventArgs e)
         {
             // Log the Content Security Policy (CSP) violation.
-            CspViolationReport violationReport = e.ViolationReport;
-            CspReportDetails reportDetails = violationReport.Details;
-            string violationReportString = string.Format(
-                "UserAgent:<{0}>\r\nBlockedUri:<{1}>\r\nColumnNumber:<{2}>\r\nDocumentUri:<{3}>\r\nEffectiveDirective:<{4}>\r\nLineNumber:<{5}>\r\nOriginalPolicy:<{6}>\r\nReferrer:<{7}>\r\nScriptSample:<{8}>\r\nSourceFile:<{9}>\r\nStatusCode:<{10}>\r\nViolatedDirective:<{11}>",
-                violationReport.UserAgent,
-                reportDetails.BlockedUri,
-                reportDetails.ColumnNumber,
-                reportDetails.DocumentUri,
-                reportDetails.EffectiveDirective,
-                reportDetails.LineNumber,
-                reportDetails.OriginalPolicy,
-                reportDetails.Referrer,
-                reportDetails.ScriptSample,
-                reportDetails.SourceFile,
-                reportDetails.StatusCode,
-                reportDetails.ViolatedDirective);
-            CspViolationException exception = new CspViolationException(violationReportString);
-            DependencyResolver.Current.GetService<ILoggingService>().Log(exception);
+            var violationReport = e.ViolationReport;
+            var reportDetails = violationReport.Details;
+            var violationReportString =
+                $"UserAgent:<{violationReport.UserAgent}>\r\nBlockedUri:<{reportDetails.BlockedUri}>\r\nColumnNumber:<{reportDetails.ColumnNumber}>\r\nDocumentUri:<{reportDetails.DocumentUri}>\r\nEffectiveDirective:<{reportDetails.EffectiveDirective}>\r\nLineNumber:<{reportDetails.LineNumber}>\r\nOriginalPolicy:<{reportDetails.OriginalPolicy}>\r\nReferrer:<{reportDetails.Referrer}>\r\nScriptSample:<{reportDetails.ScriptSample}>\r\nSourceFile:<{reportDetails.SourceFile}>\r\nStatusCode:<{reportDetails.StatusCode}>\r\nViolatedDirective:<{reportDetails.ViolatedDirective}>";
+            var exception = new CspViolationException(violationReportString);
+            Current.GetService<ILoggingService>().Log(exception);
         }
 
         /// <summary>
@@ -79,7 +66,7 @@ namespace SystemWeb
 
             // If you have enabled SSL. Uncomment this line to ensure that the Anti-Forgery 
             // cookie requires SSL to be sent across the wire. 
-            // AntiForgeryConfig.RequireSsl = true;
+            AntiForgeryConfig.RequireSsl = false;
         }
     }
 }

@@ -10,54 +10,54 @@ namespace SystemWeb.Repository
 {
     public class CaricoRepository : iCaricoRepository
     {
-        private MyDbContext db;
+        private readonly MyDbContext _db;
 
         public CaricoRepository(MyDbContext context)
         {
-            this.db = context;
+            _db = context;
         }
 
         public IEnumerable<Carico> GetOrders()
         {
-            return db.Carico.Include(s=>s.Pv).Include(s=> s.Year).ToList();
+            return _db.Carico.Include(s=>s.Pv).Include(s=> s.Year).ToList();
         }
 
         public Carico GetOrdersById(Guid? Id)
         {
-            return db.Carico.Find(Id);
+            return _db.Carico.Find(Id);
         }
 
         public void InsertOrder(Carico insertOrder)
         {
-            db.Carico.Add(insertOrder);
+            _db.Carico.Add(insertOrder);
         }
 
         public void UpdateOrder(Carico updateOrder)
         {
-            db.Entry(updateOrder).State = EntityState.Modified;
+            _db.Entry(updateOrder).State = EntityState.Modified;
         }
         public void DeleteOrder(Guid? Id)
         {
-            Carico deleteOrder = db.Carico.Find(Id);
-            db.Carico.Remove(deleteOrder);
+            var deleteOrder = _db.Carico.Find(Id);
+            _db.Carico.Remove(deleteOrder);
         }
         public void Save()
         {
-            db.SaveChanges();
+            _db.SaveChanges();
         }
 
-        private bool disposed = false;
+        private bool _disposed = false;
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!this._disposed)
             {
                 if (disposing)
                 {
-                    db.Dispose();
+                    _db.Dispose();
                 }
             }
-            this.disposed = true;
+            this._disposed = true;
         }
 
         public void Dispose()

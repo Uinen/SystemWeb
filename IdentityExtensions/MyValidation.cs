@@ -8,20 +8,15 @@ namespace SystemWeb.IdentityExtensions
 {
     public class MyUserValidation : IIdentityValidator<ApplicationUser>
     {
-        public System.Threading.Tasks.Task<IdentityResult> ValidateAsync(ApplicationUser item)
+        public Task<IdentityResult> ValidateAsync(ApplicationUser item)
         {
-            if (item.UserName.ToLower().Contains("@#*$%£&^§[]{}<>"))
-                return Task.FromResult(IdentityResult.Failed("Il nome utente non può contenere i seguenti simboli: @#*$%£&^§[]{}<> "));
-            //else if (item.HomeTown.ToLower().Contains("unknown"))
-            //    return Task.FromResult(IdentityResult.Failed("HomeTown cannot contain unknown city"));
-            else
-                return Task.FromResult(IdentityResult.Success);
+            return Task.FromResult(item.UserName.ToLower().Contains("@#*$%£&^§[]{}<>") ? IdentityResult.Failed("Il nome utente non può contenere i seguenti simboli: @#*$%£&^§[]{}<> ") : IdentityResult.Success);
         }
     }
 
     public class MyPasswordValidation : IIdentityValidator<string>
     {
-        public System.Threading.Tasks.Task<IdentityResult> ValidateAsync(string item)
+        public Task<IdentityResult> ValidateAsync(string item)
         {
             if (item.ToLower().Contains("111111") | item.ToLower().Contains("222222") 
                 | item.ToLower().Contains("333333") | item.ToLower().Contains("444444")
@@ -63,16 +58,16 @@ namespace SystemWeb.IdentityExtensions
     {
         public string HashPassword(string password)
         {
-            using (SHA256 mySHA256 = SHA256.Create())
+            using (var mySha256 = SHA256.Create())
             {
-                byte[] hash = mySHA256.ComputeHash(Encoding.UTF8.GetBytes(password.ToString()));
+                var hash = mySha256.ComputeHash(Encoding.UTF8.GetBytes(password));
 
-                StringBuilder hashSB = new StringBuilder();
-                for (int i = 0; i < hash.Length; i++)
+                var hashSb = new StringBuilder();
+                foreach (var t in hash)
                 {
-                    hashSB.Append(hash[i].ToString("x2"));
+                    hashSb.Append(t.ToString("x2"));
                 }
-                return hashSB.ToString();
+                return hashSb.ToString();
             }
         }
 

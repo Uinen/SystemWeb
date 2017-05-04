@@ -1,0 +1,27 @@
+﻿<nav id="sidebar-wrapper">
+    <a id="menu-close" href="#" class="close-btn toggle">Chiudi<i class="ion-log-in"></i></a>
+    <ul class="sidebar-nav">
+        <li>@Html.ActionLink("Home", "Index", "Home")</li>@*
+            <li><a href="@Url.RouteUrl(HomeControllerRoute.GetAbout)"><span aria-hidden="true" class="fa fa-users"></span> About</a></li>
+            <li><a href="@Url.RouteUrl(HomeControllerRoute.GetContact)"><span aria-hidden="true" class="fa fa-phone"></span> Contact</a></li>
+            <li><a href="@Url.RouteUrl(HomeControllerRoute.GetFeed)"><span aria-hidden="true" class="fa fa-rss"></span> RSS</a></li>*@
+        @using (Html.BeginForm("Index", "User", FormMethod.Get))
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                <li><a href="/user"><span aria-hidden="true" class="fa fa-dashboard"></span> Dashboard</a></li>
+            }
+        }
+
+        @Html.Partial("_LoginPartial")
+        @if (ViewContext.HttpContext.User.IsInRole("Administrator"))
+            {
+            <li><a href="@Url.RouteUrl(HomeControllerRoute.GetFeed)"><span aria-hidden="true" class="fa fa-rss"></span> RSS</a></li>
+            <li><a href="/@System.Configuration.ConfigurationManager.AppSettings["elmah.mvc.route"]"><span aria-hidden="true" class="fa fa-life-ring"></span> Elmah</a></li>
+            <li><a href="/glimpse.axd"><span aria-hidden="true" class="fa fa-line-chart"></span> Glimpse</a></li>
+            <li><a href="/trace.axd"><span aria-hidden="true" class="fa fa-heart"></span> Tracing</a></li>
+        }
+    </ul>
+
+</nav>
+

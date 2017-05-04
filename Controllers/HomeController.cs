@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using SystemWeb.ActionFilters;
 using SystemWeb.Helpers;
 using SystemWeb.Models;
 using SystemWeb.Services;
@@ -16,12 +17,12 @@ namespace SystemWeb.Controllers
     {
         #region Fields
 
-        private readonly IBrowserConfigService browserConfigService;
-        private readonly IFeedService feedService;
-        private readonly IManifestService manifestService;
-        private readonly IOpenSearchService openSearchService;
-        private readonly IRobotsService robotsService;
-        private readonly ISitemapService sitemapService;
+        private readonly IBrowserConfigService _browserConfigService;
+        private readonly IFeedService _feedService;
+        private readonly IManifestService _manifestService;
+        private readonly IOpenSearchService _openSearchService;
+        private readonly IRobotsService _robotsService;
+        private readonly ISitemapService _sitemapService;
 
         #endregion
 
@@ -35,32 +36,34 @@ namespace SystemWeb.Controllers
             IRobotsService robotsService,
             ISitemapService sitemapService)
         {
-            this.browserConfigService = browserConfigService;
-            this.feedService = feedService;
-            this.manifestService = manifestService;
-            this.openSearchService = openSearchService;
-            this.robotsService = robotsService;
-            this.sitemapService = sitemapService;
+            this._browserConfigService = browserConfigService;
+            this._feedService = feedService;
+            this._manifestService = manifestService;
+            this._openSearchService = openSearchService;
+            this._robotsService = robotsService;
+            this._sitemapService = sitemapService;
         }
 
         #endregion
 
         [Route("", Name = HomeControllerRoute.GetIndex)]
+        [WhitespaceFilter]
         public ActionResult Index()
         {
-            return this.View(HomeControllerAction.Index);
+            return View(HomeControllerAction.Index);
         }
 
         [Route("about", Name = HomeControllerRoute.GetAbout)]
         public ActionResult About()
         {
-            return this.View(HomeControllerAction.About);
+            return View(HomeControllerAction.About);
         }
 
         [Route("contact", Name = HomeControllerRoute.GetContact)]
         public ActionResult Contact()
         {
-            return this.View(HomeControllerAction.Contact);
+            return View(HomeControllerAction.Contact);
+
         }
 
         /// <summary>
@@ -75,8 +78,8 @@ namespace SystemWeb.Controllers
         {
             // A CancellationToken signifying if the request is cancelled. See
             // http://www.davepaquette.com/archive/2015/07/19/cancelling-long-running-queries-in-asp-net-mvc-and-web-api.aspx
-            CancellationToken cancellationToken = this.Response.ClientDisconnectedToken;
-            return new AtomActionResult(await this.feedService.GetFeed(cancellationToken));
+            CancellationToken cancellationToken = Response.ClientDisconnectedToken;
+            return new AtomActionResult(await _feedService.GetFeed(cancellationToken));
         }
 
         [Route("search", Name = HomeControllerRoute.GetSearch)]
@@ -89,10 +92,8 @@ namespace SystemWeb.Controllers
             // search results in your own page.
 
             // For simplicity we are just assuming your site is indexed on Google and redirecting to it.
-            return this.Redirect(string.Format(
-                "https://www.google.co.uk/?q=site:{0} {1}",
-                this.Url.AbsoluteRouteUrl(HomeControllerRoute.GetIndex),
-                query));
+            return Redirect(
+                $"https://www.google.co.uk/?q=site:{this.Url.AbsoluteRouteUrl(HomeControllerRoute.GetIndex)} {query}");
         }
 
         /// <summary>
@@ -106,11 +107,9 @@ namespace SystemWeb.Controllers
         [Route("browserconfig.xml", Name = HomeControllerRoute.GetBrowserConfigXml)]
         public ContentResult BrowserConfigXml()
         {
-            Trace.WriteLine(string.Format(
-                "browserconfig.xml requested. User Agent:<{0}>.",
-                this.Request.Headers.Get("User-Agent")));
-            string content = this.browserConfigService.GetBrowserConfigXml();
-            return this.Content(content, ContentType.Xml, Encoding.UTF8);
+            Trace.WriteLine($"browserconfig.xml requested. User Agent:<{Request.Headers.Get("User-Agent")}>.");
+            var content = _browserConfigService.GetBrowserConfigXml();
+            return Content(content, ContentType.Xml, Encoding.UTF8);
         }
 
         /// <summary>
@@ -126,11 +125,9 @@ namespace SystemWeb.Controllers
         [Route("manifest.json", Name = HomeControllerRoute.GetManifestJson)]
         public ContentResult ManifestJson()
         {
-            Trace.WriteLine(string.Format(
-                "manifest.jsonrequested. User Agent:<{0}>.",
-                this.Request.Headers.Get("User-Agent")));
-            string content = this.manifestService.GetManifestJson();
-            return this.Content(content, ContentType.Json, Encoding.UTF8);
+            Trace.WriteLine($"manifest.jsonrequested. User Agent:<{Request.Headers.Get("User-Agent")}>.");
+            var content = _manifestService.GetManifestJson();
+            return Content(content, ContentType.Json, Encoding.UTF8);
         }
 
         /// <summary>
@@ -145,11 +142,9 @@ namespace SystemWeb.Controllers
         [Route("opensearch.xml", Name = HomeControllerRoute.GetOpenSearchXml)]
         public ContentResult OpenSearchXml()
         {
-            Trace.WriteLine(string.Format(
-                "opensearch.xml requested. User Agent:<{0}>.",
-                this.Request.Headers.Get("User-Agent")));
-            string content = this.openSearchService.GetOpenSearchXml();
-            return this.Content(content, ContentType.Xml, Encoding.UTF8);
+            Trace.WriteLine($"opensearch.xml requested. User Agent:<{Request.Headers.Get("User-Agent")}>.");
+            var content = _openSearchService.GetOpenSearchXml();
+            return Content(content, ContentType.Xml, Encoding.UTF8);
         }
 
         /// <summary>
@@ -165,11 +160,9 @@ namespace SystemWeb.Controllers
         [Route("robots.txt", Name = HomeControllerRoute.GetRobotsText)]
         public ContentResult RobotsText()
         {
-            Trace.WriteLine(string.Format(
-                "robots.txt requested. User Agent:<{0}>.",
-                this.Request.Headers.Get("User-Agent")));
-            string content = this.robotsService.GetRobotsText();
-            return this.Content(content, ContentType.Text, Encoding.UTF8);
+            Trace.WriteLine($"robots.txt requested. User Agent:<{Request.Headers.Get("User-Agent")}>.");
+            var content = _robotsService.GetRobotsText();
+            return Content(content, ContentType.Text, Encoding.UTF8);
         }
 
         /// <summary>
@@ -184,14 +177,14 @@ namespace SystemWeb.Controllers
         [Route("sitemap.xml", Name = HomeControllerRoute.GetSitemapXml)]
         public ActionResult SitemapXml(int? index = null)
         {
-            string content = this.sitemapService.GetSitemapXml(index);
+            var content = _sitemapService.GetSitemapXml(index);
 
             if (content == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Sitemap index is out of range.");
             }
 
-            return this.Content(content, ContentType.Xml, Encoding.UTF8);
+            return Content(content, ContentType.Xml, Encoding.UTF8);
         }
 
     }

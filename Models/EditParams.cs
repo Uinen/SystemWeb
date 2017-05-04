@@ -6,18 +6,18 @@ namespace SystemWeb.Models
     public class EditParams
     {
         //Paging Params
-        public int skip { get; set; }
-        public int take { get; set; }
+        public int Skip { get; set; }
+        public int Take { get; set; }
 
         //Grid Action Params
-        public string action { get; set; }
-        public Guid key { get; set; }
-        public string keyColumn { get; set; }
-        public Carico value { get; set; }
+        public string Action { get; set; }
+        public Guid Key { get; set; }
+        public string KeyColumn { get; set; }
+        public Carico Value { get; set; }
 
         //Batch Edit Params
-        public IEnumerable<Carico> added { get; set; }
-        public IEnumerable<Carico> changed { get; set; }
-        public IEnumerable<Carico> deleted { get; set; }
+        public IEnumerable<Carico> Added { get; set; }
+        public IEnumerable<Carico> Changed { get; set; }
+        public IEnumerable<Carico> Deleted { get; set; }
     }
 }

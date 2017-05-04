@@ -1,0 +1,181 @@
+﻿@model SystemWeb.Models.RegisterBindingModel
+<div class="header-content">
+
+</div>
+<div class="container">
+    <div class="center-block">
+        @using (Html.BeginForm("New", "Account", FormMethod.Post, new { role = "form" }))
+        {
+            <div id="form" class="frame">
+                <div class="row">
+                    <div class="col-lg-6 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.Username)
+                            @Html.TextBoxFor(tbf => tbf.Username, new { @class = "form-control", @title = "Inserisci il tuo nome utente" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.Email)
+                            @Html.TextBoxFor(tbf => tbf.Email, new { @class = "form-control", @title = "Inserisci un valido indirizzo mail" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.Password)
+                            @Html.PasswordFor(pf => pf.Password, new { @class = "form-control", @title = "Inserisci la tua password personale" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.ConfirmPassword)
+                            @Html.PasswordFor(pf => pf.ConfirmPassword, new { @class = "form-control", @title = "Conferma la tua password personale" })
+                        </div>
+                        @Html.EJ().Button("clear").Type(ButtonType.Reset).Text("Cancella").ShowRoundedCorner(true).Size(ButtonSize.Medium)
+                    </div>
+                    <div class="col-lg-6 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.mProfileName)
+                            @Html.TextBoxFor(tbf => tbf.mProfileName, new { @class = "form-control", @title = "Inserisci il tuo nome" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.mProfileSurname)
+                            @Html.TextBoxFor(tbf => tbf.mProfileSurname, new { @class = "form-control", @title = "Inserisci il tuo cognome" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.mProfileAdress)
+                            @Html.TextBoxFor(tbf => tbf.mProfileAdress, new { @class = "form-control", @title = "Inserisci il tuo indirizzo, es: via/viale/corso" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.mProfileCity)
+                            @Html.TextBoxFor(tbf => tbf.mProfileCity, new { @class = "form-control", @title = "Inserisci il tuo Domicilio o Residenza" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.mProfilezipCode)
+                            @Html.TextBoxFor(tbf => tbf.mProfilezipCode, new { @class = "form-control", @title = "Inserisci il codice di avviamento postale del tuo Domicilio o Residenza" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.mProfileNation)
+                            @Html.TextBoxFor(tbf => tbf.mProfileNation, new { @class = "form-control", @title = "Inserisci la nazione di nascita" })
+                        </div>
+                        @Html.EJ().Button("clear").Type(ButtonType.Reset).Text("Cancella").ShowRoundedCorner(true).Size(ButtonSize.Medium)
+                    </div>
+                    <div class="col-lg-6 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.name)
+                            @Html.TextBoxFor(tbf => tbf.name, new { @class = "form-control", @title = "Inserisci il nome della tua azienda" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.iva)
+                            @Html.TextBoxFor(tbf => tbf.iva, new { @class = "form-control", @title = "Inserisci la tua partiva iva" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.RagioneSocialeId)
+                            @Html.DropDownListFor(ddlf => ddlf.RagioneSocialeId, new SelectList(Model.RagioneSociale, "RagioneSocialeId", "Nome"), "Seleziona la tua Azienda")
+                        </div>
+                        @Html.EJ().Button("clear").Type(ButtonType.Reset).Text("Cancella").ShowRoundedCorner(true).Size(ButtonSize.Medium)
+                    </div>
+                    <div class="col-lg-6 col-md-4">
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.PvName)
+                            @Html.TextBoxFor(tbf => tbf.PvName, new { @class = "form-control", @title = "Inserisci il nome del tuo punto vendita" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(lf => lf.PvFlagId)
+                            @Html.DropDownListFor(ddlf => ddlf.PvFlagId, new SelectList(Model.Flag, "PvFlagId", "Nome", 1), "Seleziona la tua Compagnia")
+                        </div>
+                        @Html.EJ().Button("sample").Type(ButtonType.Submit).Text("Invia").ShowRoundedCorner(true).Size(ButtonSize.Medium)
+                        @Html.EJ().Button("clear").Type(ButtonType.Reset).Text("Cancella").ShowRoundedCorner(true).Size(ButtonSize.Medium)
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+    </div>
+    @Html.EJ().Tooltip("details").Target(".form-control").Height("30px").Width("175px").Position(pos => pos.Target(target => target.Horizontal("left").Vertical("center")).Stem(stem => stem.Horizontal("right").Vertical("center"))).ClientSideEvents(events => events.Create("onCreate").BeforeOpen("onOpen"))
+
+            <div id="sampleProperties">
+                <div class="prop-grid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            Trigger
+                        </div>
+                        <div class="col-md-6">
+                            @Html.EJ().DropDownList("trigger").TargetID("list").Width("120px").SelectedIndex(0).ClientSideEvents(e => e.Change("selectChange"))
+                            <div id="list">
+                                <ul>
+                                    <li value="focus" selected="selected"> Focus </li>
+                                    <li value="click"> Click </li>
+                                    <li value="hover"> Hover </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @section Script{
+                <script type="text/javascript">
+                    var target;
+                    function onCreate() {
+                        target = $("#details").data("ejTooltip");
+                    }
+                    $("#sampleProperties").ejPropertiesPanel();
+                    function selectChange(args) {
+
+                        target.option("trigger", args.value)
+                    }
+                    function onOpen(args) {
+                        var currentElement = args.event.currentTarget, content = $(currentElement).attr("data-content");
+                        if (content == "Inserisci un valido indirizzo mail")
+                            target.setModel({ cssClass: "info" });
+                            //$(target.tooltip).removeClass("warning").addClass("info");
+
+                        else
+                            target.setModel({ cssClass: "warning" });
+                        //$(target.tooltip).removeClass("info").addClass("warning");
+
+                    }
+
+                </script>
+            }
+            <style>
+                .info {
+                    background-color: #f9ce9b;
+                    color: #b29b7f;
+                }
+
+                .warning {
+                    background-color: #e56161;
+                    color: #ffffff;
+                }
+
+                .cols-sample-area {
+                    height: 500px;
+                }
+
+                .frame {
+                    width: 500px;
+                    box-sizing: border-box;
+                    border: none;
+                }
+
+                .form-control {
+                    box-sizing: border-box;
+                }
+
+                .form-group {
+                    margin-bottom: 10px;
+                }
+
+                fieldset {
+                    border: 1px solid #D9DEDD;
+                    padding: 15px;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                #sample {
+                    margin-right: 50px;
+                }
+
+                .e-button {
+                    margin: 10px;
+                }
+            </style>
+
+

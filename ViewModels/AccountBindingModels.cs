@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using System.Web.Mvc;
+using System.Collections.Generic;
 
 namespace SystemWeb.Models
 {
@@ -28,7 +30,7 @@ namespace SystemWeb.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Conferma nuova password")]
-        [Compare("NewPassword", ErrorMessage = "La nuova password e la password di conferma non corrispondono.")]
+        [System.ComponentModel.DataAnnotations.Compare("NewPassword", ErrorMessage = "La nuova password e la password di conferma non corrispondono.")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -50,7 +52,7 @@ namespace SystemWeb.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Conferma password")]
-        [Compare("Password", ErrorMessage = "La password e la password di conferma non corrispondono.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "La password e la password di conferma non corrispondono.")]
         public string ConfirmPassword { get; set; }
         [Required]
         [Display(Name = "Nome")]
@@ -73,7 +75,7 @@ namespace SystemWeb.Models
         [Required]
         [Display(Name = "Nazione")]
         public string mProfileNation { get; set; }
-        [Required]
+
         [Display(Name = "Stato Utente")]
         public string mProfileInfo { get; set; }
 
@@ -86,20 +88,22 @@ namespace SystemWeb.Models
         [Key]
         [Display(Name = "Ragione Sociale")]
         public Guid RagioneSocialeId { get; set; }
+
+        public SelectList RagioneSociale { get; set; }
+
         [Required]
-        [Key]
         [Display(Name = "Seleziona la tua azienda")]
         public Guid CompanyId { get; set; }
-        public virtual Company Company { get; set; }
-        public bool NuovaAzienda { get; set; }
-        public bool SelezionaAzienda { get; set; }
+
         [Required]
         [Display(Name = "Nome Punto Vendita")]
         public string PvName { get; set; }
+
         [Required]
-        [Key]
         [Display(Name = "Bandiera")]
         public Guid PvFlagId { get; set; }
+        public SelectList Flag { get; set; }
+
         [Required]
         [Key]
         [Display(Name = "Punto Vendita")]
@@ -138,7 +142,7 @@ namespace SystemWeb.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Conferma nuova password")]
-        [Compare("NewPassword", ErrorMessage = "La nuova password e la password di conferma non corrispondono.")]
+        [System.ComponentModel.DataAnnotations.Compare("NewPassword", ErrorMessage = "La nuova password e la password di conferma non corrispondono.")]
         public string ConfirmPassword { get; set; }
     }
 }

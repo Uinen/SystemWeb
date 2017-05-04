@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Web;
 #endregion
 
 namespace SystemWeb.Models
@@ -28,7 +29,7 @@ namespace SystemWeb.Models
     #region User
     [JsonObject(IsReference = true)]
     [DataContract(IsReference = true)]
-    public class ApplicationUser : IdentityUser<string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
+    public sealed class ApplicationUser : IdentityUser<string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
         public Guid ProfileId { get; set; }
         [DataMember]
@@ -125,7 +126,7 @@ namespace SystemWeb.Models
         [MaxLength(18)]
         public string Numero { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}")]
-        public System.DateTime rData { get; set; }
+        public DateTime rData { get; set; }
         [MaxLength(32)]
         public string Emittente { get; set; }
         public int Benzina { get; set; }
@@ -294,6 +295,7 @@ namespace SystemWeb.Models
             Carico = new HashSet<Carico>();
             PvProfile = new HashSet<PvProfile>();
             ApplicationUser = new HashSet<ApplicationUser>();
+            Cartissima = new HashSet<Cartissima>();
             pvID = Guid.NewGuid();
         }
 
@@ -306,7 +308,7 @@ namespace SystemWeb.Models
         public Flag Flag { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
-        public  ICollection<PvTank> PvTank { get; set; }
+        public ICollection<PvTank> PvTank { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
         public ICollection<Carico> Carico { get; set; }
@@ -316,6 +318,8 @@ namespace SystemWeb.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [JsonIgnore]
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
+        [JsonIgnore]
+        public ICollection<Cartissima> Cartissima { get; set; }
     }
     #endregion
 
@@ -604,6 +608,50 @@ namespace SystemWeb.Models
 
     #endregion
 
+    #region Cartissima
+
+    public class Cartissima
+    {
+        public Cartissima()
+        {
+            sCartId = Guid.NewGuid();
+            pvID = Guid.Parse("4ced36ae-50eb-4fea-ba8e-38e2e7cf78a1");
+            sCartCreateDate = DateTime.Today;
+            sCartIp = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+            sCartProcessed = false;
+        }
+        [Key]
+        public Guid sCartId { get; set; }
+        public Guid pvID { get; set; }
+        public Pv Pv { get; set; }
+        public DateTime sCartCreateDate { get; set; }
+        public string sCartIp { get; set; }
+
+        [Required]
+        public string sCartName { get; set; }
+
+        [Required]
+        public string sCartSurname { get; set; }
+        public string sCartEmail { get; set; }
+
+        [Required]
+        public string sCartPhone { get; set; }
+
+        [Required]
+        public string sCartCompany { get; set; }
+
+        [Required]
+        public int sCartIva { get; set; }
+        public string sCartLocation { get; set; }
+
+        [Required]
+        public int sCartVeichle { get; set; }
+        public string sCartVeichleType { get; set; }
+        public bool sCartProcessed { get; set; }
+    }
+
+    #endregion
+
     #region MyDbContext: IdentityDbContext
     public class MyDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
@@ -667,6 +715,9 @@ namespace SystemWeb.Models
             modelBuilder.Entity<FilePath>().HasRequired(p => p.ApplicationUser)
                 .WithMany(b => b.FilePaths)
                 .HasForeignKey(p => p.UserID);
+            modelBuilder.Entity<Cartissima>().HasRequired(p => p.Pv)
+                .WithMany(b => b.Cartissima)
+                .HasForeignKey(p => p.pvID);
         }
         #endregion
 
@@ -692,6 +743,7 @@ namespace SystemWeb.Models
         public  DbSet<Year> Year { get; set; }
         public  DbSet<UsersImage> UsersImage { get; set; }
         public  DbSet<FilePath> FilePaths { get; set; }
+        public  DbSet<Cartissima> Cartissima { get; set; }
 
         #endregion
     }

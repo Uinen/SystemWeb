@@ -89,9 +89,21 @@
     }
 </style>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+@section Styles{
+    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
+}
 
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryeasing")
+    @Scripts.Render("~/bundles/jsrender")
+    @Scripts.Render("~/bundles/jqueryglobalize")
+    @Scripts.Render("~/bundles/jquerybrowser")
+    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
+    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Html.EJ().ScriptManager()
     <script>
         $("#btnOpen").hide();
         function onclick() {

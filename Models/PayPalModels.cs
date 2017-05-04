@@ -4,32 +4,25 @@ namespace SystemWeb.Models
 {
     public class PayPalModels
     {
-        public string cmd { get; set; }
-        public string business { get; set; }
-        public string no_shipping { get; set; }
-        public string @return { get; set; }
-        public string cancel_return { get; set; }
-        public string notify_url { get; set; }
-        public string currency_code { get; set; }
-        public string item_name { get; set; }
-        public string amount { get; set; }
-        public string actionURL { get; set; }
+        public string Cmd { get; set; }
+        public string Business { get; set; }
+        public string NoShipping { get; set; }
+        public string Return { get; set; }
+        public string CancelReturn { get; set; }
+        public string NotifyUrl { get; set; }
+        public string CurrencyCode { get; set; }
+        public string ItemName { get; set; }
+        public string Amount { get; set; }
+        public string ActionUrl { get; set; }
         public PayPalModels(bool useSandbox)
         {
-            this.cmd = "_xclick";
-            this.business = ConfigurationManager.AppSettings["business"];
-            this.cancel_return = ConfigurationManager.AppSettings[" cancel_return"];
-            this.@return = ConfigurationManager.AppSettings["return"];
-            if (useSandbox)
-            {
-                this.actionURL = ConfigurationManager.AppSettings["test_url"];
-            }
-            else
-            {
-                this.actionURL = ConfigurationManager.AppSettings["Prod_url"];
-            }
-            this.notify_url = ConfigurationManager.AppSettings["notify_url"];
-            this.currency_code = ConfigurationManager.AppSettings["currency_code"];
+            Cmd = "_xclick";
+            Business = ConfigurationManager.AppSettings["business"];
+            CancelReturn = ConfigurationManager.AppSettings[" cancel_return"];
+            Return = ConfigurationManager.AppSettings["return"];
+            ActionUrl = useSandbox ? ConfigurationManager.AppSettings["test_url"] : ConfigurationManager.AppSettings["Prod_url"];
+            NotifyUrl = ConfigurationManager.AppSettings["notify_url"];
+            CurrencyCode = ConfigurationManager.AppSettings["currency_code"];
         }
     }
 }

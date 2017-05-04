@@ -1,0 +1,129 @@
+﻿<section id="adaptive">
+    <div class="container">
+        <div class="row">
+            <div class="center-block">
+                <style type="text/css">
+                    ::-ms-clear {
+                        display: none;
+                    }
+
+                    .e-gridAdaptive {
+                        border-width: 0px !important;
+                    }
+                </style>
+                @(Html.EJ().Grid<Cartissima>("FlatGridCartissima")
+                    .Locale("it-IT")
+                    .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
+                    .UpdateURL("update")
+                    .InsertURL("insert")
+                    .RemoveURL("remove")
+                    .Adaptor(AdaptorType.RemoteSaveAdaptor))
+                    .AllowGrouping()
+                    .AllowPaging()
+                    .EnableAltRow()
+                    .PageSettings(p => p.PageCount(2).PageSize(5))
+                    .IsResponsive(true)
+                    .EnableResponsiveRow(true)
+                    .AllowSorting()
+                    .AllowFiltering()
+                                    .FilterSettings(filter =>
+                                    {
+                                        filter.FilterType(FilterType.Excel);
+                                    })
+
+                    .AllowMultiSorting()
+                    .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteCartissima"))
+                    .MinWidth(400)
+                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog))
+                    .ToolbarSettings(toolbar =>
+                    {
+                        toolbar.ShowToolbar().ToolbarItems(items =>
+                        {
+                            items.AddTool(ToolBarItems.Add);
+                            items.AddTool(ToolBarItems.Edit);
+                            items.AddTool(ToolBarItems.Delete);
+                            items.AddTool(ToolBarItems.Update);
+                            items.AddTool(ToolBarItems.Cancel);
+                            items.AddTool(ToolBarItems.Search);
+                            items.AddTool(ToolBarItems.ExcelExport);
+                            items.AddTool(ToolBarItems.WordExport);
+                            items.AddTool(ToolBarItems.PdfExport);
+                        });
+                    })
+
+                    .Mappers(map => map.ExportToExcelAction("excell")
+                                    .ExportToPdfAction("pdf")
+                                    .ExportToWordAction("word"))
+                    .Columns(col =>
+                    {
+                        col.Field(p => p.sCartId).HeaderText("ID Segnalazione").IsPrimaryKey(true).Visible(false).Add();
+
+                        col.Field(p => p.pvID).HeaderText("PV").ForeignKeyField("pvID").ForeignKeyValue("pvName")
+                        .DataSource((IEnumerable<object>)ViewBag.datasource2).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
+
+                        col.Field(p => p.sCartIp).HeaderText("IP Segnalazione").Width("50").Add();
+                        col.Field(p => p.sCartCreateDate).HeaderText("Data Segnalazione").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
+                        col.Field(p => p.sCartProcessed).HeaderText("Segnalazione Processata").Width("50").EditType(EditingType.Boolean).Add();
+                        col.Field(p => p.sCartName).HeaderText("Nome").Width("50").Add();
+                        col.Field(p => p.sCartSurname).HeaderText("Cognome").Width("65").Add();
+                        col.Field(p => p.sCartEmail).HeaderText("Email").Width("45").Add();
+                        col.Field(p => p.sCartPhone).HeaderText("Telefono").Width("75").Add();
+                        col.Field(p => p.sCartCompany).HeaderText("Azienda").Width("50").Add();
+                        col.Field(p => p.sCartIva).HeaderText("Partita Iva").Width("50").Add();
+                        col.Field(p => p.sCartLocation).HeaderText("Provincia Azienda").Width("50").Add();
+                        col.Field(p => p.sCartVeichle).HeaderText("Numero Mezzi").Width("50").Add();
+                        col.Field(p => p.sCartVeichleType).HeaderText("Tipo Mezzi").Width("50").Add();
+                    })
+                )
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles{
+    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/jqueryeasing")
+    @Scripts.Render("~/bundles/jsrender")
+    @Scripts.Render("~/bundles/jqueryglobalize")
+    @Scripts.Render("~/bundles/jquerybrowser")
+    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
+    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/GridOption")
+    @Html.EJ().ScriptManager()
+
+    <script type="text/javascript">
+
+    ej.Grid.Locale["it-IT"] = {
+        EmptyRecord: "Nessun record da visualizzare",
+        GroupDropArea: "Trascinare una colonna qui",
+        DeleteOperationAlert: "Nessuna voce selezionata per l'eliminazione",
+        EditOperationAlert: "Entrate selezionate per operazione di modifica",
+        SaveButton: "Salva",
+        CancelButton: "Annulla",
+        EditFormTitle: "Modifica",
+        GroupCaptionFormat: "{{:field}}: {{:key}} - {{:count}} {{if count == 1}}Oggetto{{else}}Oggetti{{/if}}",
+        UnGroup: "Clicca qui per separare"
+    };
+    ej.Pager.Locale["it-IT"] = {
+        pagerInfo: "{0} di {1} Pagine ({2} Oggetti)",
+        firstPageTooltip: "Per la prima pagina",
+        lastPageTooltip: "L'ultima pagina",
+        nextPageTooltip: "Pagina successiva",
+        previousPageTooltip: "Pagina precedente",
+        nextPagerTooltip: "Alla prossima pagina",
+        previousPagerTooltip: "Pagina precedente"
+    };
+    </script>
+}
+
+
+
+

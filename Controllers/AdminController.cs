@@ -10,6 +10,13 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using PagedList;
+using SystemWeb.Repository;
+using Syncfusion.EJ.Export;
+using System.Collections;
+using Syncfusion.XlsIO;
+using Syncfusion.JavaScript.Models;
+using System.Web.Script.Serialization;
+using System.Reflection;
 
 namespace SystemWeb.Controllers
 {
@@ -18,7 +25,7 @@ namespace SystemWeb.Controllers
     {
 
         #region Inizializzatori
-        private MyDbContext db = new MyDbContext();
+        private readonly MyDbContext _db = new MyDbContext();
         public AdminController()
         {
         }
@@ -62,10 +69,10 @@ namespace SystemWeb.Controllers
         {
             #region Inizializzatori
             AdminIndexViewModel list = new AdminIndexViewModel();
-            list.prodotto = db.Product.ToList();
-            list.flag = db.Flag.ToList();
-            list.utente = db.Users.ToList();
-            list.notizia = db.Notice.ToList();
+            list.prodotto = _db.Product.ToList();
+            list.flag = _db.Flag.ToList();
+            list.utente = _db.Users.ToList();
+            list.notizia = _db.Notice.ToList();
             #endregion
 
             return View(list);
@@ -75,7 +82,7 @@ namespace SystemWeb.Controllers
         #region YearsController
         public ActionResult Years()
         {
-            return View(db.Year.ToList());
+            return View(_db.Year.ToList());
         }
         
         public ActionResult YearsDetails(Guid? id)
@@ -84,7 +91,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Year year = db.Year.Find(id);
+            SystemWeb.Models.Year year = _db.Year.Find(id);
             if (year == null)
             {
                 return HttpNotFound();
@@ -105,8 +112,8 @@ namespace SystemWeb.Controllers
             if (ModelState.IsValid)
             {
                 year.yearId = Guid.NewGuid();
-                db.Year.Add(year);
-                db.SaveChanges();
+                _db.Year.Add(year);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -119,7 +126,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Year year = db.Year.Find(id);
+            SystemWeb.Models.Year year = _db.Year.Find(id);
             if (year == null)
             {
                 return HttpNotFound();
@@ -133,8 +140,8 @@ namespace SystemWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(year).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Entry(year).State = EntityState.Modified;
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(year);
@@ -146,7 +153,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Year year = db.Year.Find(id);
+            SystemWeb.Models.Year year = _db.Year.Find(id);
             if (year == null)
             {
                 return HttpNotFound();
@@ -158,9 +165,9 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult YearsDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.Year year = db.Year.Find(id);
-            db.Year.Remove(year);
-            db.SaveChanges();
+            SystemWeb.Models.Year year = _db.Year.Find(id);
+            _db.Year.Remove(year);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
         #endregion
@@ -168,7 +175,7 @@ namespace SystemWeb.Controllers
         #region NoticesController
         public ActionResult Notices()
         {
-            var notice = db.Notice.Include(n => n.ApplicationUser);
+            var notice = _db.Notice.Include(n => n.ApplicationUser);
             return View(notice.ToList());
         }
 
@@ -178,7 +185,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Notice notice = db.Notice.Find(id);
+            SystemWeb.Models.Notice notice = _db.Notice.Find(id);
             if (notice == null)
             {
                 return HttpNotFound();
@@ -188,7 +195,7 @@ namespace SystemWeb.Controllers
 
         public ActionResult NoticesCreate()
         {
-            ViewBag.UsersId = new SelectList(db.Users, "Id", "UserName");
+            ViewBag.UsersId = new SelectList(_db.Users, "Id", "UserName");
             return View();
         }
 
@@ -201,11 +208,11 @@ namespace SystemWeb.Controllers
                 notice.NoticeId = Guid.NewGuid();
                 notice.CreateDate = DateTime.Now;
                 notice.UsersId = User.Identity.GetUserId();
-                db.Notice.Add(notice);
-                db.SaveChanges();
+                _db.Notice.Add(notice);
+                _db.SaveChanges();
             }
 
-            ViewBag.UsersId = new SelectList(db.Users, "Id", "UserName", notice.UsersId);
+            ViewBag.UsersId = new SelectList(_db.Users, "Id", "UserName", notice.UsersId);
             return View(notice);
         }
         
@@ -216,12 +223,12 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Notice notice = db.Notice.Find(id);
+            SystemWeb.Models.Notice notice = _db.Notice.Find(id);
             if (notice == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.UsersId = new SelectList(db.Users, "Id", "UserName", notice.UsersId);
+            ViewBag.UsersId = new SelectList(_db.Users, "Id", "UserName", notice.UsersId);
             return View(notice);
         }
 
@@ -231,11 +238,11 @@ namespace SystemWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(notice).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Entry(notice).State = EntityState.Modified;
+                _db.SaveChanges();
                 return RedirectToAction("Notices");
             }
-            ViewBag.UsersId = new SelectList(db.Users, "Id", "UserName", notice.UsersId);
+            ViewBag.UsersId = new SelectList(_db.Users, "Id", "UserName", notice.UsersId);
             return View(notice);
         }
 
@@ -245,7 +252,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Notice notice = db.Notice.Find(id);
+            SystemWeb.Models.Notice notice = _db.Notice.Find(id);
             if (notice == null)
             {
                 return HttpNotFound();
@@ -257,107 +264,100 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult NoticesDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.Notice notice = db.Notice.Find(id);
-            db.Notice.Remove(notice);
-            db.SaveChanges();
+            SystemWeb.Models.Notice notice = _db.Notice.Find(id);
+            _db.Notice.Remove(notice);
+            _db.SaveChanges();
             return RedirectToAction("Notices");
         }
         #endregion
 
         #region ProductsController
+
+        [Route("admin/prodotti")]
         public ActionResult Products()
         {
-            var DataSource = new MyDbContext().Product.ToList();
-            ViewBag.dataSource = DataSource;
-            return View();
-        }
-        public ActionResult ProductsDetails(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.Product product = db.Product.Find(id);
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
-            return View(product);
-        }
-        public ActionResult ProductsCreate()
-        {
+            var dataSource = new MyDbContext().Product.OrderBy(o => o.Nome).ToList();
+            ViewBag.datasource = dataSource;
+
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ProductsCreate([Bind(Include = "ProductId,Nome,Peso,Prezzo")] SystemWeb.Models.Product product)
+        [Route("admin/prodotti/update")]
+        public ActionResult UpdateProducts(Product value)
         {
-            if (ModelState.IsValid)
-            {
-                product.ProductId = Guid.NewGuid();
-                db.Product.Add(product);
-                db.SaveChanges();
-                return RedirectToAction("Products");
-            }
-
-            return View(product);
+            ProductsRepository.Update(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult ProductsEdit(Guid? id)
+        [Route("admin/prodotti/insert")]
+        public ActionResult InsertProducts(Product value)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.Product product = db.Product.Find(id);
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
-            return View(product);
+            ProductsRepository.Add(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ProductsEdit([Bind(Include = "ProductId,Nome,Peso,Prezzo")] SystemWeb.Models.Product product)
+        [Route("admin/prodotti/remove")]
+        public ActionResult RemoveProducts(Guid key)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(product).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Products");
-            }
-            return View(product);
-        }
-        public ActionResult ProductsDelete(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SystemWeb.Models.Product product = db.Product.Find(id);
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
-            return View(product);
+            MyDbContext context = new MyDbContext();
+            context.Product.Remove(context.Product.Single(o => o.ProductId == key));
+            context.SaveChanges();
+
+            var data = context.Product.ToList();
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost, ActionName("ProductsDelete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult ProductsDeleteConfirmed(Guid id)
+        [Route("admin/prodotti/excell")]
+        public ActionResult ProductsExcell(string gridModel)
         {
-            SystemWeb.Models.Product product = db.Product.Find(id);
-            db.Product.Remove(product);
-            db.SaveChanges();
-            return RedirectToAction("Products");
+            var exp = new ExcelExport();
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            IEnumerable dataSource = context.Product.OrderBy(o => o.Nome).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Prodotti.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/prodotti/word")]
+        public ActionResult ProductsWord(string gridModel)
+        {
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            var exp = new WordExport();
+
+            IEnumerable dataSource = context.Product.OrderBy(o => o.Nome).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+            
+            exp.Export(obj, dataSource, now + " - Prodotti.docx", false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/prodotti/pdf")]
+        public ActionResult ProductsPdf(string gridModel)
+        {
+            var context = new MyDbContext();
+
+            var now = Guid.NewGuid();
+
+            var exp = new PdfExport();
+
+            IEnumerable dataSource = context.Product.OrderBy(o => o.Nome).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+            
+            exp.Export(obj, dataSource, now + " - Prodotti.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
         #endregion
 
         #region RagioneSocialeController
         public ActionResult RagioneSociale()
         {
-            return View(db.RagioneSociale.ToList());
+            return View(_db.RagioneSociale.ToList());
         }
         public ActionResult RagioneSocialeDetails(Guid? id)
         {
@@ -365,7 +365,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.RagioneSociale ragioneSociale = db.RagioneSociale.Find(id);
+            SystemWeb.Models.RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
             if (ragioneSociale == null)
             {
                 return HttpNotFound();
@@ -385,8 +385,8 @@ namespace SystemWeb.Controllers
             if (ModelState.IsValid)
             {
                 ragioneSociale.RagioneSocialeId = Guid.NewGuid();
-                db.RagioneSociale.Add(ragioneSociale);
-                db.SaveChanges();
+                _db.RagioneSociale.Add(ragioneSociale);
+                _db.SaveChanges();
                 return RedirectToAction("RagioneSociale");
             }
 
@@ -399,7 +399,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.RagioneSociale ragioneSociale = db.RagioneSociale.Find(id);
+            SystemWeb.Models.RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
             if (ragioneSociale == null)
             {
                 return HttpNotFound();
@@ -413,8 +413,8 @@ namespace SystemWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(ragioneSociale).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Entry(ragioneSociale).State = EntityState.Modified;
+                _db.SaveChanges();
                 return RedirectToAction("RagioneSociale");
             }
             return View(ragioneSociale);
@@ -426,7 +426,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.RagioneSociale ragioneSociale = db.RagioneSociale.Find(id);
+            SystemWeb.Models.RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
             if (ragioneSociale == null)
             {
                 return HttpNotFound();
@@ -438,9 +438,9 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RagioneSocialeDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.RagioneSociale ragioneSociale = db.RagioneSociale.Find(id);
-            db.RagioneSociale.Remove(ragioneSociale);
-            db.SaveChanges();
+            SystemWeb.Models.RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
+            _db.RagioneSociale.Remove(ragioneSociale);
+            _db.SaveChanges();
             return RedirectToAction("RagioneSociale");
         }
         #endregion
@@ -778,7 +778,7 @@ namespace SystemWeb.Controllers
 
         public ActionResult Flags()
         {
-            return View(db.Flag.ToList());
+            return View(_db.Flag.ToList());
         }
 
         public ActionResult FlagsDetails(Guid? id)
@@ -787,7 +787,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Flag flag = db.Flag.Find(id);
+            SystemWeb.Models.Flag flag = _db.Flag.Find(id);
             if (flag == null)
             {
                 return HttpNotFound();
@@ -807,8 +807,8 @@ namespace SystemWeb.Controllers
             if (ModelState.IsValid)
             {
                 flag.pvFlagId = Guid.NewGuid();
-                db.Flag.Add(flag);
-                db.SaveChanges();
+                _db.Flag.Add(flag);
+                _db.SaveChanges();
                 return RedirectToAction("Flags");
             }
 
@@ -821,7 +821,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Flag flag = db.Flag.Find(id);
+            SystemWeb.Models.Flag flag = _db.Flag.Find(id);
             if (flag == null)
             {
                 return HttpNotFound();
@@ -835,8 +835,8 @@ namespace SystemWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(flag).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Entry(flag).State = EntityState.Modified;
+                _db.SaveChanges();
                 return RedirectToAction("Flags");
             }
             return View(flag);
@@ -848,7 +848,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Flag flag = db.Flag.Find(id);
+            SystemWeb.Models.Flag flag = _db.Flag.Find(id);
             if (flag == null)
             {
                 return HttpNotFound();
@@ -860,18 +860,35 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult FlagsDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.Flag flag = db.Flag.Find(id);
-            db.Flag.Remove(flag);
-            db.SaveChanges();
+            SystemWeb.Models.Flag flag = _db.Flag.Find(id);
+            _db.Flag.Remove(flag);
+            _db.SaveChanges();
             return RedirectToAction("Flags");
         }
         #endregion
-   
+        private GridProperties ConvertGridObject(string gridProperty)
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            IEnumerable div = (IEnumerable)serializer.Deserialize(gridProperty, typeof(IEnumerable));
+            GridProperties gridProp = new GridProperties();
+            foreach (KeyValuePair<string, object> ds in div)
+            {
+                var property = gridProp.GetType().GetProperty(ds.Key, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+                if (property != null)
+                {
+                    Type type = property.PropertyType;
+                    string serialize = serializer.Serialize(ds.Value);
+                    object value = serializer.Deserialize(serialize, type);
+                    property.SetValue(gridProp, value, null);
+                }
+            }
+            return gridProp;
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }

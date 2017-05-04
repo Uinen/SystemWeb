@@ -1,0 +1,128 @@
+[
+  {
+    "outputFileName": "Contenuti/CSS/STYLE.min.CSS",
+    "inputFiles": [
+      "Contenuti/CSS/STYLE.CSS"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css",
+    "inputFiles": [
+      "Contenuti/ej/web/responsive-css/ejgrid.responsive.css"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/ej/web/responsive-css/ej.responsive.min.css",
+    "inputFiles": [
+      "Contenuti/ej/web/responsive-css/ej.responsive.css"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/CSS/sb-admin.min.css",
+    "inputFiles": [
+      "Contenuti/CSS/sb-admin.css"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/sb-admin.min.js",
+    "inputFiles": [
+      "Scripts/sb-admin.js"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/jquery-3.2.1.min.js",
+    "inputFiles": [
+      "Scripts/jquery-3.2.1.js"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/tether.min.js",
+    "inputFiles": [
+      "Scripts/tether.js"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/dataTables.bootstrap4.min.css",
+    "inputFiles": [
+      "Contenuti/dataTables.bootstrap4.css"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/jquery.dataTables.min.js",
+    "inputFiles": [
+      "Scripts/jquery.dataTables.js"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/bootstrap.min.js",
+    "inputFiles": [
+      "Scripts/bootstrap.js"
+    ]
+  },
+  {
+    "outputFileName": "fonts/css/font-awesome.min.css",
+    "inputFiles": [
+      "fonts/css/font-awesome.css"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/bootstrap-grid.min.css",
+    "inputFiles": [
+      "Contenuti/bootstrap-grid.css"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/bootstrap-reboot.min.css",
+    "inputFiles": [
+      "Contenuti/bootstrap-reboot.css"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/bootstrap-theme.min.css",
+    "inputFiles": [
+      "Contenuti/bootstrap-theme.css"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/bootstrap.min.css",
+    "inputFiles": [
+      "Contenuti/bootstrap.css"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/CSS/Dashboard/dashboard.min.css",
+    "inputFiles": [
+      "Contenuti/CSS/Dashboard/dashboard.css"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/jquery.globalize.min.js",
+    "inputFiles": [
+      "Scripts/jquery.globalize.js"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/Theme.min.js",
+    "inputFiles": [
+      "Scripts/Theme.js"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/ActionComplete.min.js",
+    "inputFiles": [
+      "Scripts/ActionComplete.js"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/css/ionicons.min.css",
+    "inputFiles": [
+      "Contenuti/css/ionicons.css"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/css/colors/custom.min.css",
+    "inputFiles": [
+      "Contenuti/css/colors/custom.css"
+    ]
+  }
+]

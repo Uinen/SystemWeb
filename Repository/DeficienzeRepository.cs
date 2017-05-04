@@ -27,18 +27,16 @@ namespace SystemWeb.Repository
         public static void Update(PvDeficienze value)
         {
             var context = new MyDbContext();
-            PvDeficienze result = context.PvDeficienze.Where(o => o.PvDefId == value.PvDefId).FirstOrDefault();
-            if (result != null)
-            {
-                result.PvDefId = value.PvDefId;
-                result.PvTankId = value.PvTankId;
-                result.Value = value.Value;
-                result.FieldDate = value.FieldDate;
+            var result = context.PvDeficienze.FirstOrDefault(o => o.PvDefId == value.PvDefId);
+            if (result == null) return;
+            result.PvDefId = value.PvDefId;
+            result.PvTankId = value.PvTankId;
+            result.Value = value.Value;
+            result.FieldDate = value.FieldDate;
 
-                context.Entry(result).CurrentValues.SetValues(value);
-                context.Entry(result).State = EntityState.Modified;
-                context.SaveChanges();
-            }
+            context.Entry(result).CurrentValues.SetValues(value);
+            context.Entry(result).State = EntityState.Modified;
+            context.SaveChanges();
         }
 
         public static void Update(List<PvDeficienze> value)
@@ -46,18 +44,16 @@ namespace SystemWeb.Repository
             foreach (var temp in value)
             {
                 var context = new MyDbContext();
-                PvDeficienze result = context.PvDeficienze.Where(o => o.PvDefId == temp.PvDefId).FirstOrDefault();
-                if (result != null)
-                {
-                    result.PvDefId = temp.PvDefId;
-                    result.PvTankId = temp.PvTankId;
-                    result.Value = temp.Value;
-                    result.FieldDate = temp.FieldDate;
+                var result = context.PvDeficienze.FirstOrDefault(o => o.PvDefId == temp.PvDefId);
+                if (result == null) continue;
+                result.PvDefId = temp.PvDefId;
+                result.PvTankId = temp.PvTankId;
+                result.Value = temp.Value;
+                result.FieldDate = temp.FieldDate;
 
-                    context.Entry(result).CurrentValues.SetValues(temp);
-                    context.Entry(result).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
+                context.Entry(result).CurrentValues.SetValues(temp);
+                context.Entry(result).State = EntityState.Modified;
+                context.SaveChanges();
             }
         }
     }

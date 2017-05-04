@@ -8,7 +8,7 @@
 
         public override string ToString()
         {
-            return string.Format("Caption: {0}, Url: {1}", Caption, Url);
+            return $"Caption: {Caption}, Url: {Url}";
         }
     }
 }

@@ -109,3 +109,27 @@ function ActionCompleteDeficienze(args, sender) {
 
     }
 }
+
+function ActionCompleteProducts(args, sender) {
+    var gridObj = $("#FlatGridProducts").ejGrid("instance");
+    this.getContent().addClass("e-widget");
+    var browserDetails = gridObj.getBrowserDetails();
+    if (browserDetails.browser == "msie" && parseInt(browserDetails.version, 10) <= 9)
+        $("#FlatGridProducts").ejGrid("model.enableResponsiveRow", false);
+    if (args.requestType == "filtering" || args.requestType == "searching") {
+        var proxy = this;
+        setTimeout(function () { proxy.windowonresize(); }, 30);
+    }
+}
+
+function ActionCompleteCartissima(args, sender) {
+    var gridObj = $("#FlatGridCartissima").ejGrid("instance");
+    this.getContent().addClass("e-widget");
+    var browserDetails = gridObj.getBrowserDetails();
+    if (browserDetails.browser == "msie" && parseInt(browserDetails.version, 10) <= 9)
+        $("#FlatGridCartissima").ejGrid("model.enableResponsiveRow", false);
+    if (args.requestType == "filtering" || args.requestType == "searching") {
+        var proxy = this;
+        setTimeout(function () { proxy.windowonresize(); }, 30);
+    }
+}

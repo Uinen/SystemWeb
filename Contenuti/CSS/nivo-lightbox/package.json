@@ -1,21 +1,22 @@
 {
-  "name": "nivo-lightbox",
-  "description": "A simple, flexible, responsive, retina-ready jQuery lightbox plugin",
-  "keywords": [
-    "image",
-    "lightbox",
-    "javascript"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gilbitron/Nivo-Lightbox.git"
-  },
-  "license": "MIT",
   "author": "Gilbert Pellegrom <gilbert@pellegrom.me>",
+  "description": "A simple, flexible, responsive, retina-ready jQuery lightbox plugin",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-clean-css": "^2.0.13",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0"
-  }
+  },
+  "keywords": [
+    "image",
+    "lightbox",
+    "javascript"
+  ],
+  "license": "MIT",
+  "name": "nivo-lightbox",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gilbitron/Nivo-Lightbox.git"
+  },
+  "version": "1"
 }

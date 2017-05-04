@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using System.Reflection;
+using Microsoft.Owin;
 using Owin;
 using System.Web.Mvc;
 
@@ -11,8 +12,8 @@ namespace SystemWeb
         {
             ConfigureContainer(app);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            var CurrentAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-            string VersionNumber = CurrentAssembly.GetName().Version.ToString();
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            var versionNumber = currentAssembly.GetName().Version.ToString();
         }
     }
 }

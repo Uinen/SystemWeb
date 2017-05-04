@@ -1,4 +1,4 @@
-﻿@media (max-width :320px) {
+﻿@media (max-width :414px) {
     .e-grid.e-responsive > [id*='Dlg_wrapper'] {
         width: 130px !important;
     }
@@ -167,7 +167,7 @@
        width: 97px !important;
     }
 }
-@media (max-width: 321px) {
+@media (max-width: 414px) {
     .e-grid:not(.e-responsive) .e-table-priority-6,
     .e-grid:not(.e-responsive) .e-table-priority-5,
     .e-grid:not(.e-responsive) .e-table-priority-4,
@@ -176,7 +176,7 @@
         display: none !important;
     }
 }
-@media (min-width: 321px) and (max-width:479px) {
+@media (min-width: 321px) and (max-width:414px) {
     .e-grid .e-table-priority-6,
     .e-grid .e-table-priority-5,
     .e-grid .e-table-priority-4,
