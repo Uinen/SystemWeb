@@ -13,6 +13,7 @@ using SystemWeb.ViewModels;
 using SystemWeb.Infrastructure;
 using System;
 using MvcSiteMapProvider.Web.Mvc;
+using System.Net.Mail;
 
 namespace SystemWeb.Controllers
 {
@@ -49,25 +50,47 @@ namespace SystemWeb.Controllers
 
         #endregion
 
-        [Route("", Name = HomeControllerRoute.GetIndex)]
+        //[Route("", Name = HomeControllerRoute.GetIndex)]
         [WhitespaceFilter]
         public ActionResult Index()
         {
             return View(HomeControllerAction.Index);
         }
 
-        [Route("about", Name = HomeControllerRoute.GetAbout)]
-        public ActionResult About()
+        [HttpPost]
+        [WhitespaceFilter]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(ContactViewModel value)
         {
-            return View(HomeControllerAction.About);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    MailMessage msg = new MailMessage();
+                    SmtpClient smtp = new SmtpClient("smtp.live.com");
+                    MailAddress from = new MailAddress(value.Email.ToString());
+                    StringBuilder sb = new StringBuilder();
+                    msg.From = new MailAddress(value.Email);// replace it with sender email address
+
+                    msg.To.Add("vale92graveglia@live.it");// replace ti with recipient email address
+                    msg.Subject = string.Format("Messaggio da {0} che richiede: {1}", value.Name, value.Subject);
+                    smtp.EnableSsl = true;
+
+                    smtp.Credentials = new NetworkCredential("vale92graveglia@live.it", "morgana92");
+                    smtp.Port = 25;
+                    sb.Append(value.Message);
+                    msg.Body = sb.ToString();
+                    smtp.Send(msg);
+                    msg.Dispose();
+                }
+                catch (Exception e)
+                {
+                    return RedirectToAction("InternalServerError", "Error", new { exceptionMessage = e.Message });
+                }
+            }
+            return View();
         }
 
-        [Route("contact", Name = HomeControllerRoute.GetContact)]
-        public ActionResult Contact()
-        {
-            return View(HomeControllerAction.Contact);
-        }
-        
         /// <summary>
         /// Gets the Atom 1.0 feed for the current site. Note that Atom 1.0 is used over RSS 2.0 because Atom 1.0 is a 
         /// newer and more well defined format. Atom 1.0 is a standard and RSS is not. See

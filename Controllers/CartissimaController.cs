@@ -100,7 +100,26 @@ namespace SystemWeb.Controllers
             {
                 _cartissimaRepository.Insert(value);
                 _cartissimaRepository.Save();
-                return RedirectToAction("Success", new { key = value.sCartId });
+
+                if (value.sCartEmail != null)
+                {
+                    System.Net.Mail.MailMessage m = new System.Net.Mail.MailMessage(
+                            new System.Net.Mail.MailAddress("vale92graveglia@live.it", "Conferma Mail"),
+                            new System.Net.Mail.MailAddress(value.sCartEmail));
+
+                    m.Subject = "Copia Richiesta";
+                    m.Body = string.Format("Gentile {0} {1} <BR/>la ringraziamo per aver scelto il nostro servizio, di seguito le inviamo una copia dei dati inseriti.<BR/> Azienda: {2} <BR/> Partita Iva: {3} <BR/> Tipologia: {4} <BR/> Quantità: {5} <BR/> Le ricordiamo che verrà contattato nei prossimi giorni, via mail oppure telefonicamente da un nostro operatore.", value.sCartName, value.sCartSurname, value.sCartCompany, value.sCartIva, value.sCartVeichleType, value.sCartVeichle);
+                    m.IsBodyHtml = true;
+                    System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient("smtp.live.com", 25);
+                    smtp.Credentials = new System.Net.NetworkCredential("vale92graveglia@live.it", "morgana92");
+                    smtp.EnableSsl = true;
+                    smtp.Send(m);
+                    return RedirectToAction("Success", new { key = value.sCartId });
+                }
+                else
+                {
+                    return RedirectToAction("Success", new { key = value.sCartId });
+                }
             }
 
             return View();

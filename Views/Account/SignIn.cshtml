@@ -2,8 +2,10 @@
 @{
     Layout = "~/Views/Shared/_SignIn.cshtml";
 }
+
 @Html.Partial("Login", new SystemWeb.Models.LoginViewModel { })
+
 <div class="col-sm-1 middle-border"></div>
 <div class="col-sm-1"></div>
-@Html.Partial("Register", new SystemWeb.Models.RegisterBindingModel { })
 
+ @Html.Partial("Register", new SystemWeb.Models.RegisterBindingModel { })

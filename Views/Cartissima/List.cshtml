@@ -10,18 +10,18 @@
 }
 <section id="adaptive">
     <div class="container">
-        <div class="row">
-            <div class="center-block">
-                <style type="text/css">
-                    ::-ms-clear {
-                        display: none;
-                    }
+        <div class="center-block">
+            <div class="row">
+                    <style type="text/css">
+                        ::-ms-clear {
+                            display: none;
+                        }
 
-                    .e-gridAdaptive {
-                        border-width: 0px !important;
-                    }
-                </style>
-                @(Html.EJ().Grid<Cartissima>("FlatGridCartissima")
+                        .e-gridAdaptive {
+                            border-width: 0px !important;
+                        }
+                    </style>
+                    @(Html.EJ().Grid<Cartissima>("FlatGridCartissima")
                     .Locale("it-IT")
                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
                     .UpdateURL("update")
@@ -84,10 +84,10 @@
                         col.Field(p => p.sCartVeichle).HeaderText("Numero Mezzi").Width("50").Add();
                         col.Field(p => p.sCartVeichleType).HeaderText("Tipo Mezzi").Width("50").Add();
                     })
-                )
+                    )
+                </div>
             </div>
         </div>
-    </div>
 </section>
 @section script{
     @Scripts.Render("~/bundles/jquery")

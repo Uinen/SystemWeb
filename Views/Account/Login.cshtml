@@ -1,6 +1,5 @@
 @model SystemWeb.Models.LoginViewModel
 <div class="col-sm-5">
-
     <div class="form-box">
         <div class="form-top">
             <div class="form-top-left">
@@ -18,31 +17,31 @@
                 @Html.ValidationSummary();
                 <div class="form-group">
                     <label class="sr-only">Username</label>
-                    @Html.TextBoxFor(m => m.UserName , new { @class= "form-username form-control", @placeholder = "Username" })
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-username form-control", @placeholder = "Username" })
                 </div>
-                <div class="form-group">
-                    <label class="sr-only">Password</label>
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-password form-control", @placeholder = "Password" })
-                </div>
-                <div class="form-group">
-                    @Html.Label("Ricordami", new { @class = "text" })
-                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "checkbox" })
-                </div>
-                <input type="submit" class="btn" value="Entra">
-                <div class="social-login">
-                    <h3>...oppure autenticati usando i servizi esterni:</h3>
-                    <div class="social-login-buttons">
-                        <a class="btn btn-link-2" href="#">
-                            <i class="fa fa-facebook"></i> Facebook
-                        </a>
-                        <a class="btn btn-link-2" href="#">
-                            <i class="fa fa-twitter"></i> Twitter
-                        </a>
-                        <a class="btn btn-link-2" href="#">
-                            <i class="fa fa-google-plus"></i> Google Plus
-                        </a>
+                    <div class="form-group">
+                        <label class="sr-only">Password</label>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-password form-control", @placeholder = "Password" })
                     </div>
-                </div>
+                    <div class="form-group">
+                        @Html.Label("Ricordami", new { @class = "text" })
+                        @Html.CheckBoxFor(m => m.RememberMe, new { @class = "checkbox" })
+                    </div>
+                    <input type="submit" class="btn" value="Entra">
+                    <div class="social-login">
+                        <h3>...oppure autenticati usando i servizi esterni:</h3>
+                        <div class="social-login-buttons">
+                            <a class="btn btn-link-2" href="#">
+                                <i class="fa fa-facebook"></i> Facebook
+                            </a>
+                            <a class="btn btn-link-2" href="#">
+                                <i class="fa fa-twitter"></i> Twitter
+                            </a>
+                            <a class="btn btn-link-2" href="#">
+                                <i class="fa fa-google-plus"></i> Google Plus
+                            </a>
+                        </div>
+                    </div>
             }
         </div>
     </div>

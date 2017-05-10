@@ -2,6 +2,8 @@
 @Styles.Render("~/Content/bootstrapV3")
 @Styles.Render("~/Content/style")
 @Styles.Render("~/Content/custom")
+@Styles.Render("~/Content/SignInFormElements")
+@Styles.Render("~/Content/SignInStyle")
 @Styles.Render("~/Content/ionicons")
 @Styles.Render("~/Content/animate")
 @Styles.Render("~/Content/owlcarousel")
@@ -14,6 +16,7 @@
 @Html.Partial("_FrontHeader")
 <!-- ****************************** Banner ************************** -->
 @Html.Partial("_Banner")
+@model SystemWeb.ViewModels.ContactViewModel
 <section id="features" class="block">
     <div class="container">
         <div class="title-box">
@@ -95,24 +98,24 @@
                 <span class="bb-top-right"></span>
                 <span class="bb-bottom-right"></span>
             </h1>
-            <h5 class="wow animated zoomIn">Servizio momentaneamente non disponibile</h5>
         </div>
         <div class="row">
-            <div class="col-sm-4 address wow fadeInLeft animated">
-                <ul class="address-list">
-                    <li><i class="ion-email"></i> <span>administrator@gestionidirette.com</span></li>
-                    <li><i class="ion-earth"></i> <span>www.gestionidirette.com</span></li>
-                </ul>
-            </div>
-            <div class="col-sm-8 mailbox wow fadeInRight animated">
-                <div id="contactForm">
-                    <div id="loading-area" class="load" style="display:none;">
-                        <div class='alert alert-info'><strong>Sending...</strong></div>
-                    </div>
-                    <div id="message-area"></div>
-                   @*
-                        <div class="row">
-                            <div class="col-md-6">
+            <div class="col-sm-5 col-lg-12">
+                <div class="center-block">
+                    <div class="form-box">
+                        <div class="form-top">
+                            <div class="form-top-left">
+                                <h3>Contattaci</h3>
+                                <p>Compila il form sottostante per richiedere maggiori informazioni su ogni tuo interesse</p>
+                            </div>
+                            <div class="form-top-right">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                        <div class="form-bottom">
+                            @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
                                 <div class="form-group">
                                     @Html.TextBoxFor(m => m.Name, new { @placeholder = "Nome", @class = "form-control" })
                                 </div>
@@ -122,22 +125,24 @@
                                 <div class="form-group">
                                     @Html.TextBoxFor(m => m.Subject, new { @placeholder = "Oggetto", @class = "form-control" })
                                 </div>
-                            </div>
-                            <div class="col-md-6">
                                 <div class="form-group">
                                     @Html.TextAreaFor(m => m.Message, new { @placeholder = "Il tuo messaggio", @class = "form-control" })
                                 </div>
-                                <input type="submit" value="Invia" class="polo-btn contact-submit">
-                            </div>
-                        </div>*@
+                                <input type="submit" value="Invia" class="btn">
+                            }
+                        </div>
+                    </div>
                 </div>
+            </div>
         </div>
     </div>
     <div class="clearfix"></div>
 </section>
 
+
+
 @section Scripts{
-    @Scripts.Render("~/bundles/jquery")
+   @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrapV3")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/theme")

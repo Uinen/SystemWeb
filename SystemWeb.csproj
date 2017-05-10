@@ -397,6 +397,7 @@
     <Compile Include="Services\SitemapPinger\SitemapPingerService.cs" />
     <Compile Include="Services\Sitemap\ISitemapService.cs" />
     <Compile Include="Services\Sitemap\SitemapService.cs" />
+    <Compile Include="ViewModels\ContactViewModel.cs" />
     <Compile Include="ViewModels\MapDesignerViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
