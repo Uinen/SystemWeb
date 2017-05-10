@@ -3,7 +3,7 @@ using System.Web.Routing;
 using NWebsec.Mvc.HttpHeaders;
 using NWebsec.Mvc.HttpHeaders.Csp;
 using Boilerplate.Web.Mvc.Filters;
-using SystemWeb.Helpers;
+using SystemWeb.Static;
 
 namespace SystemWeb
 {

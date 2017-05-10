@@ -866,6 +866,7 @@ namespace SystemWeb.Controllers
             return RedirectToAction("Flags");
         }
         #endregion
+
         private GridProperties ConvertGridObject(string gridProperty)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();

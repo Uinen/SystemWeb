@@ -4,7 +4,6 @@ using System.Linq;
 using SystemWeb.Models;
 using SystemWeb.Repository.Interface;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 
 namespace SystemWeb.Repository
 {
@@ -17,9 +16,9 @@ namespace SystemWeb.Repository
             _db = context;
         }
 
-        public IEnumerable<Carico> GetOrders()
+        public virtual IEnumerable<Carico> GetOrders()
         {
-            return _db.Carico.Include(s=>s.Pv).Include(s=> s.Year).ToList();
+            return _db.Carico.Include(c => c.Pv).Include(c => c.Year).ToList();
         }
 
         public Carico GetOrdersById(Guid? Id)

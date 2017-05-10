@@ -1,4 +1,4 @@
-﻿<section id="banner">
+<section id="banner">
     <div class="banner-overlay"></div>
     <div class="container">
         @*<a class="slidedown wow animated zoomIn" data-wow-delay="1s" href="#testimonial"><i class="ion-ios-download-outline"></i></a>*@
@@ -6,13 +6,28 @@
             <div class="col-md-6">
                 <div class="headings">
                     <h1 class="wow animated fadeInLeft">Gestioni Dirette</h1>
-                    <h2 class="wow animated bounceInUp">SystemWeb @ViewContext.Controller.GetType().Assembly.GetName().Version</h2>
-                    <p class="wow animated fadeInRight">Tool progettato per gestire in modo intuitivo e dinamico una stazione di servizio.</p>
+                    @*<h2 class="wow animated bounceInUp">SystemWeb @ViewContext.Controller.GetType().Assembly.GetName().Version</h2>
+                        <p class="wow animated fadeInRight">Tool progettato per gestire in modo intuitivo e dinamico una stazione di servizio.</p>*@
+                    <h2 class="wow animated bounceInUp">Carta Aziendale</h2>
+                    @*<div class="img-responsive img-thumbnail">
+                        <img class="iphone-hand img_res wow animated bounceInUp" data-wow-duration="1.2s" src="@Url.Content("http://static.gestionidirette.com/Contenuti/img/cartissima.png")" alt="">
+                        <div class="clearfix"></div>
+                    </div>*@
+                    <p class="wow animated fadeInRight">
+                        Per ogni tua esigenza, abbiamo la soluzione ideale per gestire al meglio e più velocemente
+                        il tuo business assicurandoti tutti i vantaggi della rete, attraverso una carta di pagamento
+                        accettata in tutta italia in oltre 3000 impianti che ti permette un pagamento dilazionato ed
+                        il perfetto controllo dei consumi dei tuoi mezzi
+                    </p>
+                    <p class="wow animated fadeInRight" style="font-size:small">Iniziativa promozionale rivolta alle sole aziende - contattaci per ulteriori informazioni</p>
+                    <a href="/inserzioni/business-card/" class="card-footer clearfix large z-1">
+                        <span class="float-left text-uppercase text-primary"><strong>Richiedila Ora</strong></span>
+                        <span class="float-right"><i class="fa fa-angle-right"></i></span>
+                    </a>
                 </div>
             </div>
-
-            <div class="col-md-6 hidden-xs hidden-sm">
-                <div class="hand-container">
+            <div class="col-md-6 hidden-sm hidden-xs">
+                <div class="img-responsive">
                     <img class="iphone-hand img_res wow animated bounceInUp" data-wow-duration="1.2s" src="@Url.Content("http://static.gestionidirette.com/Contenuti/img/2-iphone-right.png")" alt="">
                     <div class="clearfix"></div>
                 </div>

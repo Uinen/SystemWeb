@@ -2,12 +2,17 @@
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using SystemWeb.ViewModels;
 using System.Web.Helpers;
 using Boilerplate.Web.Mvc;
 using SystemWeb.Services;
 using NWebsec.Csp;
 using static System.Web.Mvc.DependencyResolver;
+using Autofac;
+using SystemWeb.DI.Autofac.Modules;
+using MvcSiteMapProvider.Loader;
+using MvcSiteMapProvider.Xml;
+using System.Web.Hosting;
+using MvcSiteMapProvider.Web.Mvc;
 
 namespace SystemWeb
 {
@@ -21,6 +26,25 @@ namespace SystemWeb
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             Application["Version"] = $"{version.Major}.{version.Minor}.{version.Build}";
+            // Create a container builder (typically part of your DI setup already)
+            var builder = new ContainerBuilder();
+
+            // Register modules
+            builder.RegisterModule(new MvcSiteMapProviderModule()); // Required
+            builder.RegisterModule(new MvcModule()); // Required by MVC. Typically already part of your setup (double check the contents of the module).
+
+            // Create the DI container (typically part of your config already)
+            var container = builder.Build();
+
+            // Setup global sitemap loader (required)
+            MvcSiteMapProvider.SiteMaps.Loader = container.Resolve<ISiteMapLoader>();
+
+            // Check all configured .sitemap files to ensure they follow the XSD for MvcSiteMapProvider (optional)
+            var validator = container.Resolve<ISiteMapXmlValidator>();
+            validator.ValidateXml(HostingEnvironment.MapPath("~/Mvc.sitemap"));
+
+            // Register the Sitemaps routes for search engines (optional)
+            XmlSiteMapController.RegisterRoutes(RouteTable.Routes);
         }
 
         /// <summary>

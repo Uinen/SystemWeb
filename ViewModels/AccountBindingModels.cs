@@ -41,6 +41,7 @@ namespace SystemWeb.Models
         public string Username { get; set; }
 
         [Required]
+        [EmailAddress]
         [Display(Name = "Posta elettronica")]
         public string Email { get; set; }
 
@@ -76,39 +77,69 @@ namespace SystemWeb.Models
         [Display(Name = "Nazione")]
         public string mProfileNation { get; set; }
 
-        [Display(Name = "Stato Utente")]
-        public string mProfileInfo { get; set; }
-
-        [Display(Name = "Azienda")]
-        public string name { get; set; }
-
-        [Display(Name = "Partita Iva")]
-        public int iva { get; set; }
- 
-        [Key]
-        [Display(Name = "Ragione Sociale")]
-        public Guid RagioneSocialeId { get; set; }
-
-        public SelectList RagioneSociale { get; set; }
+        [Required]
+        [Display(Name = "Numero Punto Vendita")]
+        public string mPvName { get; set; }
 
         [Required]
-        [Display(Name = "Seleziona la tua azienda")]
-        public Guid CompanyId { get; set; }
+        [Display(Name = "Compagnia")]
+        public Guid mPvFlagId { get; set; }
 
-        [Required]
-        [Display(Name = "Nome Punto Vendita")]
-        public string PvName { get; set; }
+        public ApplicationUser GetUser()
+        {
+            var user = new ApplicationUser()
+            {
+                UserName = Username,
+                Email = Email,
+                TwoFactorEnabled = false,
+                CreateDate = DateTime.Now
+            };
+            user.UserProfiles = new UserProfiles()
+            {
+                ProfileName = mProfileName,
+                ProfileSurname = mProfileSurname,
+                ProfileAdress = mProfileAdress,
+                ProfileCity = mProfileCity,
+                ProfileZipCode = mProfilezipCode,
+                ProfileNation = mProfileNation
+            };
+            user.Pv = new Pv()
+            {
+                pvName = mPvName,
+                pvFlagId = mPvFlagId
+            };
+            return user;
+        }
+    }
 
-        [Required]
-        [Display(Name = "Bandiera")]
-        public Guid PvFlagId { get; set; }
-        public SelectList Flag { get; set; }
+    public class RegisterStep2
+    {
+        [Display(Name = "Numero Punto Vendita")]
+        public string mPvName { get; set; }
 
-        [Required]
-        [Key]
-        [Display(Name = "Punto Vendita")]
-        public Guid pvID { get; set; }
-        public virtual Pv Pv { get; set; }
+        [Display(Name = "Indirizzo")]
+        public string mIndirizzo { get; set; }
+
+        [Display(Name = "Città")]
+        public string mCittà { get; set; }
+
+        [Display(Name = "Cap")]
+        public int mCap { get; set; }
+
+        [Display(Name = "Nazione")]
+        public string mNazione { get; set; }
+        /*
+        public PvProfile GetPvProfile()
+        {
+            var profile = new PvProfile()
+            {
+                Indirizzo = mIndirizzo,
+                Città = mCittà,
+                Cap = mCap,
+                Nazione = mNazione
+            };
+            return profile;
+        }*/
     }
 
     public class RegisterExternalBindingModel

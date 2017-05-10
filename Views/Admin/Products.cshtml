@@ -1,4 +1,4 @@
-﻿@using (Html.BeginForm("products", "admin", FormMethod.Get))
+@using (Html.BeginForm("products", "admin", FormMethod.Get))
 {
     <section id="products" class="block">
         <div class="container">
@@ -82,9 +82,9 @@
 </section>
 
 @section Styles{
-    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
+    @Styles.Render("~/Content/EjWidgetCore")
+    @Styles.Render("~/Content/EjTheme")
+    @Styles.Render("~/Content/EjResponsive")
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
 
@@ -94,8 +94,8 @@
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
-    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
+      @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+      @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()

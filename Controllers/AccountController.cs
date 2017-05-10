@@ -5,15 +5,13 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using SystemWeb.Models;
-using System.Data.Entity;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security;
 using System;
 using System.Web.Security;
-using SystemWeb.ViewModels;
-using System.Collections.Generic;
-using System.Collections;
+using System.Web.Configuration;
+using System.Net.Configuration;
 
 namespace SystemWeb.Controllers
 {
@@ -68,6 +66,7 @@ namespace SystemWeb.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
+        [Route("Account/Autenticati")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, string userName, string password, bool rememberMe)
         {
@@ -136,74 +135,28 @@ namespace SystemWeb.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult New()
+        [Route("Account/Registrati")]
+        public ActionResult Register()
         {
-            var model = new RegisterBindingModel();
-            IEnumerable dbFlag = (from f in _db.Flag select f);
-            IEnumerable dbRagioneSociale = (from f in _db.RagioneSociale select f);
-            model.RagioneSociale = new SelectList(dbRagioneSociale, "RagioneSocialeId", "Nome");
-            model.Flag = new SelectList(dbFlag, "PvFlagId", "Nome", 1);
-
+            //ViewBag.RagioneSocialeId = new SelectList(_db.RagioneSociale, "RagioneSocialeId", "Nome");
+            ViewBag.FlagId = new SelectList(_db.Flag, "pvFlagId", "Nome");
             return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> New(RegisterBindingModel model, HttpPostedFileBase upload)
+        [Route("Account/Registrati")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Register(RegisterBindingModel model/*, HttpPostedFileBase upload*/)
         {
             if (ModelState.IsValid)
             {
-
-                //Save the data
                 var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
                 var roleManager = HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+                var user = model.GetUser();
 
-                var currentUser = userManager.FindById(User.Identity.GetUserId());
-
-                const string roleName = "Administrator";
-
-                var role = roleManager.FindByName(roleName);
-
-                if (role == null)
-                {
-                    role = new ApplicationRole(roleName);
-                    var roleresult = roleManager.Create(role);
-                }
-
-                var user = new ApplicationUser()
-                {
-                    UserName = model.Username,
-                    Email = model.Email
-                };
-                
-                user.TwoFactorEnabled = false;
-
-                user.CreateDate = DateTime.Now;
-
-                user.UserProfiles = new UserProfiles()
-                {
-                    ProfileName = model.mProfileName,
-                    ProfileSurname = model.mProfileSurname,
-                    ProfileAdress = model.mProfileAdress,
-                    ProfileCity = model.mProfileCity,
-                    ProfileZipCode = model.mProfilezipCode,
-                    ProfileNation = model.mProfileNation
-                };
-
-                user.Company = new Company()
-                {
-                    Name = model.name,
-                    PartitaIva = model.iva,
-                    RagioneSocialeId = model.RagioneSocialeId
-                };
-
-                user.Pv = new Pv()
-                {
-                    pvName = model.PvName,
-                    pvFlagId = model.PvFlagId
-                };
-
+                #region upload
+                /*
                 if (upload != null && upload.ContentLength > 0)
                 {
                     var avatar = new UsersImage
@@ -220,36 +173,74 @@ namespace SystemWeb.Controllers
                     }
 
                     user.UserProfiles.UsersImage = new List<UsersImage> { avatar };
-                }
+                }*/
+                #endregion
 
                 var result = await UserManager.CreateAsync(user, model.Password);
-
                 if (result.Succeeded)
                 {
-                    string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Conferma il tuo account");
-                    var rolesForUser = UserManager.GetRoles(user.Id);
-                    if (!rolesForUser.Contains(role.Name))
-                    {
-                        var result2 = UserManager.AddToRole(user.Id, role.Name);
-                    }
-                    await SignInAsync(user, isPersistent: false);
-                    return View("Confirm");
+                    result = UserManager.AddToRole(user.Id, "User");
+
+                    System.Net.Mail.MailMessage m = new System.Net.Mail.MailMessage(
+                        new System.Net.Mail.MailAddress("vale92graveglia@live.it", "Registrazione Web"),
+                        new System.Net.Mail.MailAddress(user.Email));
+
+                    m.Subject = "Conferma Email";
+                    m.Body = string.Format("Gentile utente {0}<BR/>Grazie per esserti registrato, per completare la registrazione clicca sul seguente link: <a href=\"{1}\"title=\"Conferma\">{1}</a>", user.UserName, Url.Action("ConfirmEmail", "Account", new { Token = user.Id, Email = user.Email }, Request.Url.Scheme));
+                    m.IsBodyHtml = true;
+                    System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient("smtp.live.com", 25);
+                    smtp.Credentials = new System.Net.NetworkCredential("vale92graveglia@live.it", "morgana92");
+                    smtp.EnableSsl = true;
+                    smtp.Send(m);
+
+                    //ViewBag.Link = callbackUrl;
+                    return RedirectToAction("Confirm", "Account", new { Email = user.Email, UserID = user.Id });
                 }
+                AddErrors(result);
             }
-            return RedirectToAction("Index", "User");
+
+            return View(model);
         }
 
+        [AllowAnonymous]
+        [Route("Account/")]
+        public ActionResult SignIn()
+        {
+            ViewBag.FlagId = new SelectList(_db.Flag, "pvFlagId", "Nome");
+            return View();
+        }
+
+        [AllowAnonymous]
+        [Route("Account/Registrati/ConfermaEmail")]
+        public ActionResult Confirm(string Email)
+        {
+            ViewBag.Email = Email; return View();
+        }
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        [Route("Account/Registrati/EmailConfermata")]
+        public async Task<ActionResult> ConfirmEmail(string Email, string Token)
         {
-            if (userId == null || code == null)
+            ApplicationUser user = this.UserManager.FindById(Token);
+            if (user != null)
             {
-                return View("Error");
+                if (user.Email == Email)
+                {
+                    user.EmailConfirmed = true;
+                    await UserManager.UpdateAsync(user);
+                    await SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("ConfirmEmail", "Account", new { EmailConfirmed = user.Email, UserID = user.Id });
+                }
+                else
+                {
+                    return RedirectToAction("Confirm", "Account", new { Email = user.Email });
+                }
             }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            else
+            {
+                return RedirectToAction("Confirm", "Account", new { Email = "" });
+            }
         }
         //
         // GET: /Account/ForgotPassword

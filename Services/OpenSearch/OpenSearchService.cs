@@ -4,7 +4,7 @@
     using System.Web.Mvc;
     using System.Xml.Linq;
     using Boilerplate.Web.Mvc;
-    using Helpers;
+    using Static;
 
     public sealed class OpenSearchService : IOpenSearchService
     {
@@ -24,8 +24,8 @@
         public string GetOpenSearchXml()
         {
             // Short name must be less than or equal to 16 characters.
-            string shortName = "Search";
-            string description = "Search the ASP.NET MVC iShare Site";
+            string shortName = "Cerca";
+            string description = "Cerca in Gestioni Dirette";
             // The link to the search page with the query string set to 'searchTerms' which gets replaced with a user 
             // defined query.
             string searchUrl = this.urlHelper.AbsoluteRouteUrl(
@@ -34,11 +34,11 @@
             // The link to the page with the search form on it. The home page has the search form on it.
             string searchFormUrl = this.urlHelper.AbsoluteRouteUrl(HomeControllerRoute.GetIndex);
             // The link to the favicon.ico file for the site.
-            string favicon16Url = this.urlHelper.AbsoluteContent("~/content/icons/favicon.ico");
+            string favicon16Url = this.urlHelper.AbsoluteContent("~/Contenuti/icons/favicon.ico");
             // The link to the favicon.png file for the site.
-            string favicon32Url = this.urlHelper.AbsoluteContent("~/content/icons/favicon-32x32.png");
+            string favicon32Url = this.urlHelper.AbsoluteContent("~/Contenuti/icons/favicon-32x32.png");
             // The link to the favicon.png file for the site.
-            string favicon96Url = this.urlHelper.AbsoluteContent("~/content/icons/favicon-96x96.png");
+            string favicon96Url = this.urlHelper.AbsoluteContent("~/Contenuti/icons/favicon-96x96.png");
 
             XNamespace ns = "http://a9.com/-/spec/opensearch/1.1";
             XDocument document = new XDocument(
@@ -69,7 +69,7 @@
                         new XAttribute("height", "16"),
                         new XAttribute("width", "16"),
                         new XAttribute("type", "image/x-icon")),
-                    new XElement(
+                    /*new XElement(
                         ns + "Image", 
                         favicon32Url,
                         new XAttribute("height", "32"),
@@ -80,7 +80,7 @@
                         favicon96Url,
                         new XAttribute("height", "96"),
                         new XAttribute("width", "96"),
-                        new XAttribute("type", "image/png")),
+                        new XAttribute("type", "image/png")),*/
                     new XElement(ns + "InputEncoding", "UTF-8"),
                     new XElement(ns + "SearchForm", searchFormUrl)));
 

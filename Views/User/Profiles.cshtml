@@ -1,4 +1,7 @@
-﻿@model SystemWeb.Models.UserProfiles
+@model SystemWeb.Models.UserProfiles
+@{
+    Layout = "~/Views/Shared/_SecondLayout.cshtml";
+}
     <dlv class="dl-horizontal">
         @if (Model.UsersImage.Any(f => f.FileType == FileType.Avatar))
         {

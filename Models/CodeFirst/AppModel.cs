@@ -27,23 +27,16 @@ namespace SystemWeb.Models
     #endregion
 
     #region User
-    [JsonObject(IsReference = true)]
-    [DataContract(IsReference = true)]
     public sealed class ApplicationUser : IdentityUser<string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
-        public Guid ProfileId { get; set; }
-        [DataMember]
+        public Guid? ProfileId { get; set; }
         public UserProfiles UserProfiles { get; set; }
-        [DataMember]
         public Guid? pvID { get; set; }
-        [DataMember]
         public Pv Pv { get; set; }
-        [DataMember]
         public Guid? CompanyId { get; set; }
         public DateTime CreateDate { get; set; }
-        [DataMember]
         public Company Company { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        
         public ApplicationUser()
         {
             Id = Guid.NewGuid().ToString();
@@ -58,13 +51,9 @@ namespace SystemWeb.Models
                 .CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             return userIdentity;
         }
-        [JsonIgnore]
         public ICollection<Notice> Notice { get; set; }
-        [JsonIgnore]
         public ICollection<UserArea> UserArea { get; set; }
-        [JsonIgnore]
         public ICollection<CompanyTask> CompanyTask { get; set; }
-
         public ICollection<FilePath> FilePaths { get; set; }
     }
     #endregion
@@ -107,7 +96,6 @@ namespace SystemWeb.Models
     #endregion
 
     #region Carico
-    [DataContract(IsReference = true)]
     public class Carico
     {
         public Carico()
@@ -119,22 +107,20 @@ namespace SystemWeb.Models
         public Guid pvID { get; set; }
         public Guid? yearId { get; set; }
         public int Ordine { get; set; }
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}")]
         public DateTime cData { get; set; }
         [MaxLength(4)]
         public string Documento { get; set; }
         [MaxLength(18)]
         public string Numero { get; set; }
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}")]
         public DateTime rData { get; set; }
         [MaxLength(32)]
         public string Emittente { get; set; }
         public int Benzina { get; set; }
         public int Gasolio { get; set; }
+        public int? HiQb { get; set; }
+        public int? HiQd { get; set; }
         public string Note { get; set; }
-        [DataMember]
         public Pv Pv { get; set; }
-        [DataMember]
         public Year Year { get; set; }
 
         [NotMapped]
@@ -149,8 +135,6 @@ namespace SystemWeb.Models
     #endregion
 
     #region Company
-    [JsonObject(IsReference = true)]
-    [DataContract(IsReference = true)]
     public class Company
     {
         public Company()
@@ -163,18 +147,14 @@ namespace SystemWeb.Models
         [MaxLength(32)]
         public string Name { get; set; }
         public int PartitaIva { get; set; }
-        [DataMember]
         public Guid? RagioneSocialeId { get; set; }
-        [DataMember]
         public RagioneSociale RagioneSociale { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [JsonIgnore]
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
     }
     #endregion
 
     #region Company Task
-    [DataContract(IsReference = true)]
     public class CompanyTask
     {
         public CompanyTask()
@@ -189,7 +169,6 @@ namespace SystemWeb.Models
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime? FieldDate { get; set; }
         public float FieldResult { get; set; }
-        [DataMember]
         public ApplicationUser ApplicationUser { get; set; }
     }
     #endregion
@@ -209,7 +188,6 @@ namespace SystemWeb.Models
     #endregion
 
     #region Pv Erogatori
-    [DataContract(IsReference = true)]
     public class PvErogatori
     {
         public PvErogatori()
@@ -224,11 +202,8 @@ namespace SystemWeb.Models
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime FieldDate { get; set; }
         public int Value { get; set; }
-        [DataMember]
         public Product Product { get; set; }
-        [DataMember]
         public Dispenser Dispenser { get; set; }
-        [DataMember]
         public Pv Pv { get; set; }
         [NotMapped]
         public string sspb { get; set; }
@@ -238,7 +213,6 @@ namespace SystemWeb.Models
     #endregion
 
     #region Flag
-    [JsonObject(IsReference = true)]
     public class Flag
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -255,13 +229,11 @@ namespace SystemWeb.Models
         public string Descrizione { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [JsonIgnore]
         public ICollection<Pv> Pv { get; set; }
     }
     #endregion
 
     #region Product
-    [JsonObject(IsReference = true)]
     public class Product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -278,14 +250,11 @@ namespace SystemWeb.Models
         public float Prezzo { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [JsonIgnore]
         public ICollection<PvTank> PvTank { get; set; }
     }
     #endregion
 
     #region Pv
-    [JsonObject(IsReference = true)]
-    [DataContract(IsReference = true)]
     public class Pv
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -304,27 +273,16 @@ namespace SystemWeb.Models
         [MaxLength(8)]
         public string pvName { get; set; }
         public Guid? pvFlagId { get; set; }
-        [DataMember]
         public Flag Flag { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [JsonIgnore]
         public ICollection<PvTank> PvTank { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [JsonIgnore]
         public ICollection<Carico> Carico { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [JsonIgnore]
         public ICollection<PvProfile> PvProfile { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [JsonIgnore]
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
-        [JsonIgnore]
         public ICollection<Cartissima> Cartissima { get; set; }
     }
     #endregion
 
     #region Pv Profile
-    [DataContract(IsReference = true)]
     public class PvProfile
     {
         public PvProfile()
@@ -341,14 +299,11 @@ namespace SystemWeb.Models
         [MaxLength(14)]
         public string Nazione { get; set; }
         public int Cap { get; set; }
-        [DataMember]
         public Pv Pv { get; set; }
     }
     #endregion
 
     #region Pv Tank
-    [JsonObject(IsReference = true)]
-    [DataContract(IsReference = true)]
     public class PvTank
     {
         public PvTank()
@@ -368,21 +323,15 @@ namespace SystemWeb.Models
         public int Capienza { get; set; }
         public int Giacenza { get; set; }
         public string Descrizione { get; set; }
-        [DataMember]
         public Product Product { get; set; }
-        [DataMember]
         public Pv Pv { get; set; }
-        [JsonIgnore]
         public ICollection<PvTankDesc> PvTankDesc { get; set; }
-        [JsonIgnore]
         public ICollection<PvDeficienze> PvDeficienze { get; set; }
-        [JsonIgnore]
         public ICollection<PvCali> PvCali { get; set; }
     }
     #endregion
 
     #region Pv Deficienze
-    [DataContract(IsReference = true)]
     public class PvDeficienze
     {
         public PvDeficienze()
@@ -393,7 +342,6 @@ namespace SystemWeb.Models
         [Key]
         public Guid PvDefId { get; set; }
         public Guid PvTankId { get; set; }
-        [DataMember]
         public PvTank PvTank { get; set; }
         public int Value { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
@@ -402,7 +350,6 @@ namespace SystemWeb.Models
     #endregion
 
     #region Pv Cali
-    [DataContract(IsReference = true)]
     public class PvCali
     {
         public PvCali()
@@ -413,7 +360,6 @@ namespace SystemWeb.Models
         [Key]
         public Guid PvCaliId { get; set; }
         public Guid PvTankId { get; set; }
-        [DataMember]
         public PvTank PvTank { get; set; }
         public int Value { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
@@ -422,7 +368,6 @@ namespace SystemWeb.Models
     #endregion
 
     #region Pv Tank Desc
-    [DataContract(IsReference = true)]
     public class PvTankDesc
     {
         public PvTankDesc()
@@ -435,16 +380,13 @@ namespace SystemWeb.Models
         public Guid PvTankId { get; set; }
         public float PvTankCM { get; set; }
         public float PvTankLT { get; set; }
-        [DataMember]
         public PvTank PvTank { get; set; }
     }
     #endregion
 
     #region User Profile
-    [JsonObject(IsReference = true)]
     public class UserProfiles
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UserProfiles()
         {
             ProfileId = Guid.NewGuid();
@@ -481,16 +423,12 @@ namespace SystemWeb.Models
                 return ProfileAdress + ", " + ProfileCity + "- (" + ProfileZipCode + ") -" + ProfileNation;
             }
         }
-
-        [JsonIgnore]
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
         public ICollection<UsersImage> UsersImage { get; set; }
     }
     #endregion
 
     #region Dispenser
-    [JsonObject(IsReference = true)]
-    [DataContract(IsReference = true)]
     public class Dispenser
     {
         public Dispenser()
@@ -503,17 +441,13 @@ namespace SystemWeb.Models
         [MaxLength(32)]
         public string Modello { get; set; }
         public Guid? PvTankId { get; set; }
-        [DataMember]
         public PvTank PvTank { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [JsonIgnore]
         public ICollection<PvErogatori> PvErogatori { get; set; }
         public bool? isActive { get; set; }
     }
     #endregion
 
     #region Notice
-    [DataContract(IsReference = true)]
     public class Notice
     {
         public Notice()
@@ -530,7 +464,6 @@ namespace SystemWeb.Models
         [MaxLength(128)]
         public string UsersId { get; set; }
         public string Description { get; set; }
-        [DataMember]
         public ApplicationUser ApplicationUser { get; set; }
         public override string ToString()
         {
@@ -542,7 +475,6 @@ namespace SystemWeb.Models
     #endregion
 
     #region User Area
-    [DataContract(IsReference = true)]
     public class UserArea
     {
         public UserArea()
@@ -553,7 +485,6 @@ namespace SystemWeb.Models
         public Guid UserAreaId { get; set; }
         [MaxLength(128)]
         public string UsersId { get; set; }
-        [DataMember]
         public ApplicationUser ApplicationUser { get; set; }
         [MaxLength(48)]
         public string UserFieldAccount { get; set; }
@@ -567,7 +498,6 @@ namespace SystemWeb.Models
     #endregion
 
     #region Year
-    [JsonObject(IsReference = true)]
     public class Year
     {
         public Year()
@@ -581,9 +511,6 @@ namespace SystemWeb.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MMM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Anno { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        [JsonIgnore]
         public ICollection<Carico> Carico { get; set; }
     }
     #endregion
@@ -632,6 +559,7 @@ namespace SystemWeb.Models
 
         [Required]
         public string sCartSurname { get; set; }
+        [EmailAddress]
         public string sCartEmail { get; set; }
 
         [Required]
@@ -649,6 +577,10 @@ namespace SystemWeb.Models
         public string sCartVeichleType { get; set; }
         public bool sCartProcessed { get; set; }
     }
+
+    #endregion
+
+    #region Mail
 
     #endregion
 
@@ -683,9 +615,9 @@ namespace SystemWeb.Models
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-            modelBuilder.Entity<IdentityUserLogin>().HasKey<string>(l => l.UserId);
+            modelBuilder.Entity<IdentityUserLogin>().HasKey(l => l.UserId);
             modelBuilder.Entity<ApplicationUserLogin>().ToTable("UserLogin");
-            modelBuilder.Entity<IdentityRole>().HasKey<string>(r => r.Id);
+            modelBuilder.Entity<IdentityRole>().HasKey(r => r.Id);
             modelBuilder.Entity<ApplicationRole>().ToTable("Roles");
             modelBuilder.Entity<IdentityUserRole>().HasKey(r => new { r.RoleId, r.UserId });
             modelBuilder.Entity<ApplicationUserRole>().ToTable("UserRoles");
@@ -718,11 +650,13 @@ namespace SystemWeb.Models
             modelBuilder.Entity<Cartissima>().HasRequired(p => p.Pv)
                 .WithMany(b => b.Cartissima)
                 .HasForeignKey(p => p.pvID);
+            modelBuilder.Entity<PvProfile>().HasRequired(p => p.Pv)
+                .WithMany(b => b.PvProfile)
+                .HasForeignKey(p => p.pvID);
         }
         #endregion
 
         #region Db Set
-
         public  DbSet<Pv> Pv { get; set; }
         public  DbSet<PvProfile> PvProfile { get; set; }
         public  DbSet<PvTank> PvTank { get; set; }

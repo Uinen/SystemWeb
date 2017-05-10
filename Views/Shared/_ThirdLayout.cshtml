@@ -1,40 +1,73 @@
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<link href="@Url.Content("~/Contenuti/CSS/Dashboard/dashboard.min.css")" rel="stylesheet">
+ï»¿<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Valentino Fabbri">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--favicon-->
+    <link rel="apple-touch-icon" sizes="180x180" href="http://static.gestionidirette.com/Contenuti/icons/apple-touch-icon.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="32x32" href="http://static.gestionidirette.com/Contenuti/icons/favicon-32x32.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://static.gestionidirette.com/Contenuti/icons/favicon-16x16.png?v=LbGQJmwPGw">
+    <link rel="manifest" href="http://static.gestionidirette.com/Contenuti/icons/manifest.json?v=LbGQJmwPGw">
+    <link rel="mask-icon" href="http://static.gestionidirette.com/Contenuti/icons/safari-pinned-tab.svg?v=LbGQJmwPGw" color="#5bbad5">
+    <link rel="shortcut icon" href="http://static.gestionidirette.com/Contenuti/icons/favicon.ico?v=LbGQJmwPGw">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="http://static.gestionidirette.com/Contenuti/icons/mstile-144x144.png?v=LbGQJmwPGw">
+    <meta name="msapplication-config" content="http://static.gestionidirette.com/Contenuti/icons/browserconfig.xml?v=LbGQJmwPGw">
+    <meta name="theme-color" content="#ff0000">
+</head>
+@RenderSection("style", false)
+<body>
 
-<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
+    @Styles.Render("~/Content/Dashboard")
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
-<div class="navbar navbar-default navbar-inverse" style="border-radius:0; background-color:#41a1e1; background-image:url(@Url.Content("~/Contenuti/img/stripBG.png"))" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">@ViewBag.Title</a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="/admin/prodotti">Prodotti</a></li>
-                <li><a href="/admin">Bandiere</a></li>
-                <li><a href="/admin">Notizie</a></li>
-                <li><a href="/admin">Ruoli</a></li>
-                <li><a href="/admin">Utenti</a></li>
-                <li><a href="/admin">Annualità Utf</a></li>
-            </ul>
+    <div class="navbar navbar-default navbar-inverse" style="border-radius:0; background-color:#41a1e1; background-image:url(@Url.Content("~/Contenuti/img/stripBG.png"))" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">@ViewBag.Title</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/admin/prodotti">Prodotti</a></li>
+                    <li><a href="/admin">Bandiere</a></li>
+                    <li><a href="/admin">Notizie</a></li>
+                    <li><a href="/admin">Ruoli</a></li>
+                    <li><a href="/admin">Utenti</a></li>
+                    <li><a href="/admin">Annualitï¿½ Utf</a></li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="container">
+    @RenderSection("script", false)
     @RenderBody()
-</div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="footer-border"></div>
+                    <div class="credits">
+                        <p class="text-capitalize text-center">@DateTime.Now - Gestioni Dirette&trade;</p>
+                        <p class="text-center">Progetto ideato da <strong> MTM di Fabbri Marcello & C. Snc </strong></p>
+                        <p class="text-center"><strong>Sede Legale: Piazza Concordia(SP)</strong></p>
+                        <p class="text-center"><strong>Partita Iva: 01407280112</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Valentino Fabbri">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--favicon-->
+    <link rel="apple-touch-icon" sizes="180x180" href="http://static.gestionidirette.com/Contenuti/icons/apple-touch-icon.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="32x32" href="http://static.gestionidirette.com/Contenuti/icons/favicon-32x32.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://static.gestionidirette.com/Contenuti/icons/favicon-16x16.png?v=LbGQJmwPGw">
+    <link rel="manifest" href="http://static.gestionidirette.com/Contenuti/icons/manifest.json?v=LbGQJmwPGw">
+    <link rel="mask-icon" href="http://static.gestionidirette.com/Contenuti/icons/safari-pinned-tab.svg?v=LbGQJmwPGw" color="#5bbad5">
+    <link rel="shortcut icon" href="http://static.gestionidirette.com/Contenuti/icons/favicon.ico?v=LbGQJmwPGw">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="http://static.gestionidirette.com/Contenuti/icons/mstile-144x144.png?v=LbGQJmwPGw">
+    <meta name="msapplication-config" content="http://static.gestionidirette.com/Contenuti/icons/browserconfig.xml?v=LbGQJmwPGw">
+    <meta name="theme-color" content="#ff0000">
+    <!-- CSS -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    @Styles.Render("~/Content/bootstrapV3")
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Contenuti/CSS/Signin Form/form-elements.min.css">
+    <link rel="stylesheet" href="~/Contenuti/CSS/Signin Form/style.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    @RenderSection("style", required: false)
+</head>
+<body>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrapV3")
+    @RenderSection("script", false)
+    <div class="row">
+        <div class="container">
+            @Html.MvcSiteMap().SiteMapPath("SiteMapPathHelperModel")
+        </div>
+    </div>
+    @RenderBody()
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="footer-border"></div>
+                    <div class="credits">
+                        <p class="text-capitalize text-center">@DateTime.Now - Gestioni Dirette&trade;</p>
+                        <p class="text-center">Progetto ideato da <strong> MTM di Fabbri Marcello & C. Snc </strong></p>
+                        <p class="text-center"><strong>Sede Legale: Piazza Concordia(SP)</strong></p>
+                        <p class="text-center"><strong>Partita Iva: 01407280112</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

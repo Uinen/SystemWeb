@@ -4,7 +4,7 @@
     using System.Web.Mvc;
     using System.Xml.Linq;
     using Boilerplate.Web.Mvc;
-    using SystemWeb.Helpers;
+    using SystemWeb.Static;
     
     public class BrowserConfigService : IBrowserConfigService
     {

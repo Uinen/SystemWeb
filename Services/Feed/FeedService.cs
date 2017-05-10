@@ -8,7 +8,7 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Boilerplate.Web.Mvc;
-    using Helpers;
+    using Static;
 
     /// <summary>
     /// Builds <see cref="SyndicationFeed"/>'s containing meta data about the feed and the feed entries.
@@ -56,9 +56,9 @@
                 Id = FeedId,
                 // title (Required) - Contains a human readable title for the feed. Often the same as the title of the 
                 //                    associated website. This value should not be blank.
-                Title = SyndicationContent.CreatePlaintextContent("SystemWeb - Gestionidirette"),
+                Title = SyndicationContent.CreatePlaintextContent("Gestioni Dirette"),
                 // items (Required) - The items to add to the feed.
-                Items = await this.GetItems(cancellationToken),
+                Items = GetItems(cancellationToken),
                 // subtitle (Recommended) - Contains a human-readable description or subtitle for the feed.
                 Description = SyndicationContent.CreatePlaintextContent(
                     "Desc."),
@@ -66,12 +66,12 @@
                 LastUpdatedTime = DateTimeOffset.Now,
                 // logo (Optional) - Identifies a larger image which provides visual identification for the feed. 
                 //                   Images should be twice as wide as they are tall.
-                ImageUrl = new Uri(this.urlHelper.AbsoluteContent("~/content/icons/atom-logo-96x48.png")),
+                ImageUrl = new Uri(this.urlHelper.AbsoluteContent("~/Contenuti/icons/atom-logo-96x48.png")),
                 // rights (Optional) - Conveys information about rights, e.g. copyrights, held in and over the feed.
                 Copyright = SyndicationContent.CreatePlaintextContent(
                     string.Format("© {0} - {1}", DateTime.Now.Year, Application.Name)),
                 // lang (Optional) - The language of the feed.
-                Language = "en-GB",
+                Language = "it-IT",
                 // generator (Optional) - Identifies the software used to generate the feed, for debugging and other 
                 //                        purposes. Do not put in anything that identifies the technology you are using.
                 // Generator = "Sample Code",
@@ -89,6 +89,10 @@
             // alternate link (Recommended) - The URL for the web page showing the same data as the syndication feed.
             feed.Links.Add(SyndicationLink.CreateAlternateLink(
                 new Uri(this.urlHelper.AbsoluteRouteUrl(HomeControllerRoute.GetIndex)), 
+                ContentType.Html));
+
+            feed.Links.Add(SyndicationLink.CreateAlternateLink(
+                new Uri(this.urlHelper.AbsoluteRouteUrl(CartissimaControllerRoute.GetSend)),
                 ContentType.Html));
 
             // hub link (Recommended) - The URL for the PubSubHubbub hub. Used to push new entries to subscribers 
@@ -121,7 +125,7 @@
 
             // icon (Optional) - Identifies a small image which provides iconic visual identification for the feed. 
             //                   Icons should be square.
-            feed.SetIcon(this.urlHelper.AbsoluteContent("~/content/icons/atom-icon-48x48.png"));
+            feed.SetIcon(this.urlHelper.AbsoluteContent("~/Contenuti/icons/atom-icon-48x48.png"));
 
             // Add the Yahoo Media namespace (xmlns:media="http://search.yahoo.com/mrss/") to the Atom feed. 
             // This gives us extra abilities, like the ability to give thumbnail images to entries. 
@@ -165,11 +169,11 @@
             return new SyndicationPerson()
             {
                 // name (Required) - conveys a human-readable name for the person.
-                Name = "Rehan Saeed",
+                Name = "Amministrazione Gestioni Dirette",
                 // uri (Optional) - contains a home page for the person.
                 Uri = "http://rehansaeed.com",
                 // email (Optional) - contains an email address for the person.
-                Email = "example@email.com"
+                Email = "administrator@gestionidirette.com"
             };
         }
 
@@ -178,7 +182,7 @@
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> signifying if the request is cancelled.</param>
         /// <returns>A collection of <see cref="SyndicationItem"/>'s.</returns>
-        private async Task<List<SyndicationItem>> GetItems(CancellationToken cancellationToken)
+        private List<SyndicationItem> GetItems(CancellationToken cancellationToken)
         {
             List<SyndicationItem> items = new List<SyndicationItem>();
 
@@ -209,7 +213,7 @@
                 // link (Recommended) - Identifies a related Web page. An entry must contain an alternate link if there 
                 //                      is no content element.
                 item.Links.Add(SyndicationLink.CreateAlternateLink(
-                    new Uri(this.urlHelper.AbsoluteRouteUrl(HomeControllerRoute.GetIndex)), 
+                    new Uri(this.urlHelper.AbsoluteRouteUrl(HomeControllerRoute.GetIndex)),
                     ContentType.Html));
                 // AND/OR
                 // Text content  (Optional) - Contains or links to the complete content of the entry. Content must be 
@@ -232,13 +236,13 @@
 
                 // link - Add additional links to related images, audio or video like so.
                 item.Links.Add(SyndicationLink.CreateMediaEnclosureLink(
-                    new Uri(this.urlHelper.AbsoluteContent("~/content/icons/atom-icon-48x48.png")), 
-                    ContentType.Png, 
+                    new Uri(this.urlHelper.AbsoluteContent("~/Contenuti/icons/atom-icon-48x48.png")),
+                    ContentType.Png,
                     0));
 
                 // media:thumbnail - Add a Yahoo Media thumbnail for the entry. See http://www.rssboard.org/media-rss 
                 //                   for more information.
-                item.SetThumbnail(this.urlHelper.AbsoluteContent("~/content/icons/atom-icon-48x48.png"), 48, 48);
+                item.SetThumbnail(this.urlHelper.AbsoluteContent("~/Contenuti/icons/atom-icon-48x48.png"), 48, 48);
 
                 items.Add(item);
             }

@@ -1,9 +1,16 @@
-﻿<div class="container">
+@{
+    Layout = "~/Views/Shared/_Cartissima.cshtml";
+}
+<div class="container">
     <div class="row">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Cartissima</a></li>
             <li class="breadcrumb-item active text-success">La tua richiesta con codice @ViewBag.Cod è stata inoltrata con successo.</li>
         </ol>
-        <p class="text-uppercase text-capitalize warning">Verrai contattato telefonicamente o via mail dal primo operatore disponibile.</p>
+        <p class="warning">
+            La prima fase verso l'acquisizione della tua nuova carta aziendale è stata portata a termine
+            e sei stato messo in lista d'attesa per essere contattato via mail o via telefono da un operatore specializzato che ti guiderà nelle fasi successive.
+        </p>
+        <p class="text-success text-primary">La ringraziamo per averci scelto</p>
+        <ul><li><a href="http://wwww.gestionidirette.com">Torna Indietro</a></li></ul>
     </div>
 </div>

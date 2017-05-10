@@ -1,20 +1,27 @@
-﻿@{
+@{
     Layout = "~/Views/Shared/_SecondLayout.cshtml";
+}
+@section style{
+    @Styles.Render("~/Content/EjWidgetCore")
+    @Styles.Render("~/Content/EjTheme")
+    @Styles.Render("~/Content/EjResponsive")
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
 <section id="adaptive">
     <div class="container">
-        <div class="row">
-            <div class="center-block">
-                <style type="text/css">
-                    ::-ms-clear {
-                        display: none;
-                    }
+        <div class="center-block">
+            <div class="row">
+                <div class="center-block">
+                    <style type="text/css">
+                        ::-ms-clear {
+                            display: none;
+                        }
 
-                    .e-gridAdaptive {
-                        border-width: 0px !important;
-                    }
-                </style>
-                @(Html.EJ().Grid<PvTank>("FlatGridTank")
+                        .e-gridAdaptive {
+                            border-width: 0px !important;
+                        }
+                    </style>
+                    @(Html.EJ().Grid<PvTank>("FlatGridTank")
                     .Locale("it-IT")
                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
                     .UpdateURL("update")
@@ -54,9 +61,9 @@
                         });
                     })
 
-                    .Mappers(map => map.ExportToExcelAction("tanksexcell")
-                                    .ExportToPdfAction("tankspdf")
-                                    .ExportToWordAction("tanksword"))
+                    .Mappers(map => map.ExportToExcelAction("cisterneexcell")
+                                    .ExportToPdfAction("cisternepdf")
+                                    .ExportToWordAction("cisterneword"))
                     .Columns(col =>
                     {
                         col.Field(p => p.PvTankId).HeaderText("ID Cisterna").IsPrimaryKey(true).Visible(false).Add();
@@ -73,26 +80,20 @@
                         col.Field(p => p.LastDate).HeaderText("Ultima Rilevazione").Format("{0:MM/dd/yyyy}").EditType(EditingType.Datepicker).Width("65").Add();
                         col.Field(p => p.Descrizione).HeaderText("Descrizione").Width("45").EditType(EditingType.String).Add();
                     })
-                )
+                    )
+                </div>
             </div>
         </div>
     </div>
 </section>
-@section Styles{
-    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
-}
 
-@section Scripts{
-
+@section script{
     @Scripts.Render("~/bundles/jqueryeasing")
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
-    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()

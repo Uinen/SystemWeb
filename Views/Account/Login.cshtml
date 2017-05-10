@@ -1,126 +1,49 @@
 @model SystemWeb.Models.LoginViewModel
-@{Html.EJ().Dialog("lognForm").Title("Autenticazione").IsResponsive(false).Containment(".control").ContentTemplate(
-    @<div>
-        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true)
-            <table>
-                <tr>
-                    <td align="center">
-                        @Html.TextBoxFor(m => m.UserName, new { @required = "require", @class = "ejinputtext", placeholder = "Username" })
-                        @Html.ValidationMessageFor(m => m.UserName)
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center">
-                        @Html.PasswordFor(m => m.Password, new { @required = "require", @class = "ejinputtext", placeholder = "Password" })
-                        @Html.ValidationMessageFor(m => m.Password)
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        @Html.CheckBoxFor(m => m.RememberMe)
-                        @Html.Label("Ricordami", new { @class = "top" })
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center">
-                        @Html.EJ().Button("downloadBtn").Type(ButtonType.Submit).Size(ButtonSize.Medium).Height("30").Width("100").Text("ACCEDI")
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center" class="acc">
-                        Non hai un account ? <a href="#">Registrati</a>
-                    </td>
-                </tr>
-            </table>
-        }
-    </div>).EnableModal(false).EnableResize(false).CloseOnEscape(false).Render();
-}
-<style>
-    .e-dialog .e-dialog-icon {
-        visibility: hidden;
-    }
+<div class="col-sm-5">
 
-    label.error {
-        color: red;
-    }
-
-    .htmljssamplebrowser.material .control {
-        height: 300px;
-    }
-
-    .control {
-        position: relative;
-        margin: 0 auto 0;
-    }
-
-    .ejinputtext {
-        height: 28px;
-        width: 100%;
-        margin: 0 auto 0;
-        margin-bottom: 10px;
-    }
-
-    .row .cols-sample-area {
-        padding: 20px;
-        margin-bottom: 50px;
-        position: relative;
-    }
-
-    .acc {
-        font-size: 12px;
-        padding-top: 8px;
-    }
-
-    .top {
-        margin-top: 5px;
-    }
-
-    .reqired {
-        margin: 0 0 3px 0;
-        color: red;
-        display: inline-block;
-    }
-
-    .e-btn.e-button.e-js {
-        border: none;
-    }
-</style>
-
-@section Styles{
-    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
-}
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryeasing")
-    @Scripts.Render("~/bundles/jsrender")
-    @Scripts.Render("~/bundles/jqueryglobalize")
-    @Scripts.Render("~/bundles/jquerybrowser")
-    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
-    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
-    @Scripts.Render("~/bundles/jqueryval")
-    @Html.EJ().ScriptManager()
-    <script>
-        $("#btnOpen").hide();
-        function onclick() {
-            $("#lognForm").ejDialog("open");
-            $("#btnOpen").hide();
-        }
-        function formsubmit() {
-            $("#form1").valid();
-        }
-        function coupeClick() {
-            $("#r8Coupe").ejDialog("open");
-        }
-        function spyderClick() {
-            $("#r8Spyder").ejDialog("open");
-        }
-        function onDialogClose(args) {
-            $("#btnOpen").show();
-        }
-    </script>
-}
+    <div class="form-box">
+        <div class="form-top">
+            <div class="form-top-left">
+                <h3>Effettua l'Autenticazione</h3>
+                <p>Immetti il tuo Username e la tua Password:</p>
+            </div>
+            <div class="form-top-right">
+                <i class="fa fa-lock"></i>
+            </div>
+        </div>
+        <div class="form-bottom">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @id = "login-form", role = "form" }))
+            {
+                @Html.AntiForgeryToken();
+                @Html.ValidationSummary();
+                <div class="form-group">
+                    <label class="sr-only">Username</label>
+                    @Html.TextBoxFor(m => m.UserName , new { @class= "form-username form-control", @placeholder = "Username" })
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">Password</label>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-password form-control", @placeholder = "Password" })
+                </div>
+                <div class="form-group">
+                    @Html.Label("Ricordami", new { @class = "text" })
+                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "checkbox" })
+                </div>
+                <input type="submit" class="btn" value="Entra">
+                <div class="social-login">
+                    <h3>...oppure autenticati usando i servizi esterni:</h3>
+                    <div class="social-login-buttons">
+                        <a class="btn btn-link-2" href="#">
+                            <i class="fa fa-facebook"></i> Facebook
+                        </a>
+                        <a class="btn btn-link-2" href="#">
+                            <i class="fa fa-twitter"></i> Twitter
+                        </a>
+                        <a class="btn btn-link-2" href="#">
+                            <i class="fa fa-google-plus"></i> Google Plus
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

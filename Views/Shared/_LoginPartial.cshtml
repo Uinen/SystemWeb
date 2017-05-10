@@ -13,10 +13,5 @@
 }
 else
 {
-        <li>@Html.ActionLink("Entra", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-}
-
-@if (ViewContext.HttpContext.User.IsInRole("Registrazioni"))
-{ 
-        <li>@Html.ActionLink("Registrati", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Entra", "SignIn", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
 }

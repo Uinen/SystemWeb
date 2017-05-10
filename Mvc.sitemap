@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-3.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-3.0 MvcSiteMapSchema.xsd"
+            enableLocalization="true">
+  <mvcSiteMapNode title="Home" controller="Home" action="Index">
+    <mvcSiteMapNode title="About" action="About" />
+    <mvcSiteMapNode title="Contact" action="Contact" />
+    <mvcSiteMapNode title="User" controller="User" action="Index">
+      <mvcSiteMapNode title="File" action="File" />
+      <mvcSiteMapNode title="Dettagli" action="FileDetails" />
+      <mvcSiteMapNode title="Upload" action="FileCreate" />
+      <mvcSiteMapNode title="Modifica" action="FileEdit" />
+      <mvcSiteMapNode title="Cancella" action="FileDelete" />
+      <mvcSiteMapNode title="Ordini" action="Carico">
+        <mvcSiteMapNode title="Inserisci Ordine" action="CaricoCreate" />
+      </mvcSiteMapNode>
+      <mvcSiteMapNode title="Contatori" action="PvErogatori" >
+        <mvcSiteMapNode title="Inserisci Contatore"  action="PvErogatoriCreate" />
+      </mvcSiteMapNode>
+      <mvcSiteMapNode title="Cisterne"  action="PvTanks" />
+      <mvcSiteMapNode title="Deficienze"  action="PvDeficienze">
+        <mvcSiteMapNode title="Inserisci Deficienza di Carico"  action="PvDeficienzeCreate" />
+      </mvcSiteMapNode>
+      <mvcSiteMapNode title="Cali" action="PvCali">
+        <mvcSiteMapNode title="Inserisci Calo" action="PvCaliCreate" />
+      </mvcSiteMapNode>
+      <mvcSiteMapNode title="Dispenser" action="Dispenser" />
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Cartissima" controller="Cartissima" action="List">
+      <mvcSiteMapNode title="Segnalazione" action="Send" />
+      <mvcSiteMapNode title="Operazione Completata" action="Success" />
+    </mvcSiteMapNode>
+  </mvcSiteMapNode>
+</mvcSiteMap>

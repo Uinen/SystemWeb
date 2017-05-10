@@ -1,78 +1,84 @@
-﻿@model SystemWeb.Models.UserProfiles
-
-@{
-    ViewBag.Title = "Edit";
-}
-
-<h2>Edit</h2>
-
-@using (Html.BeginForm("EditProfiles", "User", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Profile</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.ProfileId)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProfileAdress, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProfileAdress, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProfileAdress, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProfileCity, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProfileCity, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProfileCity, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProfileNation, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProfileNation, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProfileNation, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProfileZipCode, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProfileZipCode, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProfileZipCode, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        @if (Model.UsersImage.Any(f => f.FileType == FileType.Avatar))
+@model SystemWeb.Models.UserProfiles
+    @{ 
+        Layout = "~/Views/Shared/_EditProfiles.cshtml";
+    }
+@section style{
+    @Styles.Render("~/Content/bootstrapV3")
+    }
+        @using (Html.BeginForm("EditProfiles", "User", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
-            <div class="form-group">
-                <span class="control-label col-md-2"><strong>Current Avatar</strong></span>
-                <div class="col-md-10">
-                    <img src="~/File?id=@Model.UsersImage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:100px;height:100px;background: #FFFFFF;margin: auto;-moz-border-radius: 60px;border-radius: 100px;padding: 6px;box-shadow: 0px 0px 20px #888;" /> 
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>Profile</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.ProfileId)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProfileAdress, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProfileAdress, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProfileAdress, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProfileCity, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProfileCity, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProfileCity, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProfileNation, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProfileNation, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProfileNation, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProfileZipCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProfileZipCode, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProfileZipCode, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @if (Model.UsersImage.Any(f => f.FileType == FileType.Avatar))
+        {
+                    <div class="form-group">
+                        <span class="control-label col-md-2"><strong>Current Avatar</strong></span>
+                        <div class="col-md-10">
+                            <img src="~/File?id=@Model.UsersImage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:100px;height:100px;background: #FFFFFF;margin: auto;-moz-border-radius: 60px;border-radius: 100px;padding: 6px;box-shadow: 0px 0px 20px #888;" />
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group">
+                    @Html.Label("Avatar", new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <input type="file" id="Avatar" name="upload" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
                 </div>
             </div>
         }
-
-        <div class="form-group">
-            @Html.Label("Avatar", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <input type="file" id="Avatar" name="upload" />
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+@section script {
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrapV3")
+@Scripts.Render("~/bundles/jqueryeasing")
+@Scripts.Render("~/bundles/jsrender")
+@Scripts.Render("~/bundles/jqueryglobalize")
+@Scripts.Render("~/bundles/jquerybrowser")
+@Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+@Scripts.Render("~/bundles/jqueryval")
+@Html.EJ().ScriptManager()
+    }

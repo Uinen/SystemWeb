@@ -140,13 +140,13 @@ namespace SystemWeb.Controllers
             
             ViewBag.profileId = getPId;
 
-            var somequalsD1 = (from pvProfile in _db.PvProfile where currentUser.pvID == pvProfile.pvID select pvProfile.Indirizzo).SingleOrDefault();
-            var somequalsD2 = (from pvProfile in _db.PvProfile where currentUser.pvID == pvProfile.pvID select pvProfile.Città).SingleOrDefault();
+            var somequalsD1 = (from pvProfile in _db.PvProfile where currentUser.pvID == pvProfile.pvID select pvProfile.Indirizzo).DefaultIfEmpty("Indirizzo non configurato").SingleOrDefault();
+            var somequalsD2 = (from pvProfile in _db.PvProfile where currentUser.pvID == pvProfile.pvID select pvProfile.Città).DefaultIfEmpty("Città non configurata").SingleOrDefault();
             var somequalsD3 = (from applicationUser in _db.Users where currentUser.pvID == applicationUser.Pv.pvID select applicationUser.Pv.pvName).SingleOrDefault();
             var somequalsD4 = (from applicationUser in _db.Users where currentUser.pvID == applicationUser.Pv.pvID select applicationUser.Pv.Flag.Nome).SingleOrDefault();
             var somequalsD5 = _db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileCity + ", " + s.UserProfiles.ProfileAdress).SingleOrDefault(); 
             var somequalsD6 = _db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileName + " " + s.UserProfiles.ProfileSurname).SingleOrDefault();
-            var somequalsD7 = _db.Users.Include(s => s.Company).Where(s => s.Id == currentUser.Id).Select(s => s.Company.Name).SingleOrDefault();
+            var somequalsD7 = _db.Users.Include(s => s.Company).Where(s => s.Id == currentUser.Id).Select(s => s.Company.Name).DefaultIfEmpty("Azienda non configurata").SingleOrDefault();
             //ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
             //ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
             ViewBag.FullAdress = somequalsD5;
@@ -187,79 +187,153 @@ namespace SystemWeb.Controllers
             lastYear = DateTime.Today.Year;
             Ly = lastYear.ToString();
 
-            var getAll = from a in _pvErogatoriRepository.GetPvErogatori()
-                        
+            var getAll = (from a in _pvErogatoriRepository.GetPvErogatori()
+
                           where (Convert.ToDateTime(a.FieldDate) >= dateFrom)
-                                   && (Convert.ToDateTime(a.FieldDate) <= dateTo)
-                         //where (a.FieldDate.Year.ToString().Contains(ly))
-                         select a;
+                                   && (Convert.ToDateTime(a.FieldDate) <= dateTo
+                                   && currentUser.pvID == a.pvID)
+                          //where (a.FieldDate.Year.ToString().Contains(ly))
+                          select a);
 
-            var enumerable = getAll as IList<PvErogatori> ?? getAll.ToList();
+            if (getAll.Count() == 0)
+            {
+                ViewBag.SSPBTotalAmount = "0";
+                ViewBag.DieselTotalAmount = "0";
+                ViewBag.HiQbTotalAmount = "0";
+                ViewBag.HiQdTotalAmount = "0";
+                ViewBag.TotalAmount = "0";
+                ViewBag.SSPBTotalAmount2 = "0";
+                ViewBag.DieselTotalAmount2 = "0";
+                ViewBag.HiQbTotalAmount2 = "0";
+                ViewBag.HiQdTotalAmount2 = "0";
+                ViewBag.TotalAmount2 = "0";
+            }
 
-            var maxB = enumerable
-                .Where(z => currentUser.pvID == z.pvID
-                && (z.Product.Nome.Contains("B")))
-                .Max(row => row.Value);
-            var minB = enumerable
-                .Where(z => currentUser.pvID == z.pvID
-                && (z.Product.Nome.Contains("B")))
-                .Min(row => row.Value);
+            else
+            {
+                var enumerable = getAll as IList<PvErogatori> ?? getAll.ToList();
 
-            var maxG = enumerable
-                .Where(z => currentUser.pvID == z.pvID
-                && (z.Product.Nome.Contains("G")))
-                .Max(row => row.Value);
-            var minG = enumerable
-                .Where(z => currentUser.pvID == z.pvID
-                && (z.Product.Nome.Contains("G")))
-                .Min(row => row.Value);
+                var maxB = (enumerable
+                    .Where(z => (z.Product.Nome.Contains("B")))
+                    .Max(row => row.Value));
+                var minB = enumerable
+                    .Where(z => (z.Product.Nome.Contains("B")))
+                    .Min(row => row.Value);
 
-            ViewBag.SSPBTotalAmount = maxB - minB;
-            ViewBag.DieselTotalAmount = maxG - minG;
-            ViewBag.TotalAmount = maxB - minB + maxG - minG;
-            #endregion
+                var maxG = enumerable
+                    .Where(z => (z.Product.Nome.Contains("G")))
+                    .Max(row => row.Value);
+                var minG = enumerable
+                    .Where(z => (z.Product.Nome.Contains("G")))
+                    .Min(row => row.Value);
 
-            #region TotaleContatoriPrecedente
+                var maxHiqB = enumerable
+                    .Where(z => (z.Product.Nome.Contains("HiQb")))
+                    .Max(row => row.Value);
+                var minHiqB = enumerable
+                    .Where(z => (z.Product.Nome.Contains("HiQb")))
+                    .Min(row => row.Value);
 
-            dateFrom2 = new DateTime(2015, 12, 31);
-            dateTo2 = DateTime.Now.AddYears(-1);
+                var maxHiqD = enumerable
+                    .Where(z => (z.Product.Nome.Contains("HiQd")))
+                    .Max(row => row.Value);
+                var minHiqD = enumerable
+                    .Where(z => (z.Product.Nome.Contains("HiQd")))
+                    .Min(row => row.Value);
 
-            var getAll2 = from a in _pvErogatoriRepository.GetPvErogatori()
-                          where (Convert.ToDateTime(a.FieldDate) >= dateFrom2)
-                                  && (Convert.ToDateTime(a.FieldDate) <= dateTo2)
-                         //where (a.FieldDate.Year.ToString().Contains(ly))
-                         select a;
+                #region Risultati
 
-            var pvErogatoris = getAll2 as IList<PvErogatori> ?? getAll2.ToList();
-            var maxB2 = pvErogatoris
-                .Where(z => currentUser.pvID == z.pvID
-                && (z.Product.Nome.Contains("B")))
-                .Max(row => row.Value);
-            var minB2 = pvErogatoris
-                .Where(z => currentUser.pvID == z.pvID
-                && (z.Product.Nome.Contains("B")))
-                .Min(row => row.Value);
+                var _resultB = maxB - minB;
+                var _resultG = maxG - minG;
+                var _resultHiqB = maxHiqB - minHiqB;
+                var _resultHiqD = maxHiqD - minHiqD;
+                var _totalResult = _resultB + _resultG + _resultHiqB + _resultHiqD;
 
-            var maxG2 = pvErogatoris
-                .Where(z => currentUser.pvID == z.pvID
-                && (z.Product.Nome.Contains("G")))
-                .Max(row => row.Value);
-            var minG2 = pvErogatoris
-                .Where(z => currentUser.pvID == z.pvID
-                && (z.Product.Nome.Contains("G")))
-                .Min(row => row.Value);
+                #endregion
 
-            ViewBag.SSPBTotalAmount2 = maxB2 - minB2;
-            ViewBag.DieselTotalAmount2 = maxG2 - minG2;
-            ViewBag.TotalAmount2 = maxB2 - minB2 + maxG2 - minG2;
-            #endregion
+                ViewBag.SSPBTotalAmount = _resultB;
+                ViewBag.DieselTotalAmount = _resultG;
+                ViewBag.HiQbTotalAmount = _resultHiqB;
+                ViewBag.HiQdTotalAmount = _resultHiqD;
+                ViewBag.TotalAmount = _totalResult;
 
-            #region Difference
+                #endregion
 
-            ViewBag.TotalAmountDifference = ((maxB - minB) + (maxG - minG)) - ((maxB2 - minB2) + (maxG2 - minG2));
+                #region TotaleContatoriPrecedente
 
-            #endregion
+                dateFrom2 = new DateTime(2015, 12, 31);
+                dateTo2 = DateTime.Now.AddYears(-1);
 
+                var getAll2 = from a in _pvErogatoriRepository.GetPvErogatori()
+                              where (Convert.ToDateTime(a.FieldDate) >= dateFrom2)
+                                      && (Convert.ToDateTime(a.FieldDate) <= dateTo2
+                                      && currentUser.pvID == a.pvID)
+                              //where (a.FieldDate.Year.ToString().Contains(ly))
+                              select a;
+
+                var pvErogatoris = getAll2 as IList<PvErogatori> ?? getAll2.ToList();
+
+                var maxB2 = pvErogatoris
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.Nome.Contains("B")))
+                    .Max(row => row.Value);
+                var minB2 = pvErogatoris
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.Nome.Contains("B")))
+                    .Min(row => row.Value);
+
+                var maxG2 = pvErogatoris
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.Nome.Contains("G")))
+                    .Max(row => row.Value);
+                var minG2 = pvErogatoris
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.Nome.Contains("G")))
+                    .Min(row => row.Value);
+
+                var maxHiqB2 = pvErogatoris
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.Nome.Contains("HiQb")))
+                    .Max(row => row.Value);
+                var minHiqB2 = pvErogatoris
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.Nome.Contains("HiQb")))
+                    .Min(row => row.Value);
+
+                var maxHiqD2 = pvErogatoris
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.Nome.Contains("HiQd")))
+                    .Max(row => row.Value);
+                var minHiqD2 = pvErogatoris
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.Nome.Contains("HiQd")))
+                    .Min(row => row.Value);
+
+                #region Risultati
+
+                var _resultB2 = maxB2 - minB2;
+                var _resultG2 = maxG2 - minG2;
+                var _resultHiqB2 = maxHiqB2 - minHiqB2;
+                var _resultHiqD2 = maxHiqD2 - minHiqD2;
+                var _totalResult2 = _resultB2 + _resultG2 + _resultHiqB2 + _resultHiqD2;
+
+                #endregion
+
+                ViewBag.SSPBTotalAmount2 = _resultB2;
+                ViewBag.DieselTotalAmount2 = _resultG2;
+                ViewBag.HiQbTotalAmount2 = _resultHiqB2;
+                ViewBag.HiQdTotalAmount2 = _resultHiqD2;
+                ViewBag.TotalAmount2 = _totalResult2;
+
+                #endregion
+
+
+                #region Difference
+
+                ViewBag.TotalAmountDifference = _totalResult - _totalResult2;
+
+                #endregion
+            }
             return View(list);
         }
 
@@ -391,7 +465,7 @@ namespace SystemWeb.Controllers
 
         #region Carico
         [Route("user/ordini/")]
-        [ETag]
+        [WhitespaceFilter]
         public ActionResult Carico(DateTime? dateFrom, DateTime? dateTo)
         {
             #region Initial var
@@ -401,7 +475,7 @@ namespace SystemWeb.Controllers
             Ly = lastYear.ToString();
             #endregion
 
-            var dataSource = new MyDbContext().Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(Ly))).OrderBy(o => o.Ordine).ToList();
+            var dataSource = new MyDbContext().Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(Ly)).OrderBy(o => o.Ordine).ToList();
             ViewBag.datasource = dataSource;
 
             IEnumerable dataSource2 = new MyDbContext().Year.Where(a => (a.Anno.Year.ToString().Contains(Ly))).ToList();
@@ -577,6 +651,7 @@ namespace SystemWeb.Controllers
             JsonRequestBehavior.AllowGet);
         }
 
+        [WhitespaceFilter]
         public ActionResult CaricoCreate()
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -627,8 +702,8 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvErogatori
-        [Route("user/contatori")]
-        [ETag]
+        [Route("user/contatori/")]
+        [WhitespaceFilter]
         public ActionResult PvErogatori(DateTime? dateFrom, DateTime? dateTo)
         {
             #region Initial var
@@ -665,24 +740,31 @@ namespace SystemWeb.Controllers
                     .Where(a => currentUser != null && (currentUser.pvID == a.pvID &&
                                                         (Convert.ToDateTime(a.FieldDate) >= da)
                                                         && (Convert.ToDateTime(a.FieldDate) <= al)));
+                if (getall.Count() == 0)
+                {
+                    ViewBag.SSPBTotalAmount = "0";
+                    ViewBag.DieselTotalAmount = "0";
+                }
+                else
+                {
+                    var pvErogatoris = getall as IList<PvErogatori> ?? getall.ToList();
+                    var maxB = pvErogatoris
+                        .Where(z => (z.Product.Nome.Contains("B")))
+                        .Max(row => row.Value);
+                    var minB = pvErogatoris
+                        .Where(z => (z.Product.Nome.Contains("B")))
+                        .Min(row => row.Value);
 
-                var pvErogatoris = getall as IList<PvErogatori> ?? getall.ToList();
-                var maxB = pvErogatoris
-                    .Where(z =>(z.Product.Nome.Contains("B")))
-                    .Max(row => row.Value);
-                var minB = pvErogatoris
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Min(row => row.Value);
+                    var maxG = pvErogatoris
+                        .Where(z => (z.Product.Nome.Contains("G")))
+                        .Max(row => row.Value);
+                    var minG = pvErogatoris
+                        .Where(z => (z.Product.Nome.Contains("G")))
+                        .Min(row => row.Value);
 
-                var maxG = pvErogatoris
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Max(row => row.Value);
-                var minG = pvErogatoris
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Min(row => row.Value);
-
-                ViewBag.SSPBTotalAmount = maxB - minB;
-                ViewBag.DieselTotalAmount = maxG - minG;
+                    ViewBag.SSPBTotalAmount = maxB - minB;
+                    ViewBag.DieselTotalAmount = maxG - minG;
+                }
             }
 
             else
@@ -700,24 +782,31 @@ namespace SystemWeb.Controllers
                     .Where(a => currentUser != null && (currentUser.pvID == a.pvID
                                                         && (Convert.ToDateTime(a.FieldDate) >= dateFrom)
                                                         && (Convert.ToDateTime(a.FieldDate) <= dateTo)));
+                if (getAllfromParam.Count() == 0)
+                {
+                    ViewBag.SSPBTotalAmountFrom = "0";
+                    ViewBag.DieselTotalAmountFrom = "0";
+                }
+                else
+                {
+                    var enumerable = getAllfromParam as IList<PvErogatori> ?? getAllfromParam.ToList();
+                    var maxB = enumerable
+                        .Where(z => (z.Product.Nome.Contains("B")))
+                        .Max(row => row.Value);
+                    var minB = enumerable
+                        .Where(z => (z.Product.Nome.Contains("B")))
+                        .Min(row => row.Value);
 
-                var enumerable = getAllfromParam as IList<PvErogatori> ?? getAllfromParam.ToList();
-                var maxB = enumerable
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Max(row => row.Value);
-                var minB = enumerable
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Min(row => row.Value);
+                    var maxG = enumerable
+                        .Where(z => (z.Product.Nome.Contains("G")))
+                        .Max(row => row.Value);
+                    var minG = enumerable
+                        .Where(z => (z.Product.Nome.Contains("G")))
+                        .Min(row => row.Value);
 
-                var maxG = enumerable
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Max(row => row.Value);
-                var minG = enumerable
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Min(row => row.Value);
-
-                ViewBag.SSPBTotalAmountFrom = maxB - minB;
-                ViewBag.DieselTotalAmountFrom = maxG - minG;
+                    ViewBag.SSPBTotalAmountFrom = maxB - minB;
+                    ViewBag.DieselTotalAmountFrom = maxG - minG;
+                }
             }
 
             #endregion
@@ -775,9 +864,9 @@ namespace SystemWeb.Controllers
 
             GridProperties obj = ConvertGridObject(gridModel);
 
-            obj.Columns[2].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
-            obj.Columns[3].DataSource = context.Product.ToList();
-            obj.Columns[4].DataSource = context.Dispenser/*.Include(c => c.PvTank)*/.Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = context.Product.ToList();
+            obj.Columns[3].DataSource = context.Dispenser.Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
 
             exp.Export(obj, dataSource, now + " - Contatori.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
 
@@ -802,9 +891,9 @@ namespace SystemWeb.Controllers
 
             GridProperties obj = ConvertGridObject(gridModel);
 
-            obj.Columns[2].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
-            obj.Columns[3].DataSource = context.Product.ToList();
-            obj.Columns[4].DataSource = context.Dispenser/*.Include(c => c.PvTank)*/.Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = context.Product.ToList();
+            obj.Columns[3].DataSource = context.Dispenser.Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
 
             exp.Export(obj, dataSource, now + " - Contatori.docx", false, false, "flat-saffron");
 
@@ -831,19 +920,18 @@ namespace SystemWeb.Controllers
 
             GridProperties obj = ConvertGridObject(gridModel);
 
-            obj.Columns[2].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
-            obj.Columns[3].DataSource = context.Product.ToList();
-            obj.Columns[4].DataSource = context.Dispenser/*.Include(c => c.PvTank)*/.Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = context.Product.ToList();
+            obj.Columns[3].DataSource = context.Dispenser.Where(a => currentUser.pvID == a.PvTank.pvID).ToList();
 
             exp.Export(obj, dataSource, now + " - Contatori.pdf", false, false, "flat-saffron");
 
             return Json(JsonRequestBehavior.AllowGet);
         }
-
+        
+        [Route("user/contatori/nuovo")]
         public ActionResult PvErogatoriCreate()
         {
-            ViewBag.DispenserId = new SelectList(_db.Dispenser, "DispenserId", "Modello");
-            ViewBag.ProductId = new SelectList(_db.Product, "ProductId", "Nome");
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
 
@@ -851,11 +939,18 @@ namespace SystemWeb.Controllers
                          where (currentUser.pvID == a.pvID)
                          select a;
 
+            var getdisp = from a in _db.Dispenser
+                         where (currentUser.pvID == a.PvTank.pvID && a.isActive == true)
+                         select a;
+
             ViewBag.pvID = new SelectList(getall, "pvID", "pvName");
+            ViewBag.DispenserId = new SelectList(getdisp, "DispenserId", "Modello");
+            ViewBag.ProductId = new SelectList(_db.Product, "ProductId", "Nome");
             return View();
         }
 
         [HttpPost]
+        [Route("user/contatori/nuovo")]
         [ValidateAntiForgeryToken]
         public ActionResult PvErogatoriCreate(PvErogatori pvErogatori)
         {
@@ -866,7 +961,7 @@ namespace SystemWeb.Controllers
                 _pvErogatoriRepository.Save();
                 return RedirectToAction("PvErogatori");
             }
-
+            
             ViewBag.DispenserId = new SelectList(_db.Dispenser, "DispenserId", "Modello", pvErogatori.DispenserId);
             ViewBag.ProductId = new SelectList(_db.Product, "ProductId", "Nome", pvErogatori.ProductId);
             ViewBag.pvID = new SelectList(_db.Pv, "pvID", "pvName", pvErogatori.pvID);
@@ -1091,8 +1186,8 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvTanks
-        [Route("user/cisterne")]
-        [ETag]
+        [Route("user/cisterne/")]
+        [WhitespaceFilter]
         public ActionResult PvTanks()
         {
             #region Initial var
@@ -1324,8 +1419,8 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvDeficienze
-        [Route("user/deficienze")]
-        [ETag]
+        [Route("user/deficienze/")]
+        [WhitespaceFilter]
         public ActionResult PvDeficienze(DateTime? dateFrom, DateTime? dateTo)
         {
             #region Initial var
@@ -1502,6 +1597,8 @@ namespace SystemWeb.Controllers
             return Json(JsonRequestBehavior.AllowGet);
         }
 
+        [WhitespaceFilter]
+        [Route("user/deficienze/aggiungi")]
         public ActionResult PvDeficienzeCreate()
         {
             ViewBag.PvTankId = new SelectList(_db.PvTank, "PvTankId", "Modello");
@@ -1527,8 +1624,8 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region PvCali
-        [Route("user/cali")]
-        [ETag]
+        [Route("user/cali/")]
+        [WhitespaceFilter]
         public ActionResult PvCali(DateTime? dateFrom, DateTime? dateTo)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -1721,7 +1818,9 @@ namespace SystemWeb.Controllers
 
             return Json(JsonRequestBehavior.AllowGet);
         }
-        
+
+        [WhitespaceFilter]
+        [Route("user/cali/nuovo")]
         public ActionResult PvCaliCreate()
         {
             ViewBag.PvTankId = new SelectList(_db.PvTank, "PvTankId", "Modello");
@@ -2081,8 +2180,8 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region Dispenser
-        [Route("user/dispenser")]
-        [ETag]
+        [Route("user/dispenser/")]
+        [WhitespaceFilter]
         public ActionResult Dispenser()
         {
             #region Initial var

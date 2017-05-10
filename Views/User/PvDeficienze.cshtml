@@ -1,5 +1,11 @@
-﻿@{
+@{
     Layout = "~/Views/Shared/_SecondLayout.cshtml";
+}
+@section style{
+    @Styles.Render("~/Content/EjWidgetCore")
+    @Styles.Render("~/Content/EjTheme")
+    @Styles.Render("~/Content/EjResponsive")
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
 <section id="pvdeficienze" class="block">
     <div class="container">
@@ -96,7 +102,7 @@
                                         col.Field(p => p.PvTankId).HeaderText("Cisterna").ForeignKeyField("PvTankId").ForeignKeyValue("Modello")
                                         .DataSource((IEnumerable<object>)ViewBag.dataSource2).Width(45).EditType(EditingType.Dropdown).Add();
 
-                                        col.Field(p => p.Value).HeaderText("Calo").Width("50").EditType(EditingType.Numeric).Add();
+                                        col.Field(p => p.Value).HeaderText("Valore").Width("50").EditType(EditingType.Numeric).Add();
                                         col.Field(p => p.FieldDate).HeaderText("Data").Format("{0:dd/MM/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
                                     })
                 )
@@ -104,21 +110,13 @@
         </div>
     </div>
 </section>
-@section Styles{
-    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
-}
-
-@section Scripts{
-
+@section script{
     @Scripts.Render("~/bundles/jqueryeasing")
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
-    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()

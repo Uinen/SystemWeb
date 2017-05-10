@@ -1,7 +1,19 @@
-﻿<section id="testimonial" class="block">
-    <div class="container">
-        <p>
-            Grazie per aver confermato la mail. Ora puoi effettuare il login, @Html.ActionLink("Entra ora", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
-        </p>
+@{
+    Layout = "~/Views/Shared/_Cartissima.cshtml";
+}
+<div class="container">
+    <div class="center-block">
+        <div class="header-content">
+            <h3 class="block-title text-success wow animated zoomIn" style="color:black">Email Confermata con successo!</h3>
+        </div>
+        <div class="row">
+            <p class="text-center">
+                Ora che hai confermato la tua mail puoi iniziare la tua esperienza all'interno del nostro portale.
+                Durante la tua navigazione troverai delle notifiche che ti spiegheranno come iniziare al meglio!
+            </p>
+            <p class="text-info">
+                Ora puoi effettuare il login, @Html.ActionLink("Entra ora", "SignIn", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+            </p>
+        </div>
     </div>
-</section>
+</div>

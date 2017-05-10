@@ -1,11 +1,13 @@
-﻿@using SystemWeb.Models
+@using SystemWeb.Models
 @model AdminIndexViewModel
 
 @{
     Layout = "~/Views/Shared/_ThirdLayout.cshtml";
     Page.Title = "Gestioni Dirette - Admin Dashboard";
 }
-
+@section style{
+    @Styles.Render("~/Content/bootstrapV3")
+}
 @if (Request.IsAuthenticated && User.IsInRole("Administrator"))
 {
     <div class="row">
@@ -88,4 +90,7 @@
         </div>
     </div>
 }
+@section script{
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrapV3")}
 

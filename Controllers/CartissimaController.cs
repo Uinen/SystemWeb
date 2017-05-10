@@ -1,18 +1,20 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Syncfusion.EJ.Export;
-using Syncfusion.JavaScript.Models;
-using Syncfusion.XlsIO;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
 using SystemWeb.Models;
+using System.Collections;
+using SystemWeb.Static;
 using SystemWeb.Repository;
+using Syncfusion.EJ.Export;
+using Syncfusion.XlsIO;
+using Syncfusion.JavaScript.Models;
+using System.Web.Script.Serialization;
+using System.Reflection;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity;
+using SystemWeb.Services;
 using SystemWeb.Repository.Interface;
 
 namespace SystemWeb.Controllers
@@ -22,10 +24,27 @@ namespace SystemWeb.Controllers
         #region Inizializzatori
         private readonly MyDbContext _db = new MyDbContext();
         private readonly iCartissimaRepository _cartissimaRepository;
+        private readonly IBrowserConfigService _browserConfigService;
+        private readonly IFeedService _feedService;
+        private readonly IManifestService _manifestService;
+        private readonly IOpenSearchService _openSearchService;
+        private readonly IRobotsService _robotsService;
+        private readonly ISitemapService _sitemapService;
 
-        public CartissimaController()
+        public CartissimaController(IBrowserConfigService browserConfigService,
+            IFeedService feedService,
+            IManifestService manifestService,
+            IOpenSearchService openSearchService,
+            IRobotsService robotsService,
+            ISitemapService sitemapService)
         {
             _cartissimaRepository = new CartissimaRepository(new MyDbContext());
+            this._browserConfigService = browserConfigService;
+            this._feedService = feedService;
+            this._manifestService = manifestService;
+            this._openSearchService = openSearchService;
+            this._robotsService = robotsService;
+            this._sitemapService = sitemapService;
         }
 
         public CartissimaController(ApplicationUserManager userManager)
@@ -48,6 +67,7 @@ namespace SystemWeb.Controllers
         #endregion
         
         [Authorize(Roles = "Administrator")]
+        [Route("inserzioni/")]
         public ActionResult List()
         {
             #region Initial var
@@ -64,11 +84,14 @@ namespace SystemWeb.Controllers
             return View();
         }
 
+        [Route("inserzioni/business-card/", Name = CartissimaControllerRoute.GetSend)]
+        [HttpGet]
         public ActionResult Send()
         {
             return View();
         }
 
+        [Route("inserzioni/business-card/", Name = CartissimaControllerRoute.PostSend)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Send(Cartissima value)
@@ -82,7 +105,8 @@ namespace SystemWeb.Controllers
 
             return View();
         }
-        
+
+        [Route("inserzioni/business-card/richiesta-inviata", Name = CartissimaControllerRoute.GetSuccess)]
         public ActionResult Success(Guid key)
         {
             var _getCode = (from a in _cartissimaRepository.GetRecords()

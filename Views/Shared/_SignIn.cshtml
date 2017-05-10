@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestioni Dirette Autenticazione &amp; Registrazione</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    @Styles.Render("~/Content/bootstrapV3")
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    @Styles.Render("~/Content/SignInFormElements")
+    @Styles.Render("~/Content/SignInStyle")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!--favicon-->
+    <link rel="apple-touch-icon" sizes="180x180" href="http://static.gestionidirette.com/Contenuti/icons/apple-touch-icon.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="32x32" href="http://static.gestionidirette.com/Contenuti/icons/favicon-32x32.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://static.gestionidirette.com/Contenuti/icons/favicon-16x16.png?v=LbGQJmwPGw">
+    <link rel="manifest" href="http://static.gestionidirette.com/Contenuti/icons/manifest.json?v=LbGQJmwPGw">
+    <link rel="mask-icon" href="http://static.gestionidirette.com/Contenuti/icons/safari-pinned-tab.svg?v=LbGQJmwPGw" color="#5bbad5">
+    <link rel="shortcut icon" href="http://static.gestionidirette.com/Contenuti/icons/favicon.ico?v=LbGQJmwPGw">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="http://static.gestionidirette.com/Contenuti/icons/mstile-144x144.png?v=LbGQJmwPGw">
+    <meta name="msapplication-config" content="http://static.gestionidirette.com/Contenuti/icons/browserconfig.xml?v=LbGQJmwPGw">
+    <meta name="theme-color" content="#ff0000">
+    <style type="text/css">
+        body
+        {
+            background-image:url('/Contenuti/img/SignIn.jpg');
+            /*background-color:deepskyblue;*/
+        }
+    </style>
+</head>
+<body>
+    <!-- Top content -->
+    <div class="top-content">
+        <div class="inner-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-sm-offset-2 text">
+                        <h1><strong>Gestioni Dirette</strong> Autenticazione &amp; Registrazione</h1>
+                        <div class="description">
+                            <div class="col-lg-12 col-md-6 col-sm-4">
+                                <h5>Non hai un utenza? Scorri sotto e registrane una!</h5>
+                                <p>Ricordiamo ai gentili utenti, che il servizio è rivolto alle sole aziende operanti nel settore.</p>
+                                <h5>Compila il Form Sottostante per Registrarti</h5>
+                                <p>
+                                    I dati che andrai ad inserire nel form sottostante
+                                    saranno usati solamente dal sistema allo scopo di rendere più piacevole la tua esperienza di navigazione,
+                                    non verranno mai usati a fini di ricerca, ma saranno custoditi con i più elevati standard di sicurezza.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="footer-border"></div>
+                    <div class="credits">
+                        <p class="text-capitalize text-center">@DateTime.Now - Gestioni Dirette&trade;</p>
+                        <p class="text-center">Progetto ideato da <strong> MTM di Fabbri Marcello & C. Snc </strong></p>
+                        <p class="text-center"><strong>Sede Legale: Piazza Concordia(SP)</strong></p>
+                        <p class="text-center"><strong>Partita Iva: 01407280112</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrapV3")
+    @Scripts.Render("~/bundles/modernizr")
+</body>
+</html>

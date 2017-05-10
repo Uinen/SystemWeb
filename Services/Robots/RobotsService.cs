@@ -3,7 +3,7 @@
     using System.Text;
     using System.Web.Mvc;
     using Boilerplate.Web.Mvc;
-    using Helpers;
+    using Static;
 
     public sealed class RobotsService : IRobotsService
     {
@@ -34,7 +34,10 @@
             // stringBuilder.AppendLine("disallow: /");
 
             // Tell all robots not to index everything under the following directory.
-            // stringBuilder.AppendLine("disallow: /SomeRelativePath");
+            stringBuilder.AppendLine("disallow: /user/");
+            stringBuilder.AppendLine("disallow: /admin/");
+            stringBuilder.AppendLine("disallow: /account/");
+            stringBuilder.AppendLine("disallow: /paypal/");
 
             // Tell all robots to to index any of the error pages.
             stringBuilder.AppendLine("disallow: /error/");

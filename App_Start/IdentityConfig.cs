@@ -7,6 +7,9 @@ using Microsoft.Owin.Security;
 using System;
 using System.Threading.Tasks;
 using SystemWeb.Models;
+using System.Net.Mail;
+using System.Web.Configuration;
+using System.Net.Configuration;
 
 namespace SystemWeb
 {
@@ -54,7 +57,7 @@ namespace SystemWeb
                 BodyFormat = "Salve, " + "il codice da inserire è: {0}"
             });
 
-            manager.EmailService = new EmailService();
+            //manager.EmailService = new EmailService();
             manager.SmsService = new SmsService();
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
@@ -83,46 +86,33 @@ namespace SystemWeb
         {
             return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
         }
-    }
+    }/*
     public class EmailService : IIdentityMessageService
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Credentials:
-            const string credentialUserName = "no.reply@gestionidirette.com";
-            const string sentFrom = "no.reply@gestionidirette.com";
-            const string pwd = "morgana92";
+            var config = WebConfigurationManager.OpenWebConfiguration("Web.config");
+            var settings = config.GetSectionGroup("system.net/mailSettings") as MailSettingsSectionGroup;
+            var port = settings.Smtp.Network.Port;
+            var host = settings.Smtp.Network.Host;
+            var username = settings.Smtp.Network.UserName;
+            var password = settings.Smtp.Network.Password;
 
-            // Configure the client:
-            var client =
-                new System.Net.Mail.SmtpClient("smtp.gestionidirette.com")
-                {
-                    Port = 587,
-                    DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network,
-                    UseDefaultCredentials = false
-                };
+            SmtpClient client = new SmtpClient(host, port);
+            client.Credentials = new System.Net.NetworkCredential(username, password);
+            var msg = new MailMessage();
+            msg.From = new MailAddress("administrator@gestionidirette.com");
+            msg.To.Add(message.Destination);
+            msg.Subject = message.Subject;
+            msg.Body = message.Body;
 
+            client.Timeout = 1000;
 
-            // Creatte the credentials:
-            var credentials =
-                new System.Net.NetworkCredential(credentialUserName, pwd);
+            var t = Task.Run(() => client.SendAsync(msg, null));
 
-            client.EnableSsl = false;
-            client.Credentials = credentials;
-
-            // Create the message:
-            var mail =
-                new System.Net.Mail.MailMessage(sentFrom, message.Destination)
-                {
-                    Subject = message.Subject,
-                    Body = message.Body
-                };
-
-
-            // Send:
-            return client.SendMailAsync(mail);
+            return t;
         }
-    }
+    }*/
     
     public class SmsService : IIdentityMessageService
     {

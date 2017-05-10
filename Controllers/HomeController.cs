@@ -7,9 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using SystemWeb.ActionFilters;
-using SystemWeb.Helpers;
-using SystemWeb.Models;
+using SystemWeb.Static;
 using SystemWeb.Services;
+using SystemWeb.ViewModels;
+using SystemWeb.Infrastructure;
+using System;
+using MvcSiteMapProvider.Web.Mvc;
 
 namespace SystemWeb.Controllers
 {
@@ -63,9 +66,8 @@ namespace SystemWeb.Controllers
         public ActionResult Contact()
         {
             return View(HomeControllerAction.Contact);
-
         }
-
+        
         /// <summary>
         /// Gets the Atom 1.0 feed for the current site. Note that Atom 1.0 is used over RSS 2.0 because Atom 1.0 is a 
         /// newer and more well defined format. Atom 1.0 is a standard and RSS is not. See
@@ -164,7 +166,7 @@ namespace SystemWeb.Controllers
             var content = _robotsService.GetRobotsText();
             return Content(content, ContentType.Text, Encoding.UTF8);
         }
-
+        /*
         /// <summary>
         /// Gets the sitemap XML for the current site. You can customize the contents of this XML from the 
         /// <see cref="SitemapService"/>. The sitemap is cached for one day, adjust this time to whatever you require.
@@ -177,6 +179,7 @@ namespace SystemWeb.Controllers
         [Route("sitemap.xml", Name = HomeControllerRoute.GetSitemapXml)]
         public ActionResult SitemapXml(int? index = null)
         {
+            
             var content = _sitemapService.GetSitemapXml(index);
 
             if (content == null)
@@ -185,7 +188,7 @@ namespace SystemWeb.Controllers
             }
 
             return Content(content, ContentType.Xml, Encoding.UTF8);
-        }
+        }*/
 
     }
 }

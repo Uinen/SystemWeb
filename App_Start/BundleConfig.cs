@@ -1,5 +1,5 @@
 ﻿using System.Web.Optimization;
-using SystemWeb.Helpers;
+using SystemWeb.Static;
 
 namespace SystemWeb
 {
@@ -58,21 +58,34 @@ namespace SystemWeb
                 ContentDeliveryNetwork.MaxCdn.FontAwesomeUrl).Include(
                       "~/MainFont/font-awesome.css" /*,rewrite*/));
 
-            bundles.Add(new StyleBundle("~/Content/EjWidgets",
-                ContentDeliveryNetwork.Gestionidirette.EjWidgetsUrl).Include(
-                      "~/Contenuti/ej/web/ej.widgets.core.min.css"));
+            bundles.Add(new StyleBundle("~/Content/EjWidgetCore",
+                ContentDeliveryNetwork.Syncfusion.EjWidgetCoreUrl));
 
-            bundles.Add(new StyleBundle("~/Content/EjTheme",
-                ContentDeliveryNetwork.Gestionidirette.EjThemeUrl).Include(
-                      "~/Contenuti/ej/web/default-theme/ej.theme.min.css"));
+            bundles.Add(new StyleBundle("~/Content/GradientAzure",
+                ContentDeliveryNetwork.Syncfusion.GradientAzureUrl));
 
             bundles.Add(new StyleBundle("~/Content/EjResponsive",
-                ContentDeliveryNetwork.Gestionidirette.EjResponsiveUrl).Include(
-                      "~/Contenuti/ej/web/responsive-css/ej.responsive.min.css"));
+                ContentDeliveryNetwork.Syncfusion.EjResponsiveUrl));
 
             bundles.Add(new StyleBundle("~/Content/EjGridResponsive",
-                ContentDeliveryNetwork.Gestionidirette.EjGridResponsiveUrl).Include(
+                ContentDeliveryNetwork.Syncfusion.EjResponsiveGridUrl).Include(
                       "~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/EjTheme",
+                ContentDeliveryNetwork.Syncfusion.EjThemeUrl));
+
+            bundles.Add(new StyleBundle("~/Content/Login",
+                ContentDeliveryNetwork.Gestionidirette.LoginUrl).Include(
+                      "~/Contenuti/css/Login.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/Dashboard",
+                ContentDeliveryNetwork.Gestionidirette.DashboardUrl));
+
+            bundles.Add(new StyleBundle("~/Content/SignInFormElements",
+                ContentDeliveryNetwork.Gestionidirette.SignInFormElementsUrl));
+
+            bundles.Add(new StyleBundle("~/Content/SignInStyle",
+                ContentDeliveryNetwork.Gestionidirette.SignInStyleUrl));
 
             #endregion
         }
@@ -87,7 +100,7 @@ namespace SystemWeb
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryeasing",
-                ContentDeliveryNetwork.Cdnjs.JQueryEasingUrl).Include(
+                ContentDeliveryNetwork.Syncfusion.jQueryEasingUrl).Include(
                 "~/Scripts/jquery.easing-{version}.min.js"
                 ));
 
@@ -97,7 +110,7 @@ namespace SystemWeb
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/jsrender",
-                ContentDeliveryNetwork.Gestionidirette.JsRender).Include(
+                ContentDeliveryNetwork.Syncfusion.JsRenderUrl).Include(
                 "~/Scripts/jsrender.min.js"
                 ));
 
@@ -119,12 +132,12 @@ namespace SystemWeb
                 "~/Scripts/jquery.validate.unobtrusive.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/ej",
-                ContentDeliveryNetwork.Gestionidirette.SyncFusionScriptsUrl).Include(
+                ContentDeliveryNetwork.Syncfusion.EjWebAllUrl).Include(
                 "~/Scripts/ej/web/ej.web.all.min.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/ejunobtrusive",
-                ContentDeliveryNetwork.Gestionidirette.EjUnobtrusiveUrl).Include(
+                ContentDeliveryNetwork.Syncfusion.EjUnobtrusiveUrl).Include(
                 "~/Scripts/ej/common/ej.unobtrusive.min.js"
                 ));
 
@@ -157,10 +170,6 @@ namespace SystemWeb
             bundles.Add(new ScriptBundle("~/bundles/GridOption",
                 ContentDeliveryNetwork.Gestionidirette.ActionCompleteUrl).Include(
                 "~/Scripts/ActionComplete.min.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/EjCulture",
-                ContentDeliveryNetwork.Gestionidirette.EjCultureUrl).Include(
-                "~/Scripts/ej/i18n/ej.culture.it-IT.min.js"));
 
             #endregion
         }

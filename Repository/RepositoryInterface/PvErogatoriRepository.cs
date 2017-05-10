@@ -24,7 +24,7 @@ namespace SystemWeb.Repository
 
         public IEnumerable<PvErogatori> GetPvErogatori()
         {
-            return db.PvErogatori.Include(s => s.Product).Include(s => s.Dispenser).Include(s => s.Pv).ToList();
+            return db.PvErogatori.Include(s => s.Product).Include(s => s.Dispenser).Include(s => s.Pv).ToList(); 
         }
 
         public PvErogatori GetPvErogatoriById(Guid? Id)

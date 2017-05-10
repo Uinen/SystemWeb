@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Boilerplate.Web.Mvc;
-    using Helpers;
+    using Static;
 
     public class SitemapPingerService : ISitemapPingerService
     {

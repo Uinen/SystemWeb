@@ -5,7 +5,7 @@
     using System.Web.Mvc;
     using Boilerplate.Web.Mvc;
     using Boilerplate.Web.Mvc.Sitemap;
-    using Helpers;
+    using Static;
 
     /// <summary>
     /// Generates sitemap XML for the current site.
@@ -89,18 +89,16 @@
             nodes.Add(
                 new SitemapNode(this.urlHelper.AbsoluteRouteUrl(HomeControllerRoute.GetIndex))
                 {
+                    Priority = 0.9
+                });
+
+            nodes.Add(
+                new SitemapNode(this.urlHelper.AbsoluteRouteUrl(CartissimaControllerRoute.GetSend))
+                {
+                    Frequency = SitemapFrequency.Weekly,
+                    //LastModified = DateTime.Now,
                     Priority = 1
                 });
-            nodes.Add(
-               new SitemapNode(this.urlHelper.AbsoluteRouteUrl(HomeControllerRoute.GetAbout))
-               {
-                   Priority = 0.9
-               });
-            nodes.Add(
-               new SitemapNode(this.urlHelper.AbsoluteRouteUrl(HomeControllerRoute.GetContact))
-               {
-                   Priority = 0.9
-               });
 
             // An example of how to add many pages into your sitemap.
             // foreach (int productId in myProductRepository.GetProductIds())

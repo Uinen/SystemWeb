@@ -124,5 +124,17 @@
     "inputFiles": [
       "Contenuti/css/colors/custom.css"
     ]
+  },
+  {
+    "outputFileName": "Contenuti/css/Signin Form/form-elements.min.css",
+    "inputFiles": [
+      "Contenuti/css/Signin Form/form-elements.css"
+    ]
+  },
+  {
+    "outputFileName": "Contenuti/css/Signin Form/style.min.css",
+    "inputFiles": [
+      "Contenuti/css/Signin Form/style.css"
+    ]
   }
 ]

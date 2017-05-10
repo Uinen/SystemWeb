@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -6,7 +7,7 @@ using SystemWeb.Models;
 
 namespace SystemWeb.Repository
 {
-    public static class OrderRepository
+    public class OrderRepository
     {
         public static void Add(Carico value)
         {
@@ -40,6 +41,8 @@ namespace SystemWeb.Repository
             result.Emittente = value.Emittente;
             result.Benzina = value.Benzina;
             result.Gasolio = value.Gasolio;
+            result.HiQb = value.HiQb;
+            result.HiQd = value.HiQd;
             result.Note = value.Note;
 
             context.Entry(result).CurrentValues.SetValues(value);
@@ -64,6 +67,8 @@ namespace SystemWeb.Repository
                 result.Emittente = temp.Emittente;
                 result.Benzina = temp.Benzina;
                 result.Gasolio = temp.Gasolio;
+                result.HiQb = temp.HiQb;
+                result.HiQd = temp.HiQd;
                 result.Note = temp.Note;
 
                 context.Entry(result).CurrentValues.SetValues(temp);

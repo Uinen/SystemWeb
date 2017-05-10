@@ -1,60 +1,38 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <title>@ViewBag.Title</title>
     <!-- meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Gestioni Dirette nasce con l'intento di facilitare la gestione di una stazione di servizio in comodato o in commissione.'">
-    <meta name="keywords" content="Distributori, Benzina, Gasolio, Kuwait, Petrolio, Stazione di Servizio, Stazioni, Carburante, Carburanti">
     <meta name="author" content="Valentino Fabbri">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--favicon-->
-    <link rel="shortcut icon" href="http://static.gestionidirette.com/Contenuti/img/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="http://static.gestionidirette.com/Contenuti/img/favicon.ico" type="image/x-icon">
-    @Styles.Render("~/Content/bootstrapV3")
-    @Styles.Render("~/Content/style")
-    @Styles.Render("~/Content/custom")
-    @Styles.Render("~/Content/ionicons")
-    @Styles.Render("~/Content/animate")
-    @Styles.Render("~/Content/owlcarousel")
-    @Styles.Render("~/Content/owlcarousel-theme")
-    @Styles.Render("~/Content/nivolightbox")
-    @Styles.Render("~/Content/fontawesome")
+    <link rel="apple-touch-icon" sizes="180x180" href="http://static.gestionidirette.com/Contenuti/icons/apple-touch-icon.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="32x32" href="http://static.gestionidirette.com/Contenuti/icons/favicon-32x32.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://static.gestionidirette.com/Contenuti/icons/favicon-16x16.png?v=LbGQJmwPGw">
+    <link rel="manifest" href="http://static.gestionidirette.com/Contenuti/icons/manifest.json?v=LbGQJmwPGw">
+    <link rel="mask-icon" href="http://static.gestionidirette.com/Contenuti/icons/safari-pinned-tab.svg?v=LbGQJmwPGw" color="#5bbad5">
+    <link rel="shortcut icon" href="http://static.gestionidirette.com/Contenuti/icons/favicon.ico?v=LbGQJmwPGw">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="http://static.gestionidirette.com/Contenuti/icons/mstile-144x144.png?v=LbGQJmwPGw">
+    <meta name="msapplication-config" content="http://static.gestionidirette.com/Contenuti/icons/browserconfig.xml?v=LbGQJmwPGw">
+    <meta name="theme-color" content="#ff0000">
     @RenderSection("Styles", false)
 </head>
-<body style="overflow:hidden">
+<body>
     @*
-    <!--- Secure Site Seal - DO NOT EDIT --->
-    <span id="ss_img_wrapper_115-55_image_en"><a href="http://www.alphassl.com/ssl-certificates/wildcard-ssl.html" target="_blank" title="SSL Certificates"><img alt="Wildcard SSL Certificates" border=0 id="ss_img" src="//seal.alphassl.com/SiteSeal/images/alpha_noscript_115-55_en.gif" title="SSL Certificate"></a></span>
-    <script type="text/javascript" src="//seal.alphassl.com/SiteSeal/alpha_image_115-55_en.js"></script>
-    <!--- Secure Site Seal - DO NOT EDIT --->*@
+        <!--- Secure Site Seal - DO NOT EDIT --->
+        <span id="ss_img_wrapper_115-55_image_en"><a href="http://www.alphassl.com/ssl-certificates/wildcard-ssl.html" target="_blank" title="SSL Certificates"><img alt="Wildcard SSL Certificates" border=0 id="ss_img" src="//seal.alphassl.com/SiteSeal/images/alpha_noscript_115-55_en.gif" title="SSL Certificate"></a></span>
+        <script type="text/javascript" src="//seal.alphassl.com/SiteSeal/alpha_image_115-55_en.js"></script>
+        <!--- Secure Site Seal - DO NOT EDIT --->*@
 
     <!-- ****************************** Preloader ************************** -->
-    <div id="preloader"></div> 
-    <!-- ****************************** Sidebar ************************** -->
-    @Html.Partial("_Sidebar")
-    <!-- ****************************** Header ************************** -->
-    @Html.Partial("_FrontHeader")
-    <!-- ****************************** Banner ************************** -->
-    @Html.Partial("_Banner")
-    <!-- ****************************** Scripts ****************************** -->
-    <!--[if lt IE 9]>
-        <script src="@Url.Content("https://code.jquery.com/jquery-1.11.3.min.js")"></script>
-        <![endif]-->
-    <!--[if gte IE 9]><!-->
-    <script src="@Url.Content("https://code.jquery.com/jquery-2.1.4.min.js")"></script>
-    <!--<![endif]-->
-    @Scripts.Render("~/bundles/bootstrapV3")
-   @* @Scripts.Render("~/bundles/microsoft") *@
-    @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/theme")
-    @Scripts.Render("~/bundles/sorting")
+    <div id="preloader"></div>
     @RenderSection("Scripts", false)
-    @Scripts.Render("~/bundles/jqueryajaxchimp")
     @RenderBody()
-    @Html.Partial("_Footer")
     <!-- ****************************** Back to top ************************** -->
     <a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" data-toggle="tooltip" data-placement="left"><span class="glyphicon glyphicon-chevron-up"></span></a>
 </body>
+@Html.Partial("_Footer")
 </html>

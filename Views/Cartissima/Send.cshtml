@@ -1,79 +1,83 @@
-﻿@model SystemWeb.Models.Cartissima
+@model SystemWeb.Models.Cartissima
+@{
+    Layout = "~/Views/Shared/_Cartissima.cshtml";
+}
+<meta name="description" content="Hai una flotta aziendale da gestire, sei un autotrasportatore o un libero professionista? Abbiamo la soluzione ideale per gestire al meglio il tuo business.">
+<meta name="keywords" content="Carta Aziendale, Distributori, Benzina, Gasolio, Petrolio, Stazione di Servizio, Carburante, Gestioni Dirette ">
+@section style{
+    @Styles.Render("~/Content/ionicons")
+    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
+}
 @using (Html.BeginForm("Send", "Cartissima", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     <div class="container">
-        <div class="row">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Cartissima</a></li>
-                <li class="breadcrumb-item active ">Form Segnalazione</li>
-            </ol>
-            <p>Compila il seguente form per essere contattato da un operatore Q8 per avere maggiori informazioni riguardo il nostro noto servizio <strong>Cartissima Q8</strong></p>
-            <div class="center-block mailbox">
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group">
-                    @Html.EditorFor(tbf => tbf.sCartName, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il tuo nome", placeholder = "Nome" } })
-                    @Html.ValidationMessageFor(model => model.sCartName, "", new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.EditorFor(tbf => tbf.sCartSurname, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il tuo cognome", placeholder = "Cognome" } })
-                    @Html.ValidationMessageFor(model => model.sCartSurname, "", new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.EditorFor(tbf => tbf.sCartEmail, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci la tua mail personale", placeholder = "Email" } })
-                    @Html.ValidationMessageFor(model => model.sCartEmail, "", new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.EditorFor(tbf => tbf.sCartPhone, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il tuo numero di telefono", placeholder = "Telefono" } })
-                    @Html.ValidationMessageFor(model => model.sCartPhone, "", new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.EditorFor(tbf => tbf.sCartCompany, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il nome della tua Azienda", placeholder = "Nome Azienda" } })
-                    @Html.ValidationMessageFor(model => model.sCartCompany, "", new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.EditorFor(tbf => tbf.sCartIva, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il numero della tua partita iva", placeholder = "Numero Partita Iva" } })
-                    @Html.ValidationMessageFor(model => model.sCartIva, "", new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.EditorFor(tbf => tbf.sCartLocation, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci la Provincia in cui ha sede la tua Azienda", placeholder = "Provincia della tua Azienda" } })
-                    @Html.ValidationMessageFor(model => model.sCartLocation, "", new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.EditorFor(tbf => tbf.sCartVeichle, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci una quantità aprossimativa dei veicoli a tua disposizione", placeholder = "Quantità di Veicoli intestati alla tua azienda" } })
-                    @Html.ValidationMessageFor(model => model.sCartVeichle, "", new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.EditorFor(tbf => tbf.sCartVeichleType, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci quali tipi di veicolo hai a disposizione", placeholder = "Tipologia di Veicoli, es: Furgoni/Auto/Misto tra i due" } })
-                    @Html.ValidationMessageFor(model => model.sCartVeichleType, "", new { @class = "text-danger" })
-                </div>
-                <div class="form-group">
-                    @Html.EJ().Button("Send").Text("Spedisci").Type(ButtonType.Submit).ClientSideEvents(e => e.Click("onclick"))
+        <div class="center-block">
+            <div class="row">
+                <p>Compila il seguente form per essere contattato da un operatore per avere maggiori informazioni riguardo il nostro servizio</p>
+                <div class="mailbox">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.EditorFor(tbf => tbf.sCartName, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il tuo nome", placeholder = "Nome" } })
+                        @Html.ValidationMessageFor(model => model.sCartName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.EditorFor(tbf => tbf.sCartSurname, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il tuo cognome", placeholder = "Cognome" } })
+                        @Html.ValidationMessageFor(model => model.sCartSurname, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.EditorFor(tbf => tbf.sCartEmail, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci la tua mail personale", placeholder = "Email" } })
+                        @Html.ValidationMessageFor(model => model.sCartEmail, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.EditorFor(tbf => tbf.sCartPhone, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il tuo numero di telefono", placeholder = "Telefono" } })
+                        @Html.ValidationMessageFor(model => model.sCartPhone, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.EditorFor(tbf => tbf.sCartCompany, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il nome della tua Azienda", placeholder = "Nome Azienda" } })
+                        @Html.ValidationMessageFor(model => model.sCartCompany, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.EditorFor(tbf => tbf.sCartIva, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci il numero della tua partita iva", placeholder = "Numero Partita Iva" } })
+                        @Html.ValidationMessageFor(model => model.sCartIva, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.EditorFor(tbf => tbf.sCartLocation, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci la Provincia in cui ha sede la tua Azienda", placeholder = "Provincia della tua Azienda" } })
+                        @Html.ValidationMessageFor(model => model.sCartLocation, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.EditorFor(tbf => tbf.sCartVeichle, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci una quantità aprossimativa dei veicoli a tua disposizione", placeholder = "Quantità di Veicoli intestati alla tua azienda" } })
+                        @Html.ValidationMessageFor(model => model.sCartVeichle, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.EditorFor(tbf => tbf.sCartVeichleType, new { htmlAttributes = new { @class = "form-control", @title = "Inserisci quali tipi di veicolo hai a disposizione", placeholder = "Tipologia di Veicoli, es: Furgoni/Auto/Misto tra i due" } })
+                        @Html.ValidationMessageFor(model => model.sCartVeichleType, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.EJ().Button("Send").Text("Spedisci").Type(ButtonType.Submit).ClientSideEvents(e => e.Click("onclick"))
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 }
 
-@section Styles{
-    <link href="@Url.Content("~/Contenuti/ej/web/ej.widgets.core.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
-}
-
-@section Scripts{
+@section script{
     <script type="text/javascript">
         function onclick() {
             location.href = '@Url.Action("Send","Cartissima")';
         }
     </script>
+    @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryeasing")
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-    <script src="~/Scripts/ej/web/ej.web.all.min.js"></script>
-    <script src="~/Scripts/ej/common/ej.unobtrusive.min.js"></script>
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Html.EJ().ScriptManager()
 

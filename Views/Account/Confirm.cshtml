@@ -1,10 +1,15 @@
-﻿<div class="container">
-    <div class="title-box">
-        <h2 class="block-title wow animated zoomIn" style="color:black">Conferma email</h2>
-    </div>
-    <div class="row">
-        <p class="text-info">
-            Una mail di conferma è stata spedita al tuo indirizzo email, li vi troverai un link di attivazione.
-        </p>
+@{
+    Layout = "~/Views/Shared/_Cartissima.cshtml";
+}
+<div class="container">
+    <div class="center-block">
+        <div class="header-content">
+            <h3 class="block-title wow animated zoomIn" style="color:black">Conferma email</h3>
+        </div>
+        <div class="row">
+            <p class="text-info">
+                Una mail di conferma è stata spedita al tuo indirizzo @ViewBag.Email , li vi troverai un link di attivazione ed ultimerai la prima procedura di registrazione.
+            </p>
+        </div>
     </div>
 </div>
