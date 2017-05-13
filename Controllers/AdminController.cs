@@ -10,13 +10,14 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using PagedList;
-using SystemWeb.Repository;
 using Syncfusion.EJ.Export;
 using System.Collections;
 using Syncfusion.XlsIO;
 using Syncfusion.JavaScript.Models;
 using System.Web.Script.Serialization;
 using System.Reflection;
+using SystemWeb.Database.Entity;
+using SystemWeb.Database.Repository;
 
 namespace SystemWeb.Controllers
 {
@@ -91,7 +92,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Year year = _db.Year.Find(id);
+            Year year = _db.Year.Find(id);
             if (year == null)
             {
                 return HttpNotFound();
@@ -107,7 +108,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult YearsCreate([Bind(Include = "yearId,Anno")] SystemWeb.Models.Year year)
+        public ActionResult YearsCreate([Bind(Include = "yearId,Anno")] Year year)
         {
             if (ModelState.IsValid)
             {
@@ -126,7 +127,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Year year = _db.Year.Find(id);
+            Year year = _db.Year.Find(id);
             if (year == null)
             {
                 return HttpNotFound();
@@ -153,7 +154,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Year year = _db.Year.Find(id);
+            Year year = _db.Year.Find(id);
             if (year == null)
             {
                 return HttpNotFound();
@@ -165,7 +166,7 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult YearsDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.Year year = _db.Year.Find(id);
+            Year year = _db.Year.Find(id);
             _db.Year.Remove(year);
             _db.SaveChanges();
             return RedirectToAction("Index");
@@ -185,7 +186,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Notice notice = _db.Notice.Find(id);
+            Notice notice = _db.Notice.Find(id);
             if (notice == null)
             {
                 return HttpNotFound();
@@ -201,7 +202,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult NoticesCreate([Bind(Include = "NoticeId,NoticeName,CreateDate,TextBox,Url,UsersId,Description")] SystemWeb.Models.Notice notice)
+        public ActionResult NoticesCreate([Bind(Include = "NoticeId,NoticeName,CreateDate,TextBox,Url,UsersId,Description")] Notice notice)
         {
             if (ModelState.IsValid)
             {
@@ -223,7 +224,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Notice notice = _db.Notice.Find(id);
+            Notice notice = _db.Notice.Find(id);
             if (notice == null)
             {
                 return HttpNotFound();
@@ -234,7 +235,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult NoticesEdit([Bind(Include = "NoticeId,NoticeName,CreateDate,TextBox,UsersId")] SystemWeb.Models.Notice notice)
+        public ActionResult NoticesEdit([Bind(Include = "NoticeId,NoticeName,CreateDate,TextBox,UsersId")] Notice notice)
         {
             if (ModelState.IsValid)
             {
@@ -252,7 +253,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Notice notice = _db.Notice.Find(id);
+            Notice notice = _db.Notice.Find(id);
             if (notice == null)
             {
                 return HttpNotFound();
@@ -264,7 +265,7 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult NoticesDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.Notice notice = _db.Notice.Find(id);
+            Notice notice = _db.Notice.Find(id);
             _db.Notice.Remove(notice);
             _db.SaveChanges();
             return RedirectToAction("Notices");
@@ -276,7 +277,7 @@ namespace SystemWeb.Controllers
         [Route("admin/prodotti")]
         public ActionResult Products()
         {
-            var dataSource = new MyDbContext().Product.OrderBy(o => o.Nome).ToList();
+            var dataSource = _db.Product.ToList();
             ViewBag.datasource = dataSource;
 
             return View();
@@ -298,11 +299,9 @@ namespace SystemWeb.Controllers
         [Route("admin/prodotti/remove")]
         public ActionResult RemoveProducts(Guid key)
         {
-            MyDbContext context = new MyDbContext();
-            context.Product.Remove(context.Product.Single(o => o.ProductId == key));
-            context.SaveChanges();
-
-            var data = context.Product.ToList();
+            _db.Product.Remove(_db.Product.Single(o => o.ProductId == key));
+            _db.SaveChanges();
+            var data = _db.Product.ToList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -365,7 +364,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
+            RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
             if (ragioneSociale == null)
             {
                 return HttpNotFound();
@@ -380,7 +379,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RagioneSocialeCreate([Bind(Include = "RagioneSocialeId,Nome")] SystemWeb.Models.RagioneSociale ragioneSociale)
+        public ActionResult RagioneSocialeCreate([Bind(Include = "RagioneSocialeId,Nome")] RagioneSociale ragioneSociale)
         {
             if (ModelState.IsValid)
             {
@@ -399,7 +398,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
+            RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
             if (ragioneSociale == null)
             {
                 return HttpNotFound();
@@ -409,7 +408,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RagioneSocialeEdit([Bind(Include = "RagioneSocialeId,Nome")] SystemWeb.Models.RagioneSociale ragioneSociale)
+        public ActionResult RagioneSocialeEdit([Bind(Include = "RagioneSocialeId,Nome")] RagioneSociale ragioneSociale)
         {
             if (ModelState.IsValid)
             {
@@ -426,7 +425,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
+            RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
             if (ragioneSociale == null)
             {
                 return HttpNotFound();
@@ -438,7 +437,7 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RagioneSocialeDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
+            RagioneSociale ragioneSociale = _db.RagioneSociale.Find(id);
             _db.RagioneSociale.Remove(ragioneSociale);
             _db.SaveChanges();
             return RedirectToAction("RagioneSociale");
@@ -787,7 +786,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Flag flag = _db.Flag.Find(id);
+            Flag flag = _db.Flag.Find(id);
             if (flag == null)
             {
                 return HttpNotFound();
@@ -802,7 +801,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult FlagsCreate([Bind(Include = "pvFlagId,Nome,Descrizione")] SystemWeb.Models.Flag flag)
+        public ActionResult FlagsCreate([Bind(Include = "pvFlagId,Nome,Descrizione")] Flag flag)
         {
             if (ModelState.IsValid)
             {
@@ -821,7 +820,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Flag flag = _db.Flag.Find(id);
+            Flag flag = _db.Flag.Find(id);
             if (flag == null)
             {
                 return HttpNotFound();
@@ -831,7 +830,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult FlagsEdit([Bind(Include = "pvFlagId,Nome,Descrizione")] SystemWeb.Models.Flag flag)
+        public ActionResult FlagsEdit([Bind(Include = "pvFlagId,Nome,Descrizione")] Flag flag)
         {
             if (ModelState.IsValid)
             {
@@ -848,7 +847,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Flag flag = _db.Flag.Find(id);
+            Flag flag = _db.Flag.Find(id);
             if (flag == null)
             {
                 return HttpNotFound();
@@ -860,7 +859,7 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult FlagsDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.Flag flag = _db.Flag.Find(id);
+            Flag flag = _db.Flag.Find(id);
             _db.Flag.Remove(flag);
             _db.SaveChanges();
             return RedirectToAction("Flags");

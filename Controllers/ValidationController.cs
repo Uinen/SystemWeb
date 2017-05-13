@@ -1,4 +1,4 @@
-﻿using SystemWeb.IdentityExtensions;
+﻿using SystemWeb.Database.Utility;
 using SystemWeb.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin;
+using SystemWeb.Database.Entity;
 
 namespace SystemWeb.Controllers
 {

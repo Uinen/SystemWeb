@@ -4,12 +4,12 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
-using SystemWeb.Models;
 using System.Reflection;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using SystemWeb.Services;
+using SystemWeb.Database.Entity;
 
 namespace SystemWeb
 {

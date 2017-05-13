@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.IO;
-using SystemWeb.Repository.Interface;
-using SystemWeb.Repository;
+using SystemWeb.Database.Repository.Interface;
+using SystemWeb.Database.Repository;
 using System.Data;
 using System.Collections;
 using System.Globalization;
@@ -24,6 +24,7 @@ using Syncfusion.XlsIO;
 using System.Web.Script.Serialization;
 using System.Reflection;
 using SystemWeb.ActionFilters;
+using SystemWeb.Database.Entity;
 
 namespace SystemWeb.Controllers
 {
@@ -199,14 +200,15 @@ namespace SystemWeb.Controllers
             {
                 ViewBag.SSPBTotalAmount = "0";
                 ViewBag.DieselTotalAmount = "0";
-                ViewBag.HiQbTotalAmount = "0";
-                ViewBag.HiQdTotalAmount = "0";
+                //ViewBag.HiQbTotalAmount = "0";
+                //ViewBag.HiQdTotalAmount = "0";
                 ViewBag.TotalAmount = "0";
                 ViewBag.SSPBTotalAmount2 = "0";
                 ViewBag.DieselTotalAmount2 = "0";
-                ViewBag.HiQbTotalAmount2 = "0";
-                ViewBag.HiQdTotalAmount2 = "0";
+                //ViewBag.HiQbTotalAmount2 = "0";
+                //ViewBag.HiQdTotalAmount2 = "0";
                 ViewBag.TotalAmount2 = "0";
+                ViewBag.TotalAmountDifference = "0";
             }
 
             else
@@ -227,6 +229,7 @@ namespace SystemWeb.Controllers
                     .Where(z => (z.Product.Nome.Contains("G")))
                     .Min(row => row.Value);
 
+                /* System.InvalidOperationException: La sequenza non contiene elementi
                 var maxHiqB = enumerable
                     .Where(z => (z.Product.Nome.Contains("HiQb")))
                     .Max(row => row.Value);
@@ -239,22 +242,22 @@ namespace SystemWeb.Controllers
                     .Max(row => row.Value);
                 var minHiqD = enumerable
                     .Where(z => (z.Product.Nome.Contains("HiQd")))
-                    .Min(row => row.Value);
+                    .Min(row => row.Value);*/
 
                 #region Risultati
 
                 var _resultB = maxB - minB;
                 var _resultG = maxG - minG;
-                var _resultHiqB = maxHiqB - minHiqB;
-                var _resultHiqD = maxHiqD - minHiqD;
-                var _totalResult = _resultB + _resultG + _resultHiqB + _resultHiqD;
+                //var _resultHiqB = maxHiqB - minHiqB;
+                //var _resultHiqD = maxHiqD - minHiqD;
+                var _totalResult = _resultB + _resultG /*+ _resultHiqB + _resultHiqD*/;
 
                 #endregion
 
                 ViewBag.SSPBTotalAmount = _resultB;
                 ViewBag.DieselTotalAmount = _resultG;
-                ViewBag.HiQbTotalAmount = _resultHiqB;
-                ViewBag.HiQdTotalAmount = _resultHiqD;
+                //ViewBag.HiQbTotalAmount = _resultHiqB;
+                //ViewBag.HiQdTotalAmount = _resultHiqD;
                 ViewBag.TotalAmount = _totalResult;
 
                 #endregion
@@ -291,6 +294,7 @@ namespace SystemWeb.Controllers
                     .Where(z => (z.Product.Nome.Contains("G")))
                     .Min(row => row.Value);
 
+                /* System.InvalidOperationException: La sequenza non contiene elementi
                 var maxHiqB2 = pvErogatoris
                     .DefaultIfEmpty()
                     .Where(z => (z.Product.Nome.Contains("HiQb")))
@@ -307,22 +311,22 @@ namespace SystemWeb.Controllers
                 var minHiqD2 = pvErogatoris
                     .DefaultIfEmpty()
                     .Where(z => (z.Product.Nome.Contains("HiQd")))
-                    .Min(row => row.Value);
+                    .Min(row => row.Value);*/
 
                 #region Risultati
 
                 var _resultB2 = maxB2 - minB2;
                 var _resultG2 = maxG2 - minG2;
-                var _resultHiqB2 = maxHiqB2 - minHiqB2;
-                var _resultHiqD2 = maxHiqD2 - minHiqD2;
-                var _totalResult2 = _resultB2 + _resultG2 + _resultHiqB2 + _resultHiqD2;
+                //var _resultHiqB2 = maxHiqB2 - minHiqB2;
+                //var _resultHiqD2 = maxHiqD2 - minHiqD2;
+                var _totalResult2 = _resultB2 + _resultG2 /*+ _resultHiqB2 + _resultHiqD2*/;
 
                 #endregion
 
                 ViewBag.SSPBTotalAmount2 = _resultB2;
                 ViewBag.DieselTotalAmount2 = _resultG2;
-                ViewBag.HiQbTotalAmount2 = _resultHiqB2;
-                ViewBag.HiQdTotalAmount2 = _resultHiqD2;
+                //ViewBag.HiQbTotalAmount2 = _resultHiqB2;
+                //ViewBag.HiQdTotalAmount2 = _resultHiqD2;
                 ViewBag.TotalAmount2 = _totalResult2;
 
                 #endregion
@@ -474,20 +478,21 @@ namespace SystemWeb.Controllers
             lastYear = DateTime.Today.Year;
             Ly = lastYear.ToString();
             #endregion
-
-            var dataSource = new MyDbContext().Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(Ly)).OrderBy(o => o.Ordine).ToList();
+            
+            var dataSource = _db.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(Ly)).OrderBy(o => o.Ordine).ToList();
             ViewBag.datasource = dataSource;
 
-            IEnumerable dataSource2 = new MyDbContext().Year.Where(a => (a.Anno.Year.ToString().Contains(Ly))).ToList();
+            IEnumerable dataSource2 = _db.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
             ViewBag.datasource2 = dataSource2;
 
-            IEnumerable dataSource3 = new MyDbContext().Pv.Where(c => currentUser.pvID == c.pvID).ToList();
+            IEnumerable dataSource3 = _db.Pv.Where(c => currentUser.pvID == c.pvID).ToList();
             ViewBag.datasource3 = dataSource3;
             
             #region AmmountByDateFrom
             // Totale Carico Benzina secondo il parametro di ricerca specificato
             ViewBag.SSPBTotalAmountFrom = dataSource.ToList()
-                .Where(o => /*currentUser.pvID == o.pvID &&*/ Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
+                .Where(o => /*currentUser.pvID == o.pvID &&*/
+                Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
                 .Sum(o => (decimal?)o.Benzina);
 
             // Totale Carico Gasolio secondo il parametro di ricerca specificato
@@ -531,11 +536,10 @@ namespace SystemWeb.Controllers
             Ly = lastYear.ToString();
             #endregion
             
-            MyDbContext context = new MyDbContext();
-            context.Carico.Remove(context.Carico.Single(o => o.Id == key));
-            context.SaveChanges();
+            _db.Carico.Remove(_db.Carico.Single(o => o.Id == key));
+            _db.SaveChanges();
 
-            var data = context.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(Ly));
+            var data = _db.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(Ly));
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -550,14 +554,13 @@ namespace SystemWeb.Controllers
             #endregion
 
             var exp = new ExcelExport();
-            var context = new MyDbContext();
             var now = Guid.NewGuid();
-            IEnumerable dataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(Ly))).OrderBy(o => o.Ordine).ToList();
+            IEnumerable dataSource = _db.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(Ly))).OrderBy(o => o.Ordine).ToList();
 
             var obj = ConvertGridObject(gridModel);
 
-            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
-            obj.Columns[2].DataSource = context.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
+            obj.Columns[1].DataSource = _db.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = _db.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
 
             exp.Export(obj, dataSource, now + " - Ordini.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
             return Json(JsonRequestBehavior.AllowGet);
@@ -572,17 +575,16 @@ namespace SystemWeb.Controllers
             lastYear = DateTime.Today.Year;
             Ly = lastYear.ToString();
             #endregion
-
-            var context = new MyDbContext();
+            
             var now = Guid.NewGuid();
             var exp = new WordExport();
 
-            IEnumerable dataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(Ly))).OrderBy(o => o.Ordine).ToList();
+            IEnumerable dataSource = _db.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(Ly))).OrderBy(o => o.Ordine).ToList();
 
             var obj = ConvertGridObject(gridModel);
 
-            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
-            obj.Columns[2].DataSource = context.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
+            obj.Columns[1].DataSource = _db.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = _db.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
 
             exp.Export(obj, dataSource, now + " - Ordini.docx", false, false, "flat-saffron");
             return Json(JsonRequestBehavior.AllowGet);
@@ -597,19 +599,16 @@ namespace SystemWeb.Controllers
             lastYear = DateTime.Today.Year;
             Ly = lastYear.ToString();
             #endregion
-
-            var context = new MyDbContext();
-
+            
             var now = Guid.NewGuid();
-
             var exp = new PdfExport();
 
-            IEnumerable dataSource = context.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(Ly))).OrderBy(o => o.Ordine).ToList();
+            IEnumerable dataSource = _db.Carico.Where(c => currentUser.pvID == c.pvID && (c.Year.Anno.Year.ToString().Contains(Ly))).OrderBy(o => o.Ordine).ToList();
 
-            GridProperties obj = ConvertGridObject(gridModel);
+            var obj = ConvertGridObject(gridModel);
 
-            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
-            obj.Columns[2].DataSource = context.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
+            obj.Columns[1].DataSource = _db.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+            obj.Columns[2].DataSource = _db.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
 
             exp.Export(obj, dataSource, now + " - Ordini.pdf", false, false, "flat-saffron");
 
@@ -950,7 +949,6 @@ namespace SystemWeb.Controllers
         }
 
         [HttpPost]
-        [Route("user/contatori/nuovo")]
         [ValidateAntiForgeryToken]
         public ActionResult PvErogatoriCreate(PvErogatori pvErogatori)
         {
@@ -1081,7 +1079,7 @@ namespace SystemWeb.Controllers
             ViewBag.pvID = new SelectList(_db.Pv, "pvID", "pvName");
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<SystemWeb.Models.PvProfile> pvProfile = _db.PvProfile
+            IQueryable<PvProfile> pvProfile = _db.PvProfile
                 .Where(c => currentUser.pvID == c.pvID)
                 .Include(p => p.Pv);
             var sql = pvProfile.ToString();
@@ -1094,7 +1092,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.PvProfile pvProfile = _db.PvProfile.Find(id);
+            PvProfile pvProfile = _db.PvProfile.Find(id);
             if (pvProfile == null)
             {
                 return HttpNotFound();
@@ -1106,7 +1104,7 @@ namespace SystemWeb.Controllers
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<SystemWeb.Models.Pv> pv = _db.Pv
+            IQueryable<Pv> pv = _db.Pv
                 .Where(c => currentUser.pvID == c.pvID);
             var sql = pv.ToList();
             ViewBag.pvID = new SelectList(pv, "pvID", "pvName");
@@ -1115,7 +1113,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PvProfilesCreate([Bind(Include = "PvProfileId,pvID,Indirizzo,Città,Nazione,Cap")] SystemWeb.Models.PvProfile pvProfile)
+        public ActionResult PvProfilesCreate([Bind(Include = "PvProfileId,pvID,Indirizzo,Città,Nazione,Cap")] PvProfile pvProfile)
         {
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
@@ -1137,7 +1135,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.PvProfile pvProfile = _db.PvProfile.Find(id);
+            PvProfile pvProfile = _db.PvProfile.Find(id);
             if (pvProfile == null)
             {
                 return HttpNotFound();
@@ -1166,7 +1164,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.PvProfile pvProfile = _db.PvProfile.Find(id);
+            PvProfile pvProfile = _db.PvProfile.Find(id);
             if (pvProfile == null)
             {
                 return HttpNotFound();
@@ -1178,7 +1176,7 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult PvProfilesDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.PvProfile pvProfile = _db.PvProfile.Find(id);
+            PvProfile pvProfile = _db.PvProfile.Find(id);
             _db.PvProfile.Remove(pvProfile);
             _db.SaveChanges();
             return RedirectToAction("PvProfiles");
@@ -1333,7 +1331,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.PvTankDesc pvTankDesc = _db.PvTankDesc.Find(id);
+            PvTankDesc pvTankDesc = _db.PvTankDesc.Find(id);
             if (pvTankDesc == null)
             {
                 return HttpNotFound();
@@ -1349,7 +1347,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        internal ActionResult PvTanksDescCreate([Bind(Include = "PvTankDescId,PvTankId,PvTankCM,PvTankLT")] SystemWeb.Models.PvTankDesc pvTankDesc)
+        internal ActionResult PvTanksDescCreate([Bind(Include = "PvTankDescId,PvTankId,PvTankCM,PvTankLT")] PvTankDesc pvTankDesc)
         {
             if (ModelState.IsValid)
             {
@@ -1369,7 +1367,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.PvTankDesc pvTankDesc = _db.PvTankDesc.Find(id);
+            PvTankDesc pvTankDesc = _db.PvTankDesc.Find(id);
             if (pvTankDesc == null)
             {
                 return HttpNotFound();
@@ -1380,11 +1378,11 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PvTanksDescEdit([Bind(Include = "PvTankDescId,PvTankId,PvTankCM,PvTankLT")] SystemWeb.Models.PvTankDesc pvTankDesc)
+        public ActionResult PvTanksDescEdit([Bind(Include = "PvTankDescId,PvTankId,PvTankCM,PvTankLT")] PvTankDesc pvTankDesc)
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(pvTankDesc).State = System.Data.Entity.EntityState.Modified;
+                _db.Entry(pvTankDesc).State = EntityState.Modified;
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -1398,7 +1396,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.PvTankDesc pvTankDesc = _db.PvTankDesc.Find(id);
+            PvTankDesc pvTankDesc = _db.PvTankDesc.Find(id);
             if (pvTankDesc == null)
             {
                 return HttpNotFound();
@@ -1410,7 +1408,7 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult PvTanksDescDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.PvTankDesc pvTankDesc = _db.PvTankDesc.Find(id);
+            PvTankDesc pvTankDesc = _db.PvTankDesc.Find(id);
             _db.PvTankDesc.Remove(pvTankDesc);
             _db.SaveChanges();
             return RedirectToAction("Index");
@@ -1601,13 +1599,22 @@ namespace SystemWeb.Controllers
         [Route("user/deficienze/aggiungi")]
         public ActionResult PvDeficienzeCreate()
         {
-            ViewBag.PvTankId = new SelectList(_db.PvTank, "PvTankId", "Modello");
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            #endregion
+
+            var _getPvTank = from a in _db.PvTank
+                             where currentUser.pvID == a.pvID
+                             select a;
+
+            ViewBag.PvTankId = new SelectList(_getPvTank, "PvTankId", "Modello");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PvDeficienzeCreate([Bind(Include = "PvDefId,PvTankId,Value,FieldDate")] SystemWeb.Models.PvDeficienze pvDeficienze)
+        public ActionResult PvDeficienzeCreate([Bind(Include = "PvDefId,PvTankId,Value,FieldDate")] PvDeficienze pvDeficienze)
         {
             if (ModelState.IsValid)
             {
@@ -1823,13 +1830,22 @@ namespace SystemWeb.Controllers
         [Route("user/cali/nuovo")]
         public ActionResult PvCaliCreate()
         {
-            ViewBag.PvTankId = new SelectList(_db.PvTank, "PvTankId", "Modello");
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            #endregion
+
+            var _getPvTank = from a in _db.PvTank
+                             where currentUser.pvID == a.pvID
+                             select a;
+
+            ViewBag.PvTankId = new SelectList(_getPvTank, "PvTankId", "Modello");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PvCaliCreate(SystemWeb.Models.PvCali pvCali)
+        public ActionResult PvCaliCreate(PvCali pvCali)
         {
             if (ModelState.IsValid)
             {
@@ -2338,7 +2354,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Company company = _db.Company.Find(id);
+            Company company = _db.Company.Find(id);
             if (company == null)
             {
                 return HttpNotFound();
@@ -2354,7 +2370,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CompaniesCreate([Bind(Include = "CompanyId,Name,PartitaIva,RagioneSocialeId")] SystemWeb.Models.Company company)
+        public ActionResult CompaniesCreate([Bind(Include = "CompanyId,Name,PartitaIva,RagioneSocialeId")] Company company)
         {
             if (ModelState.IsValid)
             {
@@ -2374,7 +2390,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Company company = _db.Company.Find(id);
+            Company company = _db.Company.Find(id);
             if (company == null)
             {
                 return HttpNotFound();
@@ -2385,7 +2401,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CompaniesEdit([Bind(Include = "CompanyId,Name,PartitaIva,RagioneSocialeId")] SystemWeb.Models.Company company)
+        public ActionResult CompaniesEdit([Bind(Include = "CompanyId,Name,PartitaIva,RagioneSocialeId")] Company company)
         {
             if (ModelState.IsValid)
             {
@@ -2403,7 +2419,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.Company company = _db.Company.Find(id);
+            Company company = _db.Company.Find(id);
             if (company == null)
             {
                 return HttpNotFound();
@@ -2415,7 +2431,7 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.Company company = _db.Company.Find(id);
+            Company company = _db.Company.Find(id);
             _db.Company.Remove(company);
             _db.SaveChanges();
             return RedirectToAction("Companies");
@@ -2441,11 +2457,11 @@ namespace SystemWeb.Controllers
             ViewBag.CurrentFilter = searchString;
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            IQueryable<SystemWeb.Models.CompanyTask> companyTask = (from r in _db.CompanyTask
+            IQueryable<CompanyTask> companyTask = (from r in _db.CompanyTask
                                                    select r)
                 .Include(c => c.ApplicationUser)
                 .OrderBy(q => (q.FieldDate));
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 companyTask = companyTask.Where(s => s.FieldDate.ToString().Contains(searchString.ToUpper()));
             }
@@ -2469,7 +2485,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.CompanyTask companyTask = _db.CompanyTask.Find(id);
+            CompanyTask companyTask = _db.CompanyTask.Find(id);
             if (companyTask == null)
             {
                 return HttpNotFound();
@@ -2485,7 +2501,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult TaskCreate([Bind(Include = "CompanyTaskId,UsersId,FieldChiusura,FieldDate,FieldResult")] SystemWeb.Models.CompanyTask companyTask)
+        public ActionResult TaskCreate([Bind(Include = "CompanyTaskId,UsersId,FieldChiusura,FieldDate,FieldResult")] CompanyTask companyTask)
         {
             if (ModelState.IsValid)
             {
@@ -2505,7 +2521,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.CompanyTask companyTask = _db.CompanyTask.Find(id);
+            CompanyTask companyTask = _db.CompanyTask.Find(id);
             if (companyTask == null)
             {
                 return HttpNotFound();
@@ -2516,7 +2532,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult TaskEdit([Bind(Include = "CompanyTaskId,UsersId,FieldChiusura,FieldDate,FieldResult")] SystemWeb.Models.CompanyTask companyTask)
+        public ActionResult TaskEdit([Bind(Include = "CompanyTaskId,UsersId,FieldChiusura,FieldDate,FieldResult")] CompanyTask companyTask)
         {
             if (ModelState.IsValid)
             {
@@ -2534,7 +2550,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.CompanyTask companyTask = _db.CompanyTask.Find(id);
+            CompanyTask companyTask = _db.CompanyTask.Find(id);
             if (companyTask == null)
             {
                 return HttpNotFound();
@@ -2546,7 +2562,7 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult TaskDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.CompanyTask companyTask = _db.CompanyTask.Find(id);
+            CompanyTask companyTask = _db.CompanyTask.Find(id);
             _db.CompanyTask.Remove(companyTask);
             _db.SaveChanges();
             return RedirectToAction("Task");
@@ -2569,7 +2585,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.UserArea userArea = _db.UserArea.Find(id);
+            UserArea userArea = _db.UserArea.Find(id);
             if (userArea == null)
             {
                 return HttpNotFound();
@@ -2587,7 +2603,7 @@ namespace SystemWeb.Controllers
         [Authorize(Roles = "Administrator,User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AreaCreate([Bind(Include = "UserAreaId,UsersId,UserFieldAccount,UserFieldUsername,UserFieldPassword,CreateDate")] SystemWeb.Models.UserArea userArea)
+        public ActionResult AreaCreate([Bind(Include = "UserAreaId,UsersId,UserFieldAccount,UserFieldUsername,UserFieldPassword,CreateDate")] UserArea userArea)
         {
             if (ModelState.IsValid)
             {
@@ -2610,7 +2626,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.UserArea userArea = _db.UserArea.Find(id);
+            UserArea userArea = _db.UserArea.Find(id);
             if (userArea == null)
             {
                 return HttpNotFound();
@@ -2622,7 +2638,7 @@ namespace SystemWeb.Controllers
         [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AreaEdit([Bind(Include = "UserAreaId,UsersId,UserFieldAccount,UserFieldUsername,UserFieldPassword,CreateDate")] SystemWeb.Models.UserArea userArea)
+        public ActionResult AreaEdit([Bind(Include = "UserAreaId,UsersId,UserFieldAccount,UserFieldUsername,UserFieldPassword,CreateDate")] UserArea userArea)
         {
             if (ModelState.IsValid)
             {
@@ -2641,7 +2657,7 @@ namespace SystemWeb.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SystemWeb.Models.UserArea userArea = _db.UserArea.Find(id);
+            UserArea userArea = _db.UserArea.Find(id);
             if (userArea == null)
             {
                 return HttpNotFound();
@@ -2654,7 +2670,7 @@ namespace SystemWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AreaDeleteConfirmed(Guid id)
         {
-            SystemWeb.Models.UserArea userArea = _db.UserArea.Find(id);
+            UserArea userArea = _db.UserArea.Find(id);
             _db.UserArea.Remove(userArea);
             _db.SaveChanges();
             return RedirectToAction("Area");

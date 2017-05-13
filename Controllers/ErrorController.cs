@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Web.Mvc;
-using SystemWeb.Static;
+using SystemWeb.Service.Static;
 
 namespace SystemWeb.Controllers
 {

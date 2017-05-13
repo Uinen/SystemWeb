@@ -110,6 +110,15 @@ namespace SystemWeb.DI.Autofac.Modules
                             c.ResolveNamed<IAclModule>("authorizeAttributeAclModule"),
                             c.ResolveNamed<IAclModule>("xmlRolesAclModule")
                         });
+
+
+
+
+
+
+
+
+
             builder.RegisterInstance(System.Runtime.Caching.MemoryCache.Default)
                    .As<System.Runtime.Caching.ObjectCache>();
 

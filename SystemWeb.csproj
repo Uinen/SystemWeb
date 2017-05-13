@@ -273,7 +273,6 @@
     <Compile Include="ActionFilters\WhitespaceFilter.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -289,135 +288,22 @@
     <Compile Include="DI\Autofac\Modules\MvcSiteMapProviderModule.cs" />
     <Compile Include="DI\CommonConventions.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
-    <Compile Include="Migrations\201705082356499_12.cs" />
-    <Compile Include="Migrations\201705082356499_12.Designer.cs">
-      <DependentUpon>201705082356499_12.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705101131262_13.cs" />
-    <Compile Include="Migrations\201705101131262_13.Designer.cs">
-      <DependentUpon>201705101131262_13.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Static\Application.cs" />
-    <Compile Include="Static\CacheProfileName.cs" />
-    <Compile Include="Static\CacheSetting.cs" />
-    <Compile Include="Static\CartissimaController\CartissimaControllerRoute.cs" />
-    <Compile Include="Static\CHTML.cs" />
-    <Compile Include="Static\ContentDeliveryNetwork.cs" />
-    <Compile Include="Static\ControllerName.cs" />
-    <Compile Include="Static\ErrorController\ErrorControllerAction.cs" />
-    <Compile Include="Static\ErrorController\ErrorControllerRoute.cs" />
-    <Compile Include="Static\HomeController\HomeControllerAction.cs" />
-    <Compile Include="Static\HomeController\HomeControllerRoute.cs" />
-    <Compile Include="Migrations\201703121307376_1.cs" />
-    <Compile Include="Migrations\201703121307376_1.Designer.cs">
-      <DependentUpon>201703121307376_1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201703121405558_2.cs" />
-    <Compile Include="Migrations\201703121405558_2.Designer.cs">
-      <DependentUpon>201703121405558_2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201703121434333_3.cs" />
-    <Compile Include="Migrations\201703121434333_3.Designer.cs">
-      <DependentUpon>201703121434333_3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201703121728111_4.cs" />
-    <Compile Include="Migrations\201703121728111_4.Designer.cs">
-      <DependentUpon>201703121728111_4.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201703121735021_5.cs" />
-    <Compile Include="Migrations\201703121735021_5.Designer.cs">
-      <DependentUpon>201703121735021_5.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201703121835097_6.cs" />
-    <Compile Include="Migrations\201703121835097_6.Designer.cs">
-      <DependentUpon>201703121835097_6.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201703242254171_7.cs" />
-    <Compile Include="Migrations\201703242254171_7.Designer.cs">
-      <DependentUpon>201703242254171_7.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704021345085_8.cs" />
-    <Compile Include="Migrations\201704021345085_8.Designer.cs">
-      <DependentUpon>201704021345085_8.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705031932562_9.cs" />
-    <Compile Include="Migrations\201705031932562_9.Designer.cs">
-      <DependentUpon>201705031932562_9.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705032010212_10.cs" />
-    <Compile Include="Migrations\201705032010212_10.Designer.cs">
-      <DependentUpon>201705032010212_10.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705041812195_11.cs" />
-    <Compile Include="Migrations\201705041812195_11.Designer.cs">
-      <DependentUpon>201705041812195_11.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CodeFirst\AppModel.cs" />
-    <Compile Include="Models\EditParams.cs" />
-    <Compile Include="Models\FileType.cs" />
-    <Compile Include="Repository\CaliRepository.cs" />
-    <Compile Include="Repository\DeficienzeRepository.cs" />
-    <Compile Include="Repository\DispenserRepository.cs" />
-    <Compile Include="Repository\CartissimaRepository.cs" />
-    <Compile Include="Repository\Interface\iCartissimaInterface.cs" />
-    <Compile Include="Repository\Interface\iPvDeficienzeRepository.cs" />
-    <Compile Include="Repository\ProductRepository.cs" />
-    <Compile Include="Repository\RepositoryInterface\CaricoRepository.cs" />
-    <Compile Include="Repository\ContatoriRepository.cs" />
-    <Compile Include="Repository\Interface\iCaricoRepository.cs" />
-    <Compile Include="Repository\Interface\iProductRepository.cs" />
-    <Compile Include="Repository\Interface\iPvCaliRepository.cs" />
-    <Compile Include="Repository\Interface\iPvErogatoriRepository.cs" />
-    <Compile Include="Repository\Interface\iPvRepository.cs" />
-    <Compile Include="Repository\Interface\iUsersImageRepository.cs" />
-    <Compile Include="Repository\OrderRepository.cs" />
-    <Compile Include="Repository\RepositoryInterface\CartissimaRepository.cs" />
-    <Compile Include="Repository\RepositoryInterface\ProductRepository.cs" />
-    <Compile Include="Repository\RepositoryInterface\PvCaliRepository.cs" />
-    <Compile Include="Repository\RepositoryInterface\PvDeficienzeRepository.cs" />
-    <Compile Include="Repository\RepositoryInterface\PvErogatoriRepository.cs" />
-    <Compile Include="Repository\RepositoryInterface\PvRepository.cs" />
-    <Compile Include="Repository\RepositoryInterface\UsersImageRepository.cs" />
-    <Compile Include="Repository\TankRepository.cs" />
-    <Compile Include="Services\BrowserConfig\BrowserConfigService.cs" />
-    <Compile Include="Services\BrowserConfig\IBrowserConfigService.cs" />
-    <Compile Include="Services\Cache\CacheService.cs" />
-    <Compile Include="Services\Cache\ICacheService.cs" />
-    <Compile Include="Services\Feed\FeedService.cs" />
-    <Compile Include="Services\Feed\IFeedService.cs" />
-    <Compile Include="Services\Logging\ILoggingService.cs" />
-    <Compile Include="Services\Logging\LoggingService.cs" />
-    <Compile Include="Services\Manifest\IManifestService.cs" />
-    <Compile Include="Services\Manifest\ManifestService.cs" />
-    <Compile Include="Services\OpenSearch\IOpenSearchService.cs" />
-    <Compile Include="Services\OpenSearch\OpenSearchService.cs" />
-    <Compile Include="Services\Robots\IRobotsService.cs" />
-    <Compile Include="Services\Robots\RobotsService.cs" />
-    <Compile Include="Services\SitemapPinger\ISitemapPingerService.cs" />
-    <Compile Include="Services\SitemapPinger\SitemapPingerService.cs" />
-    <Compile Include="Services\Sitemap\ISitemapService.cs" />
-    <Compile Include="Services\Sitemap\SitemapService.cs" />
+    <Compile Include="ViewModels\EditParams.cs" />
     <Compile Include="ViewModels\ContactViewModel.cs" />
-    <Compile Include="ViewModels\MapDesignerViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="IdentityExtensions\MyValidation.cs" />
-    <Compile Include="Infrastructure\EmailAttribute.cs" />
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\MenuItemViewModel.cs" />
-    <Compile Include="Models\RuleViolation.cs" />
-    <Compile Include="Models\WebIdentity.cs" />
+    <Compile Include="ViewModels\MenuItemViewModel.cs" />
+    <Compile Include="ViewModels\RuleViolation.cs" />
+    <Compile Include="ViewModels\WebIdentity.cs" />
     <Compile Include="ViewModels\AccountBindingModels.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
     <Compile Include="ViewModels\AdminViewModel.cs" />
-    <Compile Include="ViewModels\LoadViewModels.cs" />
     <Compile Include="ViewModels\ManageViewModels.cs" />
-    <Compile Include="Models\PayPalModels.cs" />
+    <Compile Include="ViewModels\PayPalModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\ProfileImageViewModel.cs" />
-    <Compile Include="ViewModels\PvErogatoriViewModel.cs" />
     <Compile Include="ViewModels\UserIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -569,7 +455,6 @@
     <Content Include="Contenuti\fonts\fontawesome-webfont.woff2" />
     <Content Include="Contenuti\fonts\FontAwesome.otf" />
     <Content Include="Contenuti\fonts\ionicons.woff" />
-    <Content Include="Mvc.sitemap" />
     <Content Include="packages.config" />
     <Content Include="Scripts\ActionComplete.js" />
     <Content Include="Scripts\ActionComplete.min.js">
@@ -595,9 +480,7 @@
     <Content Include="Contenuti\Bootstrap\bootstrap.css.map" />
     <Content Include="Contenuti\Bootstrap\bootstrap-theme.min.css.map" />
     <Content Include="Contenuti\Bootstrap\bootstrap-theme.css.map" />
-    <None Include="MvcSiteMapSchema.xsd">
-      <SubType>Designer</SubType>
-    </None>
+    <Content Include="Mvc.Sitemap" />
     <None Include="NWebsecConfig\HttpHeaderSecurityModuleConfig.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -821,45 +704,14 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201703121307376_1.resx">
-      <DependentUpon>201703121307376_1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201703121405558_2.resx">
-      <DependentUpon>201703121405558_2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201703121434333_3.resx">
-      <DependentUpon>201703121434333_3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201703121728111_4.resx">
-      <DependentUpon>201703121728111_4.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201703121735021_5.resx">
-      <DependentUpon>201703121735021_5.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201703121835097_6.resx">
-      <DependentUpon>201703121835097_6.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201703242254171_7.resx">
-      <DependentUpon>201703242254171_7.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704021345085_8.resx">
-      <DependentUpon>201704021345085_8.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705031932562_9.resx">
-      <DependentUpon>201705031932562_9.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705032010212_10.resx">
-      <DependentUpon>201705032010212_10.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705041812195_11.resx">
-      <DependentUpon>201705041812195_11.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705082356499_12.resx">
-      <DependentUpon>201705082356499_12.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705101131262_13.resx">
-      <DependentUpon>201705101131262_13.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\SystemWeb.Database\SystemWeb.Database.csproj">
+      <Project>{7b4aa1ee-25f4-421b-8975-82695c70c1ee}</Project>
+      <Name>SystemWeb.Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="SystemWeb.Services\SystemWeb.Services.csproj">
+      <Project>{3631a7a6-abf8-4d67-965a-73bdd1a806fb}</Project>
+      <Name>SystemWeb.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
-using SystemWeb.Models;
+using SystemWeb.Database.Entity;
 
 namespace SystemWeb.Controllers
 {

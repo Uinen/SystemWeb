@@ -8,10 +8,8 @@ using SystemWeb.Models;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security;
-using System;
 using System.Web.Security;
-using System.Web.Configuration;
-using System.Net.Configuration;
+using SystemWeb.Database.Entity;
 
 namespace SystemWeb.Controllers
 {

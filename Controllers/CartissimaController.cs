@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using SystemWeb.Models;
 using System.Collections;
-using SystemWeb.Static;
-using SystemWeb.Repository;
+using SystemWeb.Service.Static;
 using Syncfusion.EJ.Export;
 using Syncfusion.XlsIO;
 using Syncfusion.JavaScript.Models;
 using System.Web.Script.Serialization;
 using System.Reflection;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.AspNet.Identity;
 using SystemWeb.Services;
-using SystemWeb.Repository.Interface;
+using SystemWeb.Database.Entity;
+using SystemWeb.Database.Repository.Interface;
+using System.Data.Entity;
 
 namespace SystemWeb.Controllers
 {
@@ -38,7 +37,7 @@ namespace SystemWeb.Controllers
             IRobotsService robotsService,
             ISitemapService sitemapService)
         {
-            _cartissimaRepository = new CartissimaRepository(new MyDbContext());
+            //_cartissimaRepository = new CartissimaRepository(new MyDbContext());
             this._browserConfigService = browserConfigService;
             this._feedService = feedService;
             this._manifestService = manifestService;
@@ -70,15 +69,10 @@ namespace SystemWeb.Controllers
         [Route("inserzioni/")]
         public ActionResult List()
         {
-            #region Initial var
-            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = userManager.FindById(User.Identity.GetUserId());
-            #endregion
-
-            var dataSource = new MyDbContext().Cartissima.OrderBy(o => o.sCartCreateDate).ToList();
+            var dataSource = _db.Cartissima.OrderBy(o => o.sCartCreateDate).ToList();
             ViewBag.datasource = dataSource;
 
-            IEnumerable dataSource2 = new MyDbContext().Pv.ToList();
+            IEnumerable dataSource2 = _db.Pv.ToList();
             ViewBag.datasource2 = dataSource2;
 
             return View();
@@ -98,8 +92,8 @@ namespace SystemWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _cartissimaRepository.Insert(value);
-                _cartissimaRepository.Save();
+                _db.Cartissima.Add(value);
+                _db.SaveChanges();
 
                 if (value.sCartEmail != null)
                 {
@@ -128,7 +122,7 @@ namespace SystemWeb.Controllers
         [Route("inserzioni/business-card/richiesta-inviata", Name = CartissimaControllerRoute.GetSuccess)]
         public ActionResult Success(Guid key)
         {
-            var _getCode = (from a in _cartissimaRepository.GetRecords()
+            var _getCode = (from a in _db.Cartissima
                             where key == a.sCartId
                            select a.sCartId).SingleOrDefault();
 
@@ -140,30 +134,23 @@ namespace SystemWeb.Controllers
         [Authorize(Roles = "Administrator")]
         public ActionResult Update(Cartissima value)
         {
-            CartissimaRepositorySync.Update(value);
+            _db.Entry(value).State = EntityState.Modified;
             return Json(value, JsonRequestBehavior.AllowGet);
         }
         
         [Authorize(Roles = "Administrator")]
         public ActionResult Insert(Cartissima value)
         {
-            CartissimaRepositorySync.Add(value);
+            _db.Cartissima.Add(value);
             return Json(value, JsonRequestBehavior.AllowGet);
         }
         
         [Authorize(Roles = "Administrator")]
         public ActionResult Remove(Guid key)
         {
-            #region Initial var
-            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = userManager.FindById(User.Identity.GetUserId());
-            #endregion
-
-            MyDbContext context = new MyDbContext();
-            context.Cartissima.Remove(context.Cartissima.Single(o => o.sCartId == key));
-            context.SaveChanges();
-
-            var data = context.Cartissima.ToList();
+            _db.Cartissima.Remove(_db.Cartissima.Single(o => o.sCartId == key));
+            _db.SaveChanges();
+            var data = _db.Cartissima.ToList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

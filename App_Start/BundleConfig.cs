@@ -1,5 +1,5 @@
 ﻿using System.Web.Optimization;
-using SystemWeb.Static;
+using SystemWeb.Service.Static;
 
 namespace SystemWeb
 {

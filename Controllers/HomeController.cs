@@ -7,12 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using SystemWeb.ActionFilters;
-using SystemWeb.Static;
+using SystemWeb.Service.Static;
 using SystemWeb.Services;
 using SystemWeb.ViewModels;
-using SystemWeb.Infrastructure;
 using System;
-using MvcSiteMapProvider.Web.Mvc;
 using System.Net.Mail;
 
 namespace SystemWeb.Controllers

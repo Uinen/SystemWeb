@@ -6,10 +6,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using System;
 using System.Threading.Tasks;
-using SystemWeb.Models;
-using System.Net.Mail;
-using System.Web.Configuration;
-using System.Net.Configuration;
+using SystemWeb.Database.Entity;
 
 namespace SystemWeb
 {
