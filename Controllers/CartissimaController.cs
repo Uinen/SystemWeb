@@ -15,6 +15,10 @@ using SystemWeb.Services;
 using SystemWeb.Database.Entity;
 using SystemWeb.Database.Repository.Interface;
 using System.Data.Entity;
+using System.IO;
+using SystemWeb.Mail;
+using System.Configuration;
+using RazorEngine;
 
 namespace SystemWeb.Controllers
 {
@@ -97,19 +101,39 @@ namespace SystemWeb.Controllers
 
                 if (value.sCartEmail != null)
                 {
-                    System.Net.Mail.MailMessage m = new System.Net.Mail.MailMessage(
-                            new System.Net.Mail.MailAddress("vale92graveglia@live.it", "Conferma Mail"),
-                            new System.Net.Mail.MailAddress(value.sCartEmail));
+                    string body;
 
-                    m.Subject = "Copia Richiesta";
-                    m.Body = string.Format("Gentile {0} {1} <BR/>la ringraziamo per aver scelto il nostro servizio, di seguito le inviamo una copia dei dati inseriti.<BR/> Azienda: {2} <BR/> Partita Iva: {3} <BR/> Tipologia: {4} <BR/> Quantità: {5} <BR/> Le ricordiamo che verrà contattato nei prossimi giorni, via mail oppure telefonicamente da un nostro operatore.", value.sCartName, value.sCartSurname, value.sCartCompany, value.sCartIva, value.sCartVeichleType, value.sCartVeichle);
-                    m.IsBodyHtml = true;
-                    System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient("smtp.live.com", 25);
-                    smtp.Credentials = new System.Net.NetworkCredential("vale92graveglia@live.it", "morgana92");
-                    smtp.EnableSsl = true;
-                    smtp.Send(m);
+                    using (var sr = new StreamReader(Server.MapPath("/App_Data/Templates/Business-Card-Success.txt")))
+                    {
+                        body = sr.ReadToEnd();
+                    }
+
+                    var sCartName = HttpUtility.UrlEncode(value.sCartName);
+                    var sCartSurname = HttpUtility.UrlEncode(value.sCartSurname);
+                    var sCartCompany = HttpUtility.UrlEncode(value.sCartCompany);
+                    var sCartIva = HttpUtility.UrlEncode(value.sCartIva.ToString());
+                    var sCartVeichleType = HttpUtility.UrlEncode(value.sCartVeichleType);
+                    var sCartVeichle = HttpUtility.UrlEncode(value.sCartVeichle.ToString());
+                    var sCartId = HttpUtility.UrlEncode(value.sCartId.ToString());
+
+                    var sender = ConfigurationManager.AppSettings["SenderEmail"];
+                    var emailSubject = "Gestioni Dirette - La tua Richiesta";
+                    string messageBody = Razor.Parse(body, value);
+                    var mesagge = new Message
+                    {
+                        Sender = sender,
+                        Recipient = value.sCartEmail,
+                        RecipientCC = sender,
+                        Subject = emailSubject,
+                        AttachmentFile = null,
+                        Body = messageBody
+                    };
+
+                    mesagge.Send();
+
                     return RedirectToAction("Success", new { key = value.sCartId });
                 }
+
                 else
                 {
                     return RedirectToAction("Success", new { key = value.sCartId });
@@ -132,6 +156,7 @@ namespace SystemWeb.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
+        [Route("inserzioni/update")]
         public ActionResult Update(Cartissima value)
         {
             _db.Entry(value).State = EntityState.Modified;
@@ -139,6 +164,7 @@ namespace SystemWeb.Controllers
         }
         
         [Authorize(Roles = "Administrator")]
+        [Route("inserzioni/insert")]
         public ActionResult Insert(Cartissima value)
         {
             _db.Cartissima.Add(value);
@@ -146,6 +172,7 @@ namespace SystemWeb.Controllers
         }
         
         [Authorize(Roles = "Administrator")]
+        [Route("inserzioni/remove")]
         public ActionResult Remove(Guid key)
         {
             _db.Cartissima.Remove(_db.Cartissima.Single(o => o.sCartId == key));
@@ -155,6 +182,7 @@ namespace SystemWeb.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
+        [Route("inserzioni/excell")]
         public ActionResult Excell(string gridModel)
         {
             var exp = new ExcelExport();
@@ -172,6 +200,7 @@ namespace SystemWeb.Controllers
         }
         
         [Authorize(Roles = "Administrator")]
+        [Route("inserzioni/word")]
         public ActionResult Word(string gridModel)
         {
             var context = new MyDbContext();
@@ -189,6 +218,7 @@ namespace SystemWeb.Controllers
         }
         
         [Authorize(Roles = "Administrator")]
+        [Route("inserzioni/pdf")]
         public ActionResult Pdf(string gridModel)
         {
             var context = new MyDbContext();

@@ -1613,6 +1613,7 @@ namespace SystemWeb.Controllers
         }
 
         [HttpPost]
+        [Route("user/deficienze/aggiungi")]
         [ValidateAntiForgeryToken]
         public ActionResult PvDeficienzeCreate([Bind(Include = "PvDefId,PvTankId,Value,FieldDate")] PvDeficienze pvDeficienze)
         {
@@ -1844,6 +1845,7 @@ namespace SystemWeb.Controllers
         }
 
         [HttpPost]
+        [Route("user/cali/nuovo")]
         [ValidateAntiForgeryToken]
         public ActionResult PvCaliCreate(PvCali pvCali)
         {
@@ -1851,7 +1853,8 @@ namespace SystemWeb.Controllers
             {
                 _pvCaliRepository.InsertRecords(pvCali);
                 _pvCaliRepository.Save();
-                return RedirectToAction("Index");
+
+                return RedirectToAction("Index", "User");
             }
 
             ViewBag.PvTankId = new SelectList(_db.PvTank, "PvTankId", "Modello", pvCali.PvTankId);
@@ -2851,6 +2854,140 @@ namespace SystemWeb.Controllers
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
+        #endregion
+
+        #region Chiusura
+
+        public ActionResult Chiusura()
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            var da = new DateTime(2016, 12, 31);
+            var al = DateTime.Now;
+            #endregion
+
+            var _carico = from a in _db.Carico
+                          where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly)
+                          select a;
+
+            var _contatori = _pvErogatoriRepository.GetPvErogatori()
+               .Where(a => currentUser != null && (currentUser.pvID == a.pvID &&
+                                                   (Convert.ToDateTime(a.FieldDate) >= da)
+                                                   && (Convert.ToDateTime(a.FieldDate) <= al)));
+
+            var _deficienze = _pvDeficienzeRepository.GetRecords()
+                    .ToList()
+                    .Where(a => Convert.ToDateTime(a.FieldDate) >= da
+                                && (Convert.ToDateTime(a.FieldDate) <= al));
+
+            var _cali = _pvCaliRepository.GetRecords()
+                         .ToList()
+                         .Where(a => Convert.ToDateTime(a.FieldDate) >= da
+                                && (Convert.ToDateTime(a.FieldDate) <= al));
+
+            #region Carico
+            var _totCaricoB = _carico.Sum(s => s.Benzina);
+            var _totCaricoG = _carico.Sum(s => s.Gasolio);
+            var _rimIB = 6530;
+            var _rimIG = 8256;
+            var TotCaricoB = _rimIB + _totCaricoB;
+            var TotCaricoG = _rimIG + _totCaricoG;
+            ViewBag.TotCaricoB = TotCaricoB;
+            ViewBag.TotCaricoG = TotCaricoG;
+            #endregion
+
+            #region Scarico
+
+            #region contatori
+            var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
+            var maxB = pvErogatoris
+                .Where(z => (z.Product.Nome.Contains("B")))
+                .Max(row => row.Value);
+            var minB = pvErogatoris
+                .Where(z => (z.Product.Nome.Contains("B")))
+                .Min(row => row.Value);
+
+            var maxG = pvErogatoris
+                .Where(z => (z.Product.Nome.Contains("G")))
+                .Max(row => row.Value);
+            var minG = pvErogatoris
+                .Where(z => (z.Product.Nome.Contains("G")))
+                .Min(row => row.Value);
+
+            var totalB = maxB - minB;
+            var totalG = maxG - minG;
+            ViewBag.totalB = totalB;
+            ViewBag.totalG = totalG;
+
+            #endregion
+            
+            #region deficienze
+            var enumerable = _deficienze as IList<PvDeficienze> ?? _deficienze.ToList();
+            var sumdG = enumerable
+                .Where(z => currentUser.pvID == z.PvTank.pvID
+                && z.PvTank.Modello.Contains("MC-10993"))
+                .Sum(row => row.Value);
+
+            var sumdB = enumerable
+                .Where(z => currentUser.pvID == z.PvTank.pvID
+                && z.PvTank.Modello.Contains("MC-10688"))
+                .Sum(row => row.Value);
+
+            ViewBag.sumdB = sumdB;
+            ViewBag.sumdG = sumdG;
+
+            #endregion
+
+            #region cali
+            var pvcali = _cali as IList<PvCali> ?? _cali.ToList();
+            var SumcG = pvcali
+                .Where(z => currentUser.pvID == z.PvTank.pvID
+                && z.PvTank.Modello.Contains("MC-10993"))
+                .Sum(row => row.Value);
+
+            var SumcB = pvcali
+                .Where(z => currentUser.pvID == z.PvTank.pvID
+                && z.PvTank.Modello.Contains("MC-10688"))
+                .Sum(row => row.Value);
+
+            ViewBag.SumcB = SumcB;
+            ViewBag.SumcG = SumcG;
+
+            #endregion
+
+            #endregion
+            var totScaricoB = totalB + sumdB + SumcB;
+            var totScaricoG = totalG + sumdG + SumcG;
+
+            var _cisternaB = from a in _db.PvTank
+                         where currentUser.pvID == a.pvID 
+                         select a.Giacenza;
+            var rimEfB = _cisternaB.Single();
+
+            var _cisternaG = from a in _db.PvTank
+                             where currentUser.pvID == a.pvID
+                             select a.Giacenza;
+            var rimEfG = _cisternaG.Single();
+
+            ViewBag.TotScaricoB = totScaricoB;
+            ViewBag.TotScaricoG = totScaricoG;
+
+            var rimContB = TotCaricoB - totScaricoB;
+            var rimContG = TotCaricoG - totScaricoG;
+
+            ViewBag.RiportoB = rimContB;
+            ViewBag.RiportoG = rimContG;
+            ViewBag.RiportoEB = rimEfB;
+            ViewBag.RiportoEG = rimEfG;
+            ViewBag.DifEB = rimContB - rimEfB;
+            ViewBag.DifEG = rimContG - rimEfG;
+            ViewBag.pvId = new SelectList(_db.Pv, "pvID", "pvName");
+            return View();
+        }
 
         #endregion
 

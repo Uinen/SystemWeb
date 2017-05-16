@@ -1,0 +1,91 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_SecondLayout.cshtml";
+}
+@using (Html.BeginForm("Chiusura", "User", FormMethod.Get))
+{
+    <div id="no-more-tables">
+        <table class="table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <th>
+                        Benzina
+                    </th>
+                    <th>
+                        
+                    </th>
+                    <th>
+                        
+                    </th>
+                    <th>
+                        Gasolio
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Totale Ordini SSPB</th>
+                    <td>@ViewBag.TotCaricoB</td>
+                    <th></th>
+                    <th>Totale Ordini DSL</th>
+                    <td>@ViewBag.TotCaricoG</td>
+                </tr>
+                <tr>
+                    <th>Totale Contatori SSPB</th>
+                    <td>@ViewBag.totalB</td>
+                    <th></th>
+                    <th>Totale Contatori DSL</th>
+                    <td>@ViewBag.totalG</td>
+                </tr>
+                <tr>
+                    <th>Totale Deficienze SSPB</th>
+                    <td>@ViewBag.sumdB</td>
+                    <th></th>
+                    <th>Totale Deficienze DSL</th>
+                    <td>@ViewBag.sumdG</td>
+                </tr>
+                <tr>
+                    <th>Totale Cali SSPB</th>
+                    <td>@ViewBag.sumcB</td>
+                    <th></th>
+                    <th>Totale Cali DSL</th>
+                    <td>@ViewBag.sumcG</td>
+                </tr>
+                <tr>
+                    <th>Totale Scarico SSPB</th>
+                    <td>@ViewBag.TotScaricoB</td>
+                    <th></th>
+                    <th>Totale Scarico DSL</th>
+                    <td>@ViewBag.TotScaricoG</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Rimanenza Contabile Benzina</th>
+                    <td>@ViewBag.RiportoB</td>
+                    <th></th>
+                    <th>Rimanenza Contabile Diesel</th>
+                    <td>@ViewBag.RiportoG</td>
+                </tr>
+                <tr>
+                    <th>Rimanenza Effettiva Benzina</th>
+                    <td>@ViewBag.RiportoEB</td>
+                    <th></th>
+                    <th>Rimanenza Effettiva Diesel</th>
+                    <td>@ViewBag.RiportoEG</td>
+                </tr>
+                <tr>
+                    <th>Differenza</th>
+                    <td>@ViewBag.DifEB</td>
+                    <th></th>
+                    <th>Differenza</th>
+                    <td>@ViewBag.DifEG</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
+

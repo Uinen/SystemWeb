@@ -1,0 +1,81 @@
+﻿@model SystemWeb.Models.RegisterBindingModel
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Richiesta Completata</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    <link rel="stylesheet" href="http://static.gestionidirette.com/Contenuti/Bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://static.gestionidirette.com/Contenuti/css/Signin%20Form/form-elements.min.css">
+    <link rel="stylesheet" href="http://static.gestionidirette.com/Contenuti/css/Signin%20Form/style.min.css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- Favicon and touch icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="http://static.gestionidirette.com/Contenuti/icons/apple-touch-icon.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="32x32" href="http://static.gestionidirette.com/Contenuti/icons/favicon-32x32.png?v=LbGQJmwPGw">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://static.gestionidirette.com/Contenuti/icons/favicon-16x16.png?v=LbGQJmwPGw">
+    <link rel="manifest" href="http://static.gestionidirette.com/Contenuti/icons/manifest.json?v=LbGQJmwPGw">
+    <link rel="mask-icon" href="http://static.gestionidirette.com/Contenuti/icons/safari-pinned-tab.svg?v=LbGQJmwPGw" color="#5bbad5">
+    <link rel="shortcut icon" href="http://static.gestionidirette.com/Contenuti/icons/favicon.ico?v=LbGQJmwPGw">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="http://static.gestionidirette.com/Contenuti/icons/mstile-144x144.png?v=LbGQJmwPGw">
+    <meta name="msapplication-config" content="http://static.gestionidirette.com/Contenuti/icons/browserconfig.xml?v=LbGQJmwPGw">
+    <meta name="theme-color" content="#ff0000">
+    <style type="text/css">
+        body {
+            background-image: url('http://static.gestionidirette.com/Contenuti/img/SignIn.jpg');
+        }
+    </style>
+
+</head>
+<body>
+    <div class="inner-bg">
+        <div class="container">
+            <div class="row">
+                <div class="center-block">
+				  <h1 style="color:#fff"><strong>Benvenuto</strong></h1>
+                    <div class="form-box">
+                        <div class="form-top">
+                            <div class="form-top-left">
+                                <h3>Gentile @Model.mProfileName @Model.mProfileSurname</h3>
+                                <p style="color:#fff">La ringraziamo per aver scelto il nostro servizio registrando l'impianto @Model.mPvName! Prima di utilizzare al meglio il nostro portale le chiediamo di confermare il suo account cliccando il link sotto elencato.<p>
+							</div>
+                        </div>
+                        <div class="form-bottom">
+                            <div class="form-group">
+                                <a href="http://www.gestionidirette.com/account/registrati/emailconfermata/token=@Model.Id_email=@Model.Email" class="card-footer clearfix large z-1">
+                                    <span class="float-left text-uppercase text-primary"><strong>Confermalo ora</strong></span>
+                                    <span class="float-right"><i class="fa fa-angle-right"></i></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="footer-border"></div>
+                    <div class="credits">
+                        <p class="text-capitalize text-center">Gestioni Dirette&trade;</p>
+                        <p class="text-center">Progetto ideato da MTM di Fabbri Marcello & C. Snc</p>
+                        <p class="text-center">Sede Legale: Piazza Concordia(SP)</p>
+                        <p class="text-center">Partita Iva: 01407280112</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

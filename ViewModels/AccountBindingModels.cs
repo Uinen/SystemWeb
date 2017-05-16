@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using SystemWeb.Database.Entity;
+using System.Collections;
 
 namespace SystemWeb.Models
 {
@@ -44,6 +45,8 @@ namespace SystemWeb.Models
         [Display(Name = "Posta elettronica")]
         public string Email { get; set; }
 
+        public string Id { get; set; }
+
         [Required]
         [StringLength(100, ErrorMessage = "La lunghezza di {0} deve essere di almeno {2} caratteri.", MinimumLength = 6)]
         [DataType(DataType.Password)]
@@ -83,6 +86,8 @@ namespace SystemWeb.Models
         [Required]
         [Display(Name = "Compagnia")]
         public Guid mPvFlagId { get; set; }
+
+        public IEnumerable flag { get; set; }
 
         public ApplicationUser GetUser()
         {

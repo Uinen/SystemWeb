@@ -49,14 +49,12 @@ namespace SystemWeb.Controllers
         #endregion
 
         //[Route("", Name = HomeControllerRoute.GetIndex)]
-        [WhitespaceFilter]
         public ActionResult Index()
         {
-            return View(HomeControllerAction.Index);
+            return View();
         }
 
         [HttpPost]
-        [WhitespaceFilter]
         [ValidateAntiForgeryToken]
         public ActionResult Index(ContactViewModel value)
         {
@@ -68,10 +66,10 @@ namespace SystemWeb.Controllers
                     SmtpClient smtp = new SmtpClient("smtp.live.com");
                     MailAddress from = new MailAddress(value.Email.ToString());
                     StringBuilder sb = new StringBuilder();
-                    msg.From = new MailAddress(value.Email);// replace it with sender email address
+                    msg.From = new MailAddress(value.Email);
 
-                    msg.To.Add("vale92graveglia@live.it");// replace ti with recipient email address
-                    msg.Subject = string.Format("Messaggio da {0} che richiede: {1}", value.Name, value.Subject);
+                    msg.To.Add("vale92graveglia@live.it");
+                    msg.Subject = string.Format("Messaggio da {0} con email: {1} che richiede: {2}", value.Name, value.Email, value.Subject);
                     smtp.EnableSsl = true;
 
                     smtp.Credentials = new NetworkCredential("vale92graveglia@live.it", "morgana92");
@@ -81,6 +79,7 @@ namespace SystemWeb.Controllers
                     smtp.Send(msg);
                     msg.Dispose();
                 }
+
                 catch (Exception e)
                 {
                     return RedirectToAction("InternalServerError", "Error", new { exceptionMessage = e.Message });

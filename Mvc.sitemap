@@ -27,7 +27,7 @@
       </mvcSiteMapNode>
       <mvcSiteMapNode title="Dispenser" action="Dispenser" />
     </mvcSiteMapNode>
-    <mvcSiteMapNode title="Cartissima" controller="Cartissima" action="List">
+    <mvcSiteMapNode title="Inserzioni" controller="Cartissima" action="List">
       <mvcSiteMapNode title="Segnalazione" action="Send" />
       <mvcSiteMapNode title="Operazione Completata" action="Success" />
     </mvcSiteMapNode>

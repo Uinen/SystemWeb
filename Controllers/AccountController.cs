@@ -10,6 +10,10 @@ using System.Web.Mvc;
 using Microsoft.Owin.Security;
 using System.Web.Security;
 using SystemWeb.Database.Entity;
+using System.IO;
+using System.Configuration;
+using SystemWeb.Mail;
+using RazorEngine;
 
 namespace SystemWeb.Controllers
 {
@@ -178,20 +182,38 @@ namespace SystemWeb.Controllers
                 if (result.Succeeded)
                 {
                     result = UserManager.AddToRole(user.Id, "User");
+                    model.Id = user.Id;
 
-                    System.Net.Mail.MailMessage m = new System.Net.Mail.MailMessage(
-                        new System.Net.Mail.MailAddress("vale92graveglia@live.it", "Registrazione Web"),
-                        new System.Net.Mail.MailAddress(user.Email));
+                    string body;
+                    model.flag = new SelectList(_db.Flag, "pvFlagId", "Nome");
 
-                    m.Subject = "Conferma Email";
-                    m.Body = string.Format("Gentile utente {0}<BR/>Grazie per esserti registrato, per completare la registrazione clicca sul seguente link: <a href=\"{1}\"title=\"Conferma\">{1}</a>", user.UserName, Url.Action("ConfirmEmail", "Account", new { Token = user.Id, Email = user.Email }, Request.Url.Scheme));
-                    m.IsBodyHtml = true;
-                    System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient("smtp.live.com", 25);
-                    smtp.Credentials = new System.Net.NetworkCredential("vale92graveglia@live.it", "morgana92");
-                    smtp.EnableSsl = true;
-                    smtp.Send(m);
+                    using (var sr = new StreamReader(Server.MapPath("/App_Data/Templates/Register-Proccess-Confirmed.txt")))
+                    {
+                        body = sr.ReadToEnd();
+                    }
 
-                    //ViewBag.Link = callbackUrl;
+                    var Username = HttpUtility.UrlEncode(model.Username);
+                    var Email = HttpUtility.UrlEncode(model.Email);
+                    var mProfileName = HttpUtility.UrlEncode(model.mProfileName);
+                    var mProfileSurname = HttpUtility.UrlEncode(model.mProfileSurname);
+                    var mPvName = HttpUtility.UrlEncode(model.mPvName);
+                    //var mPvFlagId = HttpUtility.UrlEncode(ViewBag.FlagId);
+
+                    var sender = ConfigurationManager.AppSettings["SenderEmail"];
+                    var emailSubject = "Gestioni Dirette - Conferma Registrazione";
+                    string messageBody = Razor.Parse(body, model);
+                    var mesagge = new Message
+                    {
+                        Sender = sender,
+                        Recipient = model.Email,
+                        RecipientCC = sender,
+                        Subject = emailSubject,
+                        AttachmentFile = null,
+                        Body = messageBody
+                    };
+
+                    mesagge.Send();
+
                     return RedirectToAction("Confirm", "Account", new { Email = user.Email, UserID = user.Id });
                 }
                 AddErrors(result);

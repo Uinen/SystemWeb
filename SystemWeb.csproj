@@ -26,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -167,6 +167,10 @@
     <Reference Include="PagedList.Mvc">
       <HintPath>packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="RazorEngine, Version=3.9.3.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>packages\RazorEngine.3.9.3\lib\net45\RazorEngine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Syncfusion.Compression.Base, Version=15.1450.0.41, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
       <HintPath>packages\Syncfusion.Web.FileFormatsBase45.15.1.0.41\lib\net45\Syncfusion.Compression.Base.dll</HintPath>
       <Private>True</Private>
@@ -288,6 +292,7 @@
     <Compile Include="DI\Autofac\Modules\MvcSiteMapProviderModule.cs" />
     <Compile Include="DI\CommonConventions.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
+    <Compile Include="Mail\Message.cs" />
     <Compile Include="ViewModels\EditParams.cs" />
     <Compile Include="ViewModels\ContactViewModel.cs" />
     <Compile Include="Global.asax.cs">
@@ -307,6 +312,8 @@
     <Compile Include="ViewModels\UserIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Templates\Register-Proccess-Confirmed.txt" />
+    <Content Include="App_Data\Templates\Business-Card-Success.txt" />
     <Content Include="Contenuti\Bootstrap\bootstrap-theme.css" />
     <Content Include="Contenuti\Bootstrap\bootstrap-theme.min.css" />
     <Content Include="Contenuti\Bootstrap\bootstrap.css" />
@@ -693,6 +700,7 @@
     <Content Include="Views\Account\SignIn.cshtml" />
     <Content Include="Views\Shared\_SignIn.cshtml" />
     <Content Include="Views\Shared\_EditProfiles.cshtml" />
+    <Content Include="Views\User\Chiusura.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Documents\" />
@@ -712,6 +720,9 @@
       <Project>{3631a7a6-abf8-4d67-965a-73bdd1a806fb}</Project>
       <Name>SystemWeb.Services</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

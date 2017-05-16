@@ -103,7 +103,7 @@
                                         .DataSource((IEnumerable<object>)ViewBag.dataSource2).Width(45).EditType(EditingType.Dropdown).Add();
 
                                         col.Field(p => p.Value).HeaderText("Valore").Width("50").EditType(EditingType.Numeric).Add();
-                                        col.Field(p => p.FieldDate).HeaderText("Data").Format("{0:dd/MM/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
+                                        col.Field(p => p.FieldDate).HeaderText("Data").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
                                     })
                 )
             </div>
