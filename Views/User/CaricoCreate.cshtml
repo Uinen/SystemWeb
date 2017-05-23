@@ -1,7 +1,4 @@
-@model Carico
-@{
-    Layout = "~/Views/Shared/_Blank.cshtml";
-}           
+@model Carico       
 @using (Html.BeginForm("CaricoCreate", "User", FormMethod.Post))
 {
         @Html.AntiForgeryToken()
@@ -33,8 +30,8 @@
             </div>
 
             <div class="col-sm-9 col-md-6 col-lg-4">
-                @Html.LabelFor(model => model.Documento, "Tipo di Documento", htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.Documento, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.LabelFor(model => model.documentoId, "Tipo di Documento", htmlAttributes: new { @class = "control-label" })
+                @Html.DropDownList("docId", null, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Documento, "", new { @class = "text-danger" })
             </div>
 
@@ -51,8 +48,8 @@
             </div>
 
             <div class="col-sm-9 col-md-9 col-lg-4">
-                @Html.LabelFor(model => model.Emittente, htmlAttributes: new { @class = "control-label" })
-                @Html.EditorFor(model => model.Emittente, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.LabelFor(model => model.Deposito, htmlAttributes: new { @class = "control-label" })
+                @Html.DropDownList("depId", null, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Emittente, "", new { @class = "text-danger" })
             </div>
 
@@ -91,7 +88,8 @@
             </div>
         </div>
 }
+@*
 
 @section script {
     @Scripts.Render("~/bundles/jqueryval")
-}
+} *@

@@ -48,7 +48,7 @@ namespace SystemWeb.Controllers
 
         #endregion
 
-        //[Route("", Name = HomeControllerRoute.GetIndex)]
+        [Route("", Name = HomeControllerRoute.GetIndex)]
         public ActionResult Index()
         {
             return View();
@@ -56,6 +56,7 @@ namespace SystemWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("", Name = HomeControllerRoute.PostIndex)]
         public ActionResult Index(ContactViewModel value)
         {
             if (ModelState.IsValid)
@@ -186,7 +187,7 @@ namespace SystemWeb.Controllers
             var content = _robotsService.GetRobotsText();
             return Content(content, ContentType.Text, Encoding.UTF8);
         }
-        /*
+        
         /// <summary>
         /// Gets the sitemap XML for the current site. You can customize the contents of this XML from the 
         /// <see cref="SitemapService"/>. The sitemap is cached for one day, adjust this time to whatever you require.
@@ -208,7 +209,7 @@ namespace SystemWeb.Controllers
             }
 
             return Content(content, ContentType.Xml, Encoding.UTF8);
-        }*/
+        }
 
     }
 }

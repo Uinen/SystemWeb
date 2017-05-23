@@ -1,68 +1,54 @@
 @{
+    ViewBag.Title = "Ordini";
     Layout = "~/Views/Shared/_SecondLayout.cshtml";
 }
-@section style{
-    @Styles.Render("~/Content/EjWidgetCore")
-    @Styles.Render("~/Content/EjTheme")
-    @Styles.Render("~/Content/EjResponsive")
-    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
-}
-@using (Html.BeginForm("Carico", "User", FormMethod.Get))
-{
-    <section id="carico" class="block">
+
+<section id="features" class="block">
+    @using (Html.BeginForm("Carico", "User", FormMethod.Get))
+    {
         <div class="container">
-            <div class="center-block">
-                <div class="row">
-                    <div class="center-block">
-                        <div class="header-content">
-                            <h4 class="alert alert-info">Lista di tutti gli ordini registrati sul impianto</h4>
-                            <strong>Genera</strong>
-                            @Html.ActionLink("Diagramma", "CaricoChart")
-                        </div>
-                        <div class="grid-filter">
-                            <form id="date-range-form" action="@Url.Action("Carico", "User")" method="post">
-                                <h5 class="alert alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma degli ordini registrati sul impianto in funzione del range selezionato.</h5>
-                                <h5 class="alert alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
-                                <div class="item">
-                                    <label for="from">Data 1</label>
-                                    <input type="text" id="from" name="dateFrom">
-                                </div>
-                                <div class="item">
-                                    <label for="to">Data 2</label>
-                                    <input type="text" id="to" name="dateTo">
-                                </div>
-                                <input type='submit' value='Ricerca' />
-                            </form>
-                        </div>
-                        <div id="no-more-tables">
-                            <h4 class="alert alert-info">Totale di tutti gli ordini registrati sul impianto</h4>
-                            <div id="totali">
-                                <table class="col-md-12 table-bordered table-striped table-condensed">
-                                    @Html.Partial("_TotalPartial")
-                                </table>
+            <div class="row">
+                <div class="item">
+                    <div class="header-content">
+                        <h4 class="alert alert-info">Lista di tutti gli ordini registrati sul impianto</h4>
+                        <strong>Genera</strong>
+                        @Html.ActionLink("Diagramma", "CaricoChart")
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="grid-filter">
+                        <form id="date-range-form" action="@Url.Action("Carico", "User")" method="post">
+                            <h5 class="alert alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma degli ordini registrati sul impianto in funzione del range selezionato.</h5>
+                            <h5 class="alert alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
+                            <div class="item">
+                                <label for="from">Data 1</label>
+                                <input type="text" id="from" name="dateFrom">
                             </div>
+                            <div class="item">
+                                <label for="to">Data 2</label>
+                                <input type="text" id="to" name="dateTo">
+                            </div>
+                            <input type='submit' value='Ricerca' />
+                        </form>
+                    </div>
+                </div>
+                <div class="item">
+                    <div id="no-more-tables">
+                        <h4 class="alert alert-info">Totale di tutti gli ordini registrati sul impianto</h4>
+                        <div id="totali">
+                            <table class="col-md-12 table-bordered table-striped table-condensed">
+                                @Html.Partial("_TotalPartial")
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-}
-<section id="adaptive">
+    }
     <div class="container">
-        <div class="center-block">
-            <div class="row">
-                <div class="center-block">
-                    <style type="text/css">
-                        ::-ms-clear {
-                            display: none;
-                        }
-
-                        .e-gridAdaptive {
-                            border-width: 0px !important;
-                        }
-                    </style>
-                    @(Html.EJ().Grid<Carico>("FlatGrid")
+        <div class="row">
+            <div class="item">
+                @(Html.EJ().Grid<Carico>("FlatGrid")
                     .Locale("it-IT")
                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
                     .UpdateURL("update")
@@ -117,22 +103,34 @@
 
                         col.Field(p => p.Ordine).HeaderText("Ordine").Width("50").Add();
                         col.Field(p => p.cData).HeaderText("Scarico").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
-                        col.Field(p => p.Documento).HeaderText("Tipo").Width("50").Add();
+
+                        col.Field(p => p.documentoId).HeaderText("Tipo").ForeignKeyField("DocumentoID").ForeignKeyValue("Tipo")
+                        .DataSource((IEnumerable<object>)ViewBag.datasource4).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
+
                         col.Field(p => p.Numero).HeaderText("Documento").Width("65").Add();
                         col.Field(p => p.rData).HeaderText("Bolla").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
-                        col.Field(p => p.Emittente).HeaderText("Emittente").Width("75").Add();
+
+                        col.Field(p => p.Deposito).HeaderText("Emittente").ForeignKeyField("depId").ForeignKeyValue("Nome")
+                        .DataSource((IEnumerable<object>)ViewBag.datasource5).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
+
                         col.Field(p => p.Benzina).HeaderText("Benzina").Width("50").Add();
                         col.Field(p => p.Gasolio).HeaderText("Gasolio").Width("50").Add();
                         col.Field(p => p.Note).HeaderText("Note").Width("50").Add();
                     })
-                    )
-                </div>
+                )
             </div>
         </div>
     </div>
 </section>
+@section style{
+    @Styles.Render("~/Content/EjWidgetCore")
+    @Styles.Render("~/Content/EjTheme")
+    @Styles.Render("~/Content/EjResponsive")
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
+}
 
 @section script{
+
     @Scripts.Render("~/bundles/jqueryeasing")
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
@@ -143,45 +141,45 @@
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()
 
-<script type="text/javascript">
-    $(function () {
-        $("#from").ejDatePicker({
-            locale: "it-IT",
-            onClose: function (selectedDate) {
-                $("#to").ejDatePicker("minDate", selectedDate);
+    <script type="text/javascript">
+        $(function () {
+            $("#from").ejDatePicker({
+                locale: "it-IT",
+                onClose: function (selectedDate) {
+                    $("#to").ejDatePicker("minDate", selectedDate);
 
-            }
+                }
+            });
+            $("#to").ejDatePicker({
+                locale: "it-IT",
+                onClose: function (selectedDate) {
+                    $("#from").ejDatePicker("maxDate", selectedDate);
+
+                },
+            });
         });
-        $("#to").ejDatePicker({
-            locale: "it-IT",
-            onClose: function (selectedDate) {
-                $("#from").ejDatePicker("maxDate", selectedDate);
 
-            },
-        });
-    });
-
-    ej.Grid.Locale["it-IT"] = {
-        EmptyRecord: "Nessun record da visualizzare",
-        GroupDropArea: "Trascinare una colonna qui",
-        DeleteOperationAlert: "Nessuna voce selezionata per l'eliminazione",
-        EditOperationAlert: "Entrate selezionate per operazione di modifica",
-        SaveButton: "Salva",
-        CancelButton: "Annulla",
-        EditFormTitle: "Modifica",
-        GroupCaptionFormat: "{{:field}}: {{:key}} - {{:count}} {{if count == 1}}Oggetto{{else}}Oggetti{{/if}}",
-        UnGroup: "Clicca qui per separare"
-    };
-    ej.Pager.Locale["it-IT"] = {
-        pagerInfo: "{0} di {1} Pagine ({2} Oggetti)",
-        firstPageTooltip: "Per la prima pagina",
-        lastPageTooltip: "L'ultima pagina",
-        nextPageTooltip: "Pagina successiva",
-        previousPageTooltip: "Pagina precedente",
-        nextPagerTooltip: "Alla prossima pagina",
-        previousPagerTooltip: "Pagina precedente"
-    };
-</script>
-    }
+        ej.Grid.Locale["it-IT"] = {
+            EmptyRecord: "Nessun record da visualizzare",
+            GroupDropArea: "Trascinare una colonna qui",
+            DeleteOperationAlert: "Nessuna voce selezionata per l'eliminazione",
+            EditOperationAlert: "Entrate selezionate per operazione di modifica",
+            SaveButton: "Salva",
+            CancelButton: "Annulla",
+            EditFormTitle: "Modifica",
+            GroupCaptionFormat: "{{:field}}: {{:key}} - {{:count}} {{if count == 1}}Oggetto{{else}}Oggetti{{/if}}",
+            UnGroup: "Clicca qui per separare"
+        };
+        ej.Pager.Locale["it-IT"] = {
+            pagerInfo: "{0} di {1} Pagine ({2} Oggetti)",
+            firstPageTooltip: "Per la prima pagina",
+            lastPageTooltip: "L'ultima pagina",
+            nextPageTooltip: "Pagina successiva",
+            previousPageTooltip: "Pagina precedente",
+            nextPagerTooltip: "Alla prossima pagina",
+            previousPagerTooltip: "Pagina precedente"
+        };
+    </script>
+}
 
 

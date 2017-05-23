@@ -36,7 +36,7 @@
             // Tell all robots not to index everything under the following directory.
             stringBuilder.AppendLine("disallow: /user/");
             stringBuilder.AppendLine("disallow: /admin/");
-            stringBuilder.AppendLine("disallow: /account/");
+            stringBuilder.AppendLine("allow: /account/");
             stringBuilder.AppendLine("disallow: /paypal/");
 
             // Tell all robots to to index any of the error pages.

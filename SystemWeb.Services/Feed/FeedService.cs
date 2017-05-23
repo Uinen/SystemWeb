@@ -92,7 +92,7 @@
                 ContentType.Html));
 
             feed.Links.Add(SyndicationLink.CreateAlternateLink(
-                new Uri(this.urlHelper.AbsoluteRouteUrl(CartissimaControllerRoute.GetSend)),
+                new Uri(this.urlHelper.AbsoluteRouteUrl(CartissimaControllerRoute.GetBusinessCard)),
                 ContentType.Html));
 
             // hub link (Recommended) - The URL for the PubSubHubbub hub. Used to push new entries to subscribers 

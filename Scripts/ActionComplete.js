@@ -133,3 +133,28 @@ function ActionCompleteCartissima(args, sender) {
         setTimeout(function () { proxy.windowonresize(); }, 30);
     }
 }
+
+function ActionCompleteDeposito(args, sender) {
+    var gridObj = $("#FlatGridDeposito").ejGrid("instance");
+    this.getContent().addClass("e-widget");
+    var browserDetails = gridObj.getBrowserDetails();
+    if (browserDetails.browser == "msie" && parseInt(browserDetails.version, 10) <= 9)
+        $("#FlatGridDeposito").ejGrid("model.enableResponsiveRow", false);
+    if (args.requestType == "filtering" || args.requestType == "searching") {
+        var proxy = this;
+        setTimeout(function () { proxy.windowonresize(); }, 30);
+    }
+}
+
+function ActionCompleteDocumento(args, sender) {
+    var gridObj = $("#FlatGridDocumento").ejGrid("instance");
+    this.getContent().addClass("e-widget");
+    var browserDetails = gridObj.getBrowserDetails();
+    if (browserDetails.browser == "msie" && parseInt(browserDetails.version, 10) <= 9)
+        $("#FlatGridDocumento").ejGrid("model.enableResponsiveRow", false);
+    if (args.requestType == "filtering" || args.requestType == "searching") {
+        var proxy = this;
+        setTimeout(function () { proxy.windowonresize(); }, 30);
+    }
+}
+

@@ -103,6 +103,8 @@
     <Compile Include="SitemapPinger\SitemapPingerService.cs" />
     <Compile Include="Sitemap\ISitemapService.cs" />
     <Compile Include="Sitemap\SitemapService.cs" />
+    <Compile Include="Static\AccountController\AccountControllerAction.cs" />
+    <Compile Include="Static\AccountController\AccountControllerRoute.cs" />
     <Compile Include="Static\Application.cs" />
     <Compile Include="Static\CacheProfileName.cs" />
     <Compile Include="Static\CacheSetting.cs" />
@@ -118,6 +120,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

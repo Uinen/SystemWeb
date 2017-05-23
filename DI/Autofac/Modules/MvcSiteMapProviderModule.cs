@@ -111,14 +111,6 @@ namespace SystemWeb.DI.Autofac.Modules
                             c.ResolveNamed<IAclModule>("xmlRolesAclModule")
                         });
 
-
-
-
-
-
-
-
-
             builder.RegisterInstance(System.Runtime.Caching.MemoryCache.Default)
                    .As<System.Runtime.Caching.ObjectCache>();
 
@@ -149,7 +141,6 @@ namespace SystemWeb.DI.Autofac.Modules
             builder.RegisterType<ReservedAttributeNameProvider>()
                 .As<IReservedAttributeNameProvider>()
                 .WithParameter("attributesToIgnore", new string[0]);
-
 
 // Register the sitemap node providers
             builder.RegisterType<XmlSiteMapNodeProvider>()

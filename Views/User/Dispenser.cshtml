@@ -1,4 +1,5 @@
 @{
+    ViewBag.Title = "Dispenser";
     Layout = "~/Views/Shared/_SecondLayout.cshtml";
 }
 @section style{
@@ -65,7 +66,7 @@
                                         .DataSource((IEnumerable<object>)ViewBag.dataSource2).Width(45).EditType(EditingType.Dropdown).Add();
 
                                         col.Field(p => p.Modello).HeaderText("Modello").Width("50").EditType(EditingType.String).Add();
-                                        col.Field(p => p.isActive).HeaderText("Attività").Width("45").EditType(EditingType.Boolean).Add();
+                                        col.Field(p => p.isActive).HeaderText("On/Off").Width("45").EditType(EditingType.Boolean).Add();
                                     })
                 )
             </div>

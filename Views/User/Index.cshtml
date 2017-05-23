@@ -3,50 +3,54 @@
 @model UserIndexViewModel
 
 @{
+    ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_SecondLayout.cshtml";
 }
+
 @section style{
 
 }
 @if (Request.IsAuthenticated)
 {
-    <div class="container">
-        <div class="center-block">
+    <section id="features">
+        <div class="container">
             <div class="row">
-                @if (User.IsInRole("Administrator"))
+                <div class="item">
+                    @if (User.IsInRole("Administrator"))
                 {
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item active">@ViewBag.Flag - @ViewBag.PvNamee, @ViewBag.PvCity - @ViewBag.PvInd</li>
-                        <li class="breadcrumb-item alert alert-info">Il sistema ha rilevato che la tua utenza appartiene al Ruolo Amministratori, al seguente <a href="/admin">Link</a> puoi accedere ai servizi avanzati al momento disponibili.</li>
-                    </ol>
-                }
-                else
-                {
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item active">@ViewBag.Flag - @ViewBag.PvNamee, @ViewBag.PvCity - @ViewBag.PvInd</li>
-                    </ol>
-                }
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active">@ViewBag.Flag - @ViewBag.PvNamee, @ViewBag.PvCity - @ViewBag.PvInd</li>
+                            <li class="breadcrumb-item alert alert-info">Il sistema ha rilevato che la tua utenza appartiene al Ruolo Amministratori, al seguente <a href="/admin">Link</a> puoi accedere ai servizi avanzati al momento disponibili.</li>
+                        </ol>
+                    }
+                    else
+                    {
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active">@ViewBag.Flag - @ViewBag.PvNamee, @ViewBag.PvCity - @ViewBag.PvInd</li>
+                        </ol>
+                    }
+                </div>
             </div>
             <div class="row">
                 @if (Model.usersimage.Any(f => f.FileType == FileType.Avatar))
                 {
-                    <div class="col-sm-6 col-lg-3 col-md-3 mb-4">
-                        <div class="panel-default">
-                            <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:140px; height:140px" />
-                            <h4 class="text-uppercase"><strong> @ViewBag.ProfileFullName </strong></h4>
-                            <p class="text-lowercase text-capitalize">@ViewBag.FullAdress</p>
+                    <div class="item">
+                        <div class="col-sm-6 col-lg-3 col-md-3 mb-4">
+                            <div class="panel-default">
+                                <img src="~/UsersImage?id=@Model.usersimage.First(f => f.FileType == FileType.Avatar).UsersImageID" alt="avatar" style="width:140px; height:140px" />
+                                <h4 class="text-uppercase"><strong> @ViewBag.ProfileFullName </strong></h4>
+                                <p class="text-lowercase text-capitalize">@ViewBag.FullAdress</p>
 
-                            <div class="card-footer clearfix small z-1">
-                                <span class="float-left"><button id="opener">Modifica Profilo</button></span>
-                                <span class="float-right"><i class="fa fa-angle-right"></i></span>
-                                @Html.EJ().Dialog("dialog").Title("Modifica Profilo").ContentType("ajax").ContentUrl(Url.Action("EditProfiles", "User")).ShowOnInit(false).IsResponsive(true)
+                                <div class="card-footer clearfix small z-1">
+                                    <span class="float-left"><button id="opener">Modifica Profilo</button></span>
+                                    <span class="float-right"><i class="fa fa-angle-right"></i></span>
+                                    @Html.EJ().Dialog("dialog").Title("Modifica Profilo").ContentType("ajax").ContentUrl(Url.Action("EditProfiles", "User")).ShowOnInit(false).IsResponsive(true)
+                                </div>
                             </div>
                         </div>
                     </div>
                 }
-                <div id="dialog">
-
-                </div>
+                <div class="item">
                     <div class="col-sm-6 col-lg-5 col-md-5 mb-4">
                         <div class="panel-default breadcrumb" style="background-color:#f5f5f5">
                             <h5 class="text-info text-uppercase"><strong>Statistiche di vendita - anno corrente</strong></h5>
@@ -66,6 +70,8 @@
                             <span class="float-right"><i class="fa fa-angle-right"></i></span>
                         </a>
                     </div>
+                </div>
+                <div class="item">
                     <div class="col-sm-4 col-lg-3 col-md-3 mb-4">
                         <div class="panel-default">
                             <h5 class="text-danger text-uppercase"><strong>Ultime notizie</strong></h5>
@@ -75,6 +81,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             @*
                 <div class="row">
                     <div class="grid-filter">
@@ -94,19 +101,21 @@
                     </div>
                 </div>*@
             <div class="row">
-                <div class="col-lg-12 mb-3">
-                    <div class="card card-inverse card-info o-hidden h-100">
-                        <div class="card-block">
-                            <div class="card-header">
-                                <i class="fa fa-file-text"></i><h5 class="text-uppercase"><strong>Invia Ordine</strong></h5>
+                <div class="item">
+                    <div class="col-lg-12 mb-3">
+                        <div class="card card-inverse card-info o-hidden h-100">
+                            <div class="card-block">
+                                <div class="card-header">
+                                    <i class="fa fa-file-text"></i><h5 class="text-uppercase"><strong>Invia Ordine</strong></h5>
+                                </div>
+                                @Html.Partial("CaricoCreate", new Carico { })
                             </div>
-                            @Html.Partial("CaricoCreate", new Carico { })
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 }
 @section script{
 }

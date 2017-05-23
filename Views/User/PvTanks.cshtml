@@ -1,4 +1,5 @@
 @{
+    ViewBag.Title = "Cisterne";
     Layout = "~/Views/Shared/_SecondLayout.cshtml";
 }
 @section style{
@@ -77,6 +78,7 @@
                         col.Field(p => p.Modello).HeaderText("Modello").Width("50").EditType(EditingType.String).Add();
                         col.Field(p => p.Capienza).HeaderText("Capienza").Width("45").EditType(EditingType.Numeric).Add();
                         col.Field(p => p.Giacenza).HeaderText("Giacenza").Width("50").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.Rimanenza).HeaderText("Rimanenza Iniziale").Width("50").EditType(EditingType.Numeric).Add();
                         col.Field(p => p.LastDate).HeaderText("Ultima Rilevazione").Format("{0:MM/dd/yyyy}").EditType(EditingType.Datepicker).Width("65").Add();
                         col.Field(p => p.Descrizione).HeaderText("Descrizione").Width("45").EditType(EditingType.String).Add();
                     })

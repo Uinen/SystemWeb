@@ -2,8 +2,8 @@
 {
     public static class CartissimaControllerRoute
     {
-        public const string GetSend = ControllerName.Cartissima + "GetSend";
-        public const string PostSend = ControllerName.Cartissima + "PostSend";
-        public const string GetSuccess = ControllerName.Cartissima + "GetSuccess";
+        public const string GetBusinessCard = ControllerName.Inserzioni + "GetBusiness-Card";
+        public const string PostBusinessCard = ControllerName.Inserzioni + "PostBusiness-Card";
+        public const string GetRichiestaInviata = ControllerName.Inserzioni + "GetRichiesta-Inviata";
     }
 }

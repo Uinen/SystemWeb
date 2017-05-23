@@ -71,7 +71,7 @@ namespace SystemWeb.Controllers
         
         [Authorize(Roles = "Administrator")]
         [Route("inserzioni/")]
-        public ActionResult List()
+        public ActionResult Inserzioni()
         {
             var dataSource = _db.Cartissima.OrderBy(o => o.sCartCreateDate).ToList();
             ViewBag.datasource = dataSource;
@@ -82,17 +82,17 @@ namespace SystemWeb.Controllers
             return View();
         }
 
-        [Route("inserzioni/business-card/", Name = CartissimaControllerRoute.GetSend)]
+        [Route("inserzioni/businesscard/", Name = CartissimaControllerRoute.GetBusinessCard)]
         [HttpGet]
-        public ActionResult Send()
+        public ActionResult BusinessCard()
         {
             return View();
         }
 
-        [Route("inserzioni/business-card/", Name = CartissimaControllerRoute.PostSend)]
+        [Route("inserzioni/businesscard/", Name = CartissimaControllerRoute.PostBusinessCard)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Send(Cartissima value)
+        public ActionResult BusinessCard(Cartissima value)
         {
             if (ModelState.IsValid)
             {
@@ -131,20 +131,20 @@ namespace SystemWeb.Controllers
 
                     mesagge.Send();
 
-                    return RedirectToAction("Success", new { key = value.sCartId });
+                    return RedirectToAction("RichiestaInviata", new { key = value.sCartId });
                 }
 
                 else
                 {
-                    return RedirectToAction("Success", new { key = value.sCartId });
+                    return RedirectToAction("RichiestaInviata", new { key = value.sCartId });
                 }
             }
 
             return View();
         }
 
-        [Route("inserzioni/business-card/richiesta-inviata", Name = CartissimaControllerRoute.GetSuccess)]
-        public ActionResult Success(Guid key)
+        [Route("inserzioni/businesscard/richiestainviata", Name = CartissimaControllerRoute.GetRichiestaInviata)]
+        public ActionResult RichiestaInviata(Guid key)
         {
             var _getCode = (from a in _db.Cartissima
                             where key == a.sCartId

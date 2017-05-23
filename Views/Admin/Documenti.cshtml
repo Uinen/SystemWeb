@@ -1,0 +1,106 @@
+﻿@{
+    Layout = "~/Views/Shared/_ThirdLayout.cshtml";
+}
+
+<section id="features" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="item">
+                @(Html.EJ().Grid<Documento>("FlatGridDocumento")
+                    .Locale("it-IT")
+                    .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
+                    .UpdateURL("update")
+                    .InsertURL("insert")
+                    .RemoveURL("remove")
+                    .Adaptor(AdaptorType.RemoteSaveAdaptor))
+                    .AllowGrouping()
+                    .AllowPaging()
+                    .EnableAltRow()
+                    .PageSettings(p => p.PageCount(2).PageSize(5))
+                    .IsResponsive(true)
+                    .EnableResponsiveRow(true)
+                    .AllowSorting()
+                    .AllowFiltering()
+                                    .FilterSettings(filter =>
+                                    {
+                                        filter.FilterType(FilterType.Excel);
+                                    })
+
+                    .AllowMultiSorting()
+                    .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteDocumento"))
+                    .MinWidth(400)
+                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog))
+                    .ToolbarSettings(toolbar =>
+                    {
+                        toolbar.ShowToolbar().ToolbarItems(items =>
+                        {
+                            items.AddTool(ToolBarItems.Add);
+                            items.AddTool(ToolBarItems.Edit);
+                            items.AddTool(ToolBarItems.Delete);
+                            items.AddTool(ToolBarItems.Update);
+                            items.AddTool(ToolBarItems.Cancel);
+                            items.AddTool(ToolBarItems.Search);
+                            items.AddTool(ToolBarItems.ExcelExport);
+                            items.AddTool(ToolBarItems.WordExport);
+                            items.AddTool(ToolBarItems.PdfExport);
+                        });
+                    })
+
+                    .Mappers(map => map.ExportToExcelAction("documentiexcell")
+                                    .ExportToPdfAction("documentipdf")
+                                    .ExportToWordAction("documentiword"))
+                    .Columns(col =>
+                    {
+                        col.Field(p => p.DocumentoID).HeaderText("ID Documento").IsPrimaryKey(true).Visible(true).Width("90").Add();
+                        col.Field(p => p.Tipo).HeaderText("Tipo").Width("50").EditType(EditingType.String).Add();
+
+                    })
+                )
+            </div>
+        </div>
+    </div>
+</section>
+
+@section style{
+    @Styles.Render("~/Content/EjWidgetCore")
+    @Styles.Render("~/Content/EjTheme")
+    @Styles.Render("~/Content/EjResponsive")
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
+}
+
+@section script{
+
+    @Scripts.Render("~/bundles/jqueryeasing")
+    @Scripts.Render("~/bundles/jsrender")
+    @Scripts.Render("~/bundles/jqueryglobalize")
+    @Scripts.Render("~/bundles/jquerybrowser")
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/GridOption")
+    @Html.EJ().ScriptManager()
+
+    <script type="text/javascript">
+    ej.Grid.Locale["it-IT"] = {
+        EmptyRecord: "Nessun record da visualizzare",
+        GroupDropArea: "Trascinare una colonna qui",
+        DeleteOperationAlert: "Nessuna voce selezionata per l'eliminazione",
+        EditOperationAlert: "Entrate selezionate per operazione di modifica",
+        SaveButton: "Salva",
+        CancelButton: "Annulla",
+        EditFormTitle: "Modifica",
+        GroupCaptionFormat: "{{:field}}: {{:key}} - {{:count}} {{if count == 1}}Oggetto{{else}}Oggetti{{/if}}",
+        UnGroup: "Clicca qui per separare"
+    };
+    ej.Pager.Locale["it-IT"] = {
+        pagerInfo: "{0} di {1} Pagine ({2} Oggetti)",
+        firstPageTooltip: "Per la prima pagina",
+        lastPageTooltip: "L'ultima pagina",
+        nextPageTooltip: "Pagina successiva",
+        previousPageTooltip: "Pagina precedente",
+        nextPagerTooltip: "Alla prossima pagina",
+        previousPagerTooltip: "Pagina precedente"
+    };
+    </script>
+}
+

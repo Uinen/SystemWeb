@@ -10,8 +10,8 @@ using static System.Web.Mvc.DependencyResolver;
 using Autofac;
 using SystemWeb.DI.Autofac.Modules;
 using MvcSiteMapProvider.Loader;
-using MvcSiteMapProvider.Xml;
 using System.Web.Hosting;
+using MvcSiteMapProvider.Xml;
 using MvcSiteMapProvider.Web.Mvc;
 
 namespace SystemWeb
@@ -22,10 +22,31 @@ namespace SystemWeb
         {
             ConfigureViewEngines();
             ConfigureAntiForgeryTokens();
+            ConfigureDI();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             Application["Version"] = $"{version.Major}.{version.Minor}.{version.Build}";
+        }
+
+        /// <summary>
+        /// Handles the Content Security Policy (CSP) violation errors. For more information see FilterConfig.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CspViolationReportEventArgs"/> instance containing the event data.</param>
+        protected void NWebsecHttpHeaderSecurityModule_CspViolationReported(object sender, CspViolationReportEventArgs e)
+        {
+            // Log the Content Security Policy (CSP) violation.
+            var violationReport = e.ViolationReport;
+            var reportDetails = violationReport.Details;
+            var violationReportString =
+                $"UserAgent:<{violationReport.UserAgent}>\r\nBlockedUri:<{reportDetails.BlockedUri}>\r\nColumnNumber:<{reportDetails.ColumnNumber}>\r\nDocumentUri:<{reportDetails.DocumentUri}>\r\nEffectiveDirective:<{reportDetails.EffectiveDirective}>\r\nLineNumber:<{reportDetails.LineNumber}>\r\nOriginalPolicy:<{reportDetails.OriginalPolicy}>\r\nReferrer:<{reportDetails.Referrer}>\r\nScriptSample:<{reportDetails.ScriptSample}>\r\nSourceFile:<{reportDetails.SourceFile}>\r\nStatusCode:<{reportDetails.StatusCode}>\r\nViolatedDirective:<{reportDetails.ViolatedDirective}>";
+            var exception = new CspViolationException(violationReportString);
+            Current.GetService<ILoggingService>().Log(exception);
+        }
+        private static void ConfigureDI()
+        {
             // Create a container builder (typically part of your DI setup already)
             var builder = new ContainerBuilder();
 
@@ -44,23 +65,7 @@ namespace SystemWeb
             validator.ValidateXml(HostingEnvironment.MapPath("~/Mvc.sitemap"));
 
             // Register the Sitemaps routes for search engines (optional)
-            XmlSiteMapController.RegisterRoutes(RouteTable.Routes);
-        }
-
-        /// <summary>
-        /// Handles the Content Security Policy (CSP) violation errors. For more information see FilterConfig.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="CspViolationReportEventArgs"/> instance containing the event data.</param>
-        protected void NWebsecHttpHeaderSecurityModule_CspViolationReported(object sender, CspViolationReportEventArgs e)
-        {
-            // Log the Content Security Policy (CSP) violation.
-            var violationReport = e.ViolationReport;
-            var reportDetails = violationReport.Details;
-            var violationReportString =
-                $"UserAgent:<{violationReport.UserAgent}>\r\nBlockedUri:<{reportDetails.BlockedUri}>\r\nColumnNumber:<{reportDetails.ColumnNumber}>\r\nDocumentUri:<{reportDetails.DocumentUri}>\r\nEffectiveDirective:<{reportDetails.EffectiveDirective}>\r\nLineNumber:<{reportDetails.LineNumber}>\r\nOriginalPolicy:<{reportDetails.OriginalPolicy}>\r\nReferrer:<{reportDetails.Referrer}>\r\nScriptSample:<{reportDetails.ScriptSample}>\r\nSourceFile:<{reportDetails.SourceFile}>\r\nStatusCode:<{reportDetails.StatusCode}>\r\nViolatedDirective:<{reportDetails.ViolatedDirective}>";
-            var exception = new CspViolationException(violationReportString);
-            Current.GetService<ILoggingService>().Log(exception);
+            //XmlSiteMapController.RegisterRoutes(RouteTable.Routes);
         }
 
         /// <summary>

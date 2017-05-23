@@ -12,8 +12,15 @@
     <link href="@Url.Content("~/Contenuti/ej/web/default-theme/ej.theme.min.css")" rel="stylesheet" />
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ej.responsive.min.css")" rel="stylesheet" />
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
+<style type="text/css">
+    body {
+        background-image: url('/Contenuti/img/SignIn.jpg');
+        /*background-color:deepskyblue;*/
+    }
+</style>
+
 }
-@using (Html.BeginForm("Send", "Cartissima", FormMethod.Post))
+@using (Html.BeginForm("BusinessCard", "Inserzioni", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     <div class="container">
@@ -22,7 +29,10 @@
                 <div class="form-box">
                     <div class="form-top">
                         <div class="form-top-left">
-                            <p>Compila il seguente form per essere contattato da un operatore per avere maggiori informazioni riguardo il nostro servizio</p>
+                            <p>Compila il seguente form per richiedere la tua nuova carta carburante</p>
+                        </div>
+                        <div class="form-top-right">
+                            <i class="fa fa-automobile"></i>
                         </div>
                     </div>
                     <div class="form-bottom">

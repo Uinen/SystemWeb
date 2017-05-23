@@ -1,7 +1,5 @@
 ﻿@model MvcSiteMapProvider.Web.Html.Models.SiteMapPathHelperModel
-@using System.Web.Mvc.Html
 @using System.Linq
-@using MvcSiteMapProvider.Web.Html.Models
 
 @if (Model.Nodes.Count != 1)
 {
@@ -17,7 +15,7 @@
             {
                 string url = node.IsClickable ? node.Url : "#";
 
-                <li class="breadcrumb-item"><a href="@url">@node.Title</a><span class="divider">></span></li>
+                <li class="breadcrumb-item"><a href="@url">@node.Title</a><span class="divider"></span></li>
             }
             else
             {

@@ -1,91 +1,116 @@
-﻿
-@{
+﻿@{
+    ViewBag.Title = "Chiusura Utf";
     Layout = "~/Views/Shared/_SecondLayout.cshtml";
 }
 @using (Html.BeginForm("Chiusura", "User", FormMethod.Get))
 {
-    <div id="no-more-tables">
-        <table class="table-bordered table-responsive">
-            <thead>
-                <tr>
-                    <th>
-                        Benzina
-                    </th>
-                    <th>
-                        
-                    </th>
-                    <th>
-                        
-                    </th>
-                    <th>
-                        Gasolio
-                    </th>
-                    <th>
+    <div class="container">
+        <div class="center-block">
+            <div class="row">
+                <div id="no-more-tables">
+                    <table class="table-bordered table-responsive">
+                        <thead>
+                            <tr>
+                                <th>
 
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>Totale Ordini SSPB</th>
-                    <td>@ViewBag.TotCaricoB</td>
-                    <th></th>
-                    <th>Totale Ordini DSL</th>
-                    <td>@ViewBag.TotCaricoG</td>
-                </tr>
-                <tr>
-                    <th>Totale Contatori SSPB</th>
-                    <td>@ViewBag.totalB</td>
-                    <th></th>
-                    <th>Totale Contatori DSL</th>
-                    <td>@ViewBag.totalG</td>
-                </tr>
-                <tr>
-                    <th>Totale Deficienze SSPB</th>
-                    <td>@ViewBag.sumdB</td>
-                    <th></th>
-                    <th>Totale Deficienze DSL</th>
-                    <td>@ViewBag.sumdG</td>
-                </tr>
-                <tr>
-                    <th>Totale Cali SSPB</th>
-                    <td>@ViewBag.sumcB</td>
-                    <th></th>
-                    <th>Totale Cali DSL</th>
-                    <td>@ViewBag.sumcG</td>
-                </tr>
-                <tr>
-                    <th>Totale Scarico SSPB</th>
-                    <td>@ViewBag.TotScaricoB</td>
-                    <th></th>
-                    <th>Totale Scarico DSL</th>
-                    <td>@ViewBag.TotScaricoG</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th>Rimanenza Contabile Benzina</th>
-                    <td>@ViewBag.RiportoB</td>
-                    <th></th>
-                    <th>Rimanenza Contabile Diesel</th>
-                    <td>@ViewBag.RiportoG</td>
-                </tr>
-                <tr>
-                    <th>Rimanenza Effettiva Benzina</th>
-                    <td>@ViewBag.RiportoEB</td>
-                    <th></th>
-                    <th>Rimanenza Effettiva Diesel</th>
-                    <td>@ViewBag.RiportoEG</td>
-                </tr>
-                <tr>
-                    <th>Differenza</th>
-                    <td>@ViewBag.DifEB</td>
-                    <th></th>
-                    <th>Differenza</th>
-                    <td>@ViewBag.DifEG</td>
-                </tr>
-            </tfoot>
-        </table>
+                                </th>
+                                <th>
+                                    Benzina
+                                </th>
+                                <th>
+
+                                </th>
+                                <th>
+                                    Gasolio
+                                </th>
+                                <th>
+
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th class="text-left">Rimanenze</th>
+                                <td class="text-center">@ViewBag.RimIB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.RimIG</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Ordini</th>
+                                <td class="text-center">@ViewBag.rCaricoB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.rCaricoG</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Eccedenze</th>
+                                <td class="text-center">@ViewBag.eccB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.eccG</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Scatti a vuoto</th>
+                                <td class="text-center">@ViewBag.scatB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.scatG</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Totale Carico</th>
+                                <td class="text-center">@ViewBag.TotCaricoB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.TotCaricoG</td>
+                            </tr>
+                            <tr><th class="text-left">-</th></tr>
+                            <tr>
+                                <th class="text-left">Erogato da Totalizzatori</th>
+                                <td class="text-center">@ViewBag.totalB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.totalG</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Deficienze ATB</th>
+                                <td class="text-center">@ViewBag.sumdB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.sumdG</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Cali tecnici riscontrati e registrati</th>
+                                <td class="text-center">@ViewBag.sumcB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.sumcG</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Totale Scarico</th>
+                                <td class="text-center">@ViewBag.TotScaricoB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.TotScaricoG</td>
+                            </tr>
+                            <tr><th class="text-left">-</th></tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="text-left">Rimanenza Contabile</th>
+                                <td class="text-center">@ViewBag.RiportoB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.RiportoG</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Rimanenza Effettiva </th>
+                                <td class="text-center">@ViewBag.RiportoEB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.RiportoEG</td>
+                            </tr>
+                            <tr><th class="text-left">-</th></tr>
+                            <tr>
+                                <th class="text-left">Differenza (+ o -)</th>
+                                <td class="text-center">@ViewBag.DifEB</td>
+                                <th></th>
+                                <td class="text-center">@ViewBag.DifEG</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 }
 

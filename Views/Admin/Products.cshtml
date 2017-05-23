@@ -1,30 +1,11 @@
-@using (Html.BeginForm("products", "admin", FormMethod.Get))
-{
-    <section id="products" class="block">
-        <div class="container">
-            <div class="row">
-                <div class="center-block">
-                    <div class="header-content">
-                        <h4 class="alert alert-info">Lista di tutti i prodotti presenti sul sistema</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+@{
+    ViewBag.Title = "Prodotti";
+    Layout = "~/Views/Shared/_ThirdLayout.cshtml";
 }
-<section id="adaptive">
+<section id="features" class="block">
     <div class="container">
         <div class="row">
-            <div class="center-block">
-                <style type="text/css">
-                    ::-ms-clear {
-                        display: none;
-                    }
-
-                    .e-gridAdaptive {
-                        border-width: 0px !important;
-                    }
-                </style>
+            <div class="item">
                 @(Html.EJ().Grid<Product>("FlatGridProducts")
                     .Locale("it-IT")
                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
@@ -81,21 +62,21 @@
     </div>
 </section>
 
-@section Styles{
+@section style{
     @Styles.Render("~/Content/EjWidgetCore")
     @Styles.Render("~/Content/EjTheme")
     @Styles.Render("~/Content/EjResponsive")
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
 
-@section Scripts{
+@section script{
 
     @Scripts.Render("~/bundles/jqueryeasing")
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-      @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
-      @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()

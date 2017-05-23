@@ -134,9 +134,8 @@
       <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MvcSiteMapProvider, Version=4.6.22.0, Culture=neutral, PublicKeyToken=1923abe4657913cc, processorArchitecture=MSIL">
+    <Reference Include="MvcSiteMapProvider">
       <HintPath>packages\MvcSiteMapProvider.MVC5.Core.4.6.22\lib\net45\MvcSiteMapProvider.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MvcSiteMapProvider.WebActivator, Version=4.6.22.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\MvcSiteMapProvider.MVC5.4.6.22\lib\net45\MvcSiteMapProvider.WebActivator.dll</HintPath>
@@ -462,6 +461,9 @@
     <Content Include="Contenuti\fonts\fontawesome-webfont.woff2" />
     <Content Include="Contenuti\fonts\FontAwesome.otf" />
     <Content Include="Contenuti\fonts\ionicons.woff" />
+    <Content Include="Mvc.Sitemap">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="packages.config" />
     <Content Include="Scripts\ActionComplete.js" />
     <Content Include="Scripts\ActionComplete.min.js">
@@ -487,7 +489,9 @@
     <Content Include="Contenuti\Bootstrap\bootstrap.css.map" />
     <Content Include="Contenuti\Bootstrap\bootstrap-theme.min.css.map" />
     <Content Include="Contenuti\Bootstrap\bootstrap-theme.css.map" />
-    <Content Include="Mvc.Sitemap" />
+    <None Include="MvcSiteMapSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NWebsecConfig\HttpHeaderSecurityModuleConfig.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -684,23 +688,25 @@
     <Content Include="Views\Shared\_SecondLayout.cshtml" />
     <Content Include="Views\User\Carico.cshtml" />
     <Content Include="Views\Shared\_ThirdLayout.cshtml" />
-    <Content Include="Views\Cartissima\List.cshtml" />
-    <Content Include="Views\Cartissima\Send.cshtml" />
-    <Content Include="Views\Cartissima\Success.cshtml" />
+    <Content Include="Views\Cartissima\Inserzioni.cshtml" />
+    <Content Include="Views\Cartissima\BusinessCard.cshtml" />
+    <Content Include="Views\Cartissima\RichiestaInviata.cshtml" />
     <Content Include="Views\Shared\_Blank.cshtml" />
-    <Content Include="Views\Shared\DisplayTemplates\SiteMapTitleHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapPathHelperModel.cshtml" />
+    <Content Include="Views\Shared\_Cartissima.cshtml" />
+    <Content Include="Views\Account\SignIn.cshtml" />
+    <Content Include="Views\Shared\_SignIn.cshtml" />
+    <Content Include="Views\Shared\_EditProfiles.cshtml" />
+    <Content Include="Views\User\Chiusura.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SiteMapTitleHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModelList.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MetaRobotsHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MenuHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CanonicalHelperModel.cshtml" />
-    <Content Include="Views\Shared\_Cartissima.cshtml" />
-    <Content Include="Views\Account\SignIn.cshtml" />
-    <Content Include="Views\Shared\_SignIn.cshtml" />
-    <Content Include="Views\Shared\_EditProfiles.cshtml" />
-    <Content Include="Views\User\Chiusura.cshtml" />
+    <Content Include="Views\Admin\Depositi.cshtml" />
+    <Content Include="Views\Admin\Documenti.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Documents\" />
@@ -712,7 +718,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SystemWeb.Database\SystemWeb.Database.csproj">
+    <ProjectReference Include="SystemWeb.Database\SystemWeb.Database.csproj">
       <Project>{7b4aa1ee-25f4-421b-8975-82695c70c1ee}</Project>
       <Name>SystemWeb.Database</Name>
     </ProjectReference>
@@ -720,9 +726,6 @@
       <Project>{3631a7a6-abf8-4d67-965a-73bdd1a806fb}</Project>
       <Name>SystemWeb.Services</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

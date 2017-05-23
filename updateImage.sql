@@ -1,1 +1,0 @@
-﻿UPDATE Users SET [Picture] = (SELECT Users.* from Openrowset(Bulk 'C:\Users\vale9\Pictures\YCRF8353.jpg', Single_Blob) Users) where myid = 10

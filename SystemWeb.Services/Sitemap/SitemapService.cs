@@ -89,15 +89,21 @@
             nodes.Add(
                 new SitemapNode(this.urlHelper.AbsoluteRouteUrl(HomeControllerRoute.GetIndex))
                 {
-                    Priority = 0.9
+                    Priority = 1
                 });
 
             nodes.Add(
-                new SitemapNode(this.urlHelper.AbsoluteRouteUrl(CartissimaControllerRoute.GetSend))
+                new SitemapNode(this.urlHelper.AbsoluteRouteUrl(CartissimaControllerRoute.GetBusinessCard))
+                {
+                    Frequency = SitemapFrequency.Daily,
+                    Priority = 0.8
+                });
+
+            nodes.Add(
+                new SitemapNode(this.urlHelper.AbsoluteRouteUrl(AccountControllerRoute.GetSignIn))
                 {
                     Frequency = SitemapFrequency.Weekly,
-                    //LastModified = DateTime.Now,
-                    Priority = 1
+                    Priority = 0.7
                 });
 
             // An example of how to add many pages into your sitemap.

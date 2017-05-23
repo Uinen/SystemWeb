@@ -14,6 +14,7 @@ using System.IO;
 using System.Configuration;
 using SystemWeb.Mail;
 using RazorEngine;
+using SystemWeb.Service.Static;
 
 namespace SystemWeb.Controllers
 {
@@ -223,11 +224,11 @@ namespace SystemWeb.Controllers
         }
 
         [AllowAnonymous]
-        [Route("Account/")]
+        [Route("Account", Name = AccountControllerRoute.GetSignIn)]
         public ActionResult SignIn()
         {
             ViewBag.FlagId = new SelectList(_db.Flag, "pvFlagId", "Nome");
-            return View();
+            return View(AccountControllerAction.SignIn);
         }
 
         [AllowAnonymous]

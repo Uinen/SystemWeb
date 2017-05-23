@@ -866,6 +866,170 @@ namespace SystemWeb.Controllers
         }
         #endregion
 
+        #region Depositi
+
+        [Route("admin/depositi")]
+        public ActionResult Depositi()
+        {
+            var dataSource = _db.Deposito.ToList();
+            ViewBag.datasource = dataSource;
+
+            return View();
+        }
+
+        [Route("admin/depositi/update")]
+        public ActionResult UpdateDepositi(Deposito value)
+        {
+            DepotRepository.Update(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+        [Route("admin/depositi/insert")]
+        public ActionResult InsertDepositi(Deposito value)
+        {
+            DepotRepository.Add(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/depositi/remove")]
+        public ActionResult RemoveDepositi(Guid key)
+        {
+            _db.Deposito.Remove(_db.Deposito.Single(o => o.depId == key));
+            _db.SaveChanges();
+            var data = _db.Deposito.ToList();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/depositi/excell")]
+        public ActionResult DepositiExcell(string gridModel)
+        {
+            var exp = new ExcelExport();
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            IEnumerable dataSource = context.Deposito.OrderBy(o => o.Nome).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Depositi.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/depositi/word")]
+        public ActionResult DepositiWord(string gridModel)
+        {
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            var exp = new WordExport();
+
+            IEnumerable dataSource = context.Deposito.OrderBy(o => o.Nome).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Depositi.docx", false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/depositi/pdf")]
+        public ActionResult DepositiPdf(string gridModel)
+        {
+            var context = new MyDbContext();
+
+            var now = Guid.NewGuid();
+
+            var exp = new PdfExport();
+
+            IEnumerable dataSource = context.Deposito.OrderBy(o => o.Nome).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Depositi.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        #region Documenti
+
+        [Route("admin/documenti")]
+        public ActionResult Documenti()
+        {
+            var dataSource = _db.Documento.ToList();
+            ViewBag.datasource = dataSource;
+
+            return View();
+        }
+
+        [Route("admin/documenti/update")]
+        public ActionResult UpdateDocumenti(Documento value)
+        {
+            DocumentiRepository.Update(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+        [Route("admin/documenti/insert")]
+        public ActionResult InsertDocumenti(Documento value)
+        {
+            DocumentiRepository.Add(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/documenti/remove")]
+        public ActionResult RemoveDocumenti(Guid key)
+        {
+            _db.Documento.Remove(_db.Documento.Single(o => o.DocumentoID == key));
+            _db.SaveChanges();
+            var data = _db.Deposito.ToList();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/documenti/excell")]
+        public ActionResult DocumentiExcell(string gridModel)
+        {
+            var exp = new ExcelExport();
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            IEnumerable dataSource = context.Documento.OrderBy(o => o.Tipo).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Documenti.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/documenti/word")]
+        public ActionResult DocumentiWord(string gridModel)
+        {
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            var exp = new WordExport();
+
+            IEnumerable dataSource = context.Documento.OrderBy(o => o.Tipo).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Documenti.docx", false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/documenti/pdf")]
+        public ActionResult DocumentiPdf(string gridModel)
+        {
+            var context = new MyDbContext();
+
+            var now = Guid.NewGuid();
+
+            var exp = new PdfExport();
+
+            IEnumerable dataSource = context.Documento.OrderBy(o => o.Tipo).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Documenti.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
         private GridProperties ConvertGridObject(string gridProperty)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();

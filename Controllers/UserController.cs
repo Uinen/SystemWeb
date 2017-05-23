@@ -170,14 +170,23 @@ namespace SystemWeb.Controllers
 
             var thisYear = DateTime.Now.Year;
 
-            var pv = _db.Pv
-                .Where(c => currentUser.pvID == c.pvID);
+            var getall = from order in _pvRepository.GetPvs()
+                         where (currentUser.pvID == order.pvID)
+                         select order;
 
             var year = _db.Year
                 .Where(c => c.Anno.Year == thisYear);
 
-            ViewBag.pvID = new SelectList(pv, "pvID", "pvName");
+            var dep = from d in _db.Deposito
+                      select d;
+
+            var doc = from d in _db.Documento
+                      select d;
+
+            ViewBag.pvID = new SelectList(getall, "pvID", "pvName");
             ViewBag.yearId = new SelectList(year, "yearId", "Anno");
+            ViewBag.depId = new SelectList(dep, "depId", "Nome");
+            ViewBag.docId = new SelectList(doc, "DocumentoID", "Tipo");
 
             #endregion
 
@@ -487,7 +496,13 @@ namespace SystemWeb.Controllers
 
             IEnumerable dataSource3 = _db.Pv.Where(c => currentUser.pvID == c.pvID).ToList();
             ViewBag.datasource3 = dataSource3;
-            
+
+            IEnumerable dataSource4 = _db.Documento.ToList();
+            ViewBag.datasource4 = dataSource4;
+
+            IEnumerable dataSource5 = _db.Deposito.ToList();
+            ViewBag.datasource5 = dataSource5;
+
             #region AmmountByDateFrom
             // Totale Carico Benzina secondo il parametro di ricerca specificato
             ViewBag.SSPBTotalAmountFrom = dataSource.ToList()
@@ -664,9 +679,17 @@ namespace SystemWeb.Controllers
 
             var year = _db.Year
                 .Where(c => c.Anno.Year == thisYear);
-            
+
+            var dep = from d in _db.Deposito
+                      select d;
+
+            var doc = from d in _db.Documento
+                      select d;
+
             ViewBag.pvID = new SelectList(getall, "pvID", "pvName");
             ViewBag.yearId = new SelectList(year, "yearId", "Anno");
+            ViewBag.depId = new SelectList(dep, "depId", "Nome");
+            ViewBag.docId = new SelectList(doc, "DocumentoID", "Tipo");
             return View();
         }
         
@@ -693,8 +716,16 @@ namespace SystemWeb.Controllers
             var year = _db.Year
                 .Where(c => c.Anno.Year == thisYear);
 
+            var dep = from d in _db.Deposito
+                      select d;
+
+            var doc = from d in _db.Documento
+                      select d;
+
             ViewBag.pvID = new SelectList(getall, "pvID", "pvName");
             ViewBag.yearId = new SelectList(year, "yearId", "Anno");
+            ViewBag.depId = new SelectList(dep, "depId", "Nome");
+            ViewBag.docId = new SelectList(doc, "DocumentoID", "Tipo");
             return View(insertOrder);
         }
         
@@ -2889,13 +2920,66 @@ namespace SystemWeb.Controllers
                          .Where(a => Convert.ToDateTime(a.FieldDate) >= da
                                 && (Convert.ToDateTime(a.FieldDate) <= al));
 
+            var _cisternaRimB = from a in _db.PvTank
+                                where currentUser.pvID == a.pvID && a.Product.Nome.Contains("B")
+                                select a.Rimanenza;
+
+            var _cisternaRimG = from a in _db.PvTank
+                                where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
+                                select a.Rimanenza;
+
+            var _ordiniEccedenze = (from a in _db.Carico
+                                    where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly) && a.Tipo.Tipo.Contains("T")
+                                    select a);
+
+            var _ordiniScatti = (from a in _db.Carico
+                                 where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly) && a.Tipo.Tipo.Contains("R")
+                                 select a);
+
+            var _rimIB = _cisternaRimB.Sum();
+            var _rimIG = _cisternaRimG.Sum();
+
+            if (_ordiniEccedenze == null)
+            {
+                ViewBag.eccB = 0;
+                ViewBag.eccG = 0;
+            }
+
+            else
+            {
+                var _eccB = _ordiniEccedenze.Sum(s => s.Benzina);
+                var _eccG = _ordiniEccedenze.Sum(s => s.Gasolio);
+
+                ViewBag.eccB = _eccB;
+                ViewBag.eccG = _eccG;
+            }
+
+            if (_ordiniScatti == null)
+            {
+                ViewBag.scatB = 0;
+                ViewBag.scatG = 0;
+            }
+
+            else
+            {
+                var _scatB = /*_ordiniScatti.Sum(s => s.Benzina);*/ 0;
+                var _scatG = /*_ordiniScatti.Sum(s => s.Gasolio);*/ 0;
+                
+                ViewBag.scatB = _scatB;
+                ViewBag.scatG = _scatG;
+            }
+
             #region Carico
             var _totCaricoB = _carico.Sum(s => s.Benzina);
             var _totCaricoG = _carico.Sum(s => s.Gasolio);
-            var _rimIB = 6530;
-            var _rimIG = 8256;
             var TotCaricoB = _rimIB + _totCaricoB;
             var TotCaricoG = _rimIG + _totCaricoG;
+            var rCaricoB = _totCaricoB - _rimIB;
+            var rCaricoG = _totCaricoG - _rimIG;
+            ViewBag.RimIB = _rimIB;
+            ViewBag.RimIG = _rimIG;
+            ViewBag.rCaricoB = rCaricoB;
+            ViewBag.rCaricoG = rCaricoG;
             ViewBag.TotCaricoB = TotCaricoB;
             ViewBag.TotCaricoG = TotCaricoG;
             #endregion
@@ -2960,18 +3044,24 @@ namespace SystemWeb.Controllers
             #endregion
 
             #endregion
+
             var totScaricoB = totalB + sumdB + SumcB;
             var totScaricoG = totalG + sumdG + SumcG;
 
+            #region Cisterne 
+
             var _cisternaB = from a in _db.PvTank
-                         where currentUser.pvID == a.pvID 
-                         select a.Giacenza;
-            var rimEfB = _cisternaB.Single();
+                             where currentUser.pvID == a.pvID && a.Product.Nome.Contains("B")
+                             select a.Giacenza;
+
+            var rimEfB = _cisternaB.Sum();
 
             var _cisternaG = from a in _db.PvTank
-                             where currentUser.pvID == a.pvID
+                             where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
                              select a.Giacenza;
-            var rimEfG = _cisternaG.Single();
+
+            var rimEfG = _cisternaG.Sum();
+            #endregion
 
             ViewBag.TotScaricoB = totScaricoB;
             ViewBag.TotScaricoG = totScaricoG;
@@ -2983,8 +3073,8 @@ namespace SystemWeb.Controllers
             ViewBag.RiportoG = rimContG;
             ViewBag.RiportoEB = rimEfB;
             ViewBag.RiportoEG = rimEfG;
-            ViewBag.DifEB = rimContB - rimEfB;
-            ViewBag.DifEG = rimContG - rimEfG;
+            ViewBag.DifEB = rimEfB - rimContB;
+            ViewBag.DifEG = rimEfG - rimContG;
             ViewBag.pvId = new SelectList(_db.Pv, "pvID", "pvName");
             return View();
         }
