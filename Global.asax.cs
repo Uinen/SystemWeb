@@ -18,6 +18,12 @@ namespace SystemWeb
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        /*protected void Application_BeginRequest()
+        {
+            if (!Context.Request.IsSecureConnection)
+                Response.Redirect(Context.Request.Url.ToString().Replace("http:", "https:"));
+        }*/
+
         protected void Application_Start()
         {
             ConfigureViewEngines();

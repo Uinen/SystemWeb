@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using SystemWeb.Database.Entity;
@@ -7,9 +8,15 @@ namespace SystemWeb.Database.Repository
 {
     public class OrderRepository
     {
-        private static readonly MyDbContext _context = new MyDbContext();
         public static void Add(Carico value)
         {
+            var _context = new MyDbContext();
+            var thisYear = DateTime.Now.Year;
+            var _selectThisYear = (from a in _context.Year
+                                  where a.Anno.Year == thisYear
+                                  select a.yearId).Single();
+
+            value.yearId = _selectThisYear;
             _context.Carico.Add(value);
             _context.SaveChanges();
         }
@@ -18,6 +25,7 @@ namespace SystemWeb.Database.Repository
         {
             foreach (var temp in value)
             {
+                var _context = new MyDbContext();
                 _context.Carico.Add(temp);
                 _context.SaveChanges();
             }
@@ -25,22 +33,22 @@ namespace SystemWeb.Database.Repository
 
         public static void Update(Carico value)
         {
-            var result = _context.Carico.FirstOrDefault(o => o.Id == value.Id);
+            var _context = new MyDbContext();
+            var result = _context.Carico.Single(o => o.Id == value.Id);
             if (result == null) return;
-            result.Id = value.Id;
-            result.yearId = value.yearId;
+            //result.Id = value.Id;
+            //result.pvID = value.pvID;
+            //result.yearId = value.yearId;
             result.Ordine = value.Ordine;
             result.cData = value.cData;
             result.documentoId = value.documentoId;
-            //result.Documento = value.Documento;
             result.Numero = value.Numero;
             result.rData = value.rData;
             result.Deposito = value.Deposito;
-            //result.Emittente = value.Emittente;
             result.Benzina = value.Benzina;
             result.Gasolio = value.Gasolio;
-            result.HiQb = value.HiQb;
-            result.HiQd = value.HiQd;
+            //result.HiQb = value.HiQb;
+            //result.HiQd = value.HiQd;
             result.Note = value.Note;
 
             _context.Entry(result).CurrentValues.SetValues(value);
@@ -52,18 +60,18 @@ namespace SystemWeb.Database.Repository
         {
             foreach (var temp in value)
             {
+                var _context = new MyDbContext();
                 var result = _context.Carico.FirstOrDefault(o => o.Id == temp.Id);
                 if (result == null) continue;
                 result.Id = temp.Id;
+                result.pvID = temp.pvID;
                 result.yearId = temp.yearId;
                 result.Ordine = temp.Ordine;
                 result.cData = temp.cData;
                 result.documentoId = temp.documentoId;
-                //result.Documento = temp.Documento;
                 result.Numero = temp.Numero;
                 result.rData = temp.rData;
                 result.Deposito = temp.Deposito;
-                //result.Emittente = temp.Emittente;
                 result.Benzina = temp.Benzina;
                 result.Gasolio = temp.Gasolio;
                 result.HiQb = temp.HiQb;

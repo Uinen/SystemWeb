@@ -142,7 +142,7 @@ namespace SystemWeb.Controllers
 
             return View();
         }
-
+        
         [Route("inserzioni/businesscard/richiestainviata", Name = CartissimaControllerRoute.GetRichiestaInviata)]
         public ActionResult RichiestaInviata(Guid key)
         {

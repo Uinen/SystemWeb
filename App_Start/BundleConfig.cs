@@ -9,7 +9,7 @@ namespace SystemWeb
         public static void RegisterBundles(BundleCollection bundles)
         {
             BundleTable.EnableOptimizations = true;
-            bundles.UseCdn = true;
+            bundles.UseCdn = false;
             AddCss(bundles);
             AddJavaScript(bundles);
         }
@@ -36,7 +36,7 @@ namespace SystemWeb
 
             bundles.Add(new StyleBundle("~/Content/ionicons",
                 ContentDeliveryNetwork.Gestionidirette.IonIconsUrl).Include(
-                "~/Contenuti/css/ionicons.min.css"));
+                "~/Contenuti/css/ionicons.min.css", rewrite));
 
             bundles.Add(new StyleBundle("~/Content/animate",
                 ContentDeliveryNetwork.Gestionidirette.AnimateUrl).Include(
@@ -56,23 +56,27 @@ namespace SystemWeb
 
             bundles.Add(new StyleBundle("~/Content/fontawesome",
                 ContentDeliveryNetwork.MaxCdn.FontAwesomeUrl).Include(
-                      "~/MainFont/font-awesome.css" /*,rewrite*/));
+                      "~/MainFont/font-awesome.css", rewrite));
 
             bundles.Add(new StyleBundle("~/Content/EjWidgetCore",
-                ContentDeliveryNetwork.Syncfusion.EjWidgetCoreUrl));
+                ContentDeliveryNetwork.Syncfusion.EjWidgetCoreUrl).Include(
+                      "~/Contenuti/ej/web/ej.widgets.core.min.css", rewrite));
 
             bundles.Add(new StyleBundle("~/Content/GradientAzure",
-                ContentDeliveryNetwork.Syncfusion.GradientAzureUrl));
+                ContentDeliveryNetwork.Syncfusion.GradientAzureUrl).Include(
+                      "~/Contenuti/ej/web/gradient-azure/ej.web.all.min.css", rewrite));
 
             bundles.Add(new StyleBundle("~/Content/EjResponsive",
-                ContentDeliveryNetwork.Syncfusion.EjResponsiveUrl));
+                ContentDeliveryNetwork.Syncfusion.EjResponsiveUrl).Include(
+                      "~/Contenuti/ej/web/responsive-css/ej.responsive.min.css", rewrite));
 
             bundles.Add(new StyleBundle("~/Content/EjGridResponsive",
                 ContentDeliveryNetwork.Syncfusion.EjResponsiveGridUrl).Include(
-                      "~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css"));
+                      "~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css", rewrite));
 
             bundles.Add(new StyleBundle("~/Content/EjTheme",
-                ContentDeliveryNetwork.Syncfusion.EjThemeUrl));
+                ContentDeliveryNetwork.Syncfusion.EjThemeUrl).Include(
+                      "~/Contenuti/ej/web/default-theme/ej.theme.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/Login",
                 ContentDeliveryNetwork.Gestionidirette.LoginUrl).Include(
@@ -82,10 +86,12 @@ namespace SystemWeb
                 ContentDeliveryNetwork.Gestionidirette.DashboardUrl));
 
             bundles.Add(new StyleBundle("~/Content/SignInFormElements",
-                ContentDeliveryNetwork.Gestionidirette.SignInFormElementsUrl));
+                ContentDeliveryNetwork.Gestionidirette.SignInFormElementsUrl).Include(
+                      "~/Contenuti/css/Signin Form/form-elements.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/SignInStyle",
-                ContentDeliveryNetwork.Gestionidirette.SignInStyleUrl));
+                ContentDeliveryNetwork.Gestionidirette.SignInStyleUrl).Include(
+                      "~/Contenuti/css/Signin Form/style.min.css"));
 
             #endregion
         }

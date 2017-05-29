@@ -104,24 +104,21 @@ namespace SystemWeb.Database.Entity
         {
             Id = Guid.NewGuid();
         }
+
         [Key]
         public Guid Id { get; set; }
         public Guid pvID { get; set; }
         public Guid yearId { get; set; }
         public Guid? documentoId { get; set; }
-
         public int Ordine { get; set; }
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime cData { get; set; }
-
-        [MaxLength(4)]
-        public string Documento { get; set; }
 
         [MaxLength(18)]
         public string Numero { get; set; }
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime rData { get; set; }
 
-        [MaxLength(32)]
-        public string Emittente { get; set; }
         public Guid? Deposito { get; set; }
 
         public int Benzina { get; set; }
@@ -150,6 +147,18 @@ namespace SystemWeb.Database.Entity
         public string dsl { get; set; }
         [NotMapped]
         public string date { get; set; }
+        /// <summary>
+        /// Obsoleto in SystemWeb 3.2.3 - Usare l'entità documentoId con referenza Documento -> Tipo
+        /// </summary>
+        [MaxLength(4)]
+        [NotMapped]
+        public string Documento { get; set; }
+        /// <summary>
+        /// Obsoleto in SystemWeb 3.2.3 - Usare l'entità Deposito con referenza Deposito -> Depot
+        /// </summary>
+        [NotMapped]
+        [MaxLength(32)]
+        public string Emittente { get; set; }
     }
     #endregion
 
@@ -159,6 +168,7 @@ namespace SystemWeb.Database.Entity
         public Deposito()
         {
             depId = Guid.NewGuid();
+            Carico = new HashSet<Carico>();
         }
 
         [Key]
@@ -184,7 +194,7 @@ namespace SystemWeb.Database.Entity
         public Guid? RagioneSocialeId { get; set; }
         [ScriptIgnore]
         public RagioneSociale RagioneSociale { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
     }
     #endregion
@@ -338,6 +348,7 @@ namespace SystemWeb.Database.Entity
         public string Città { get; set; }
         [MaxLength(14)]
         public string Nazione { get; set; }
+        [DataType(DataType.PostalCode)]
         public int Cap { get; set; }
         public Pv Pv { get; set; }
     }
@@ -451,6 +462,7 @@ namespace SystemWeb.Database.Entity
         public string ProfileAdress { get; set; }
         [MaxLength(32)]
         public string ProfileCity { get; set; }
+        [DataType(DataType.PostalCode)]
         public int ProfileZipCode { get; set; }
         [MaxLength(14)]
         public string ProfileNation { get; set; }
@@ -595,6 +607,7 @@ namespace SystemWeb.Database.Entity
         public Documento()
         {
             DocumentoID = Guid.NewGuid();
+            Carico = new HashSet<Carico>();
         }
 
         [Key]
@@ -619,10 +632,15 @@ namespace SystemWeb.Database.Entity
         }
         [Key]
         public Guid sCartId { get; set; }
+
         public Guid pvID { get; set; }
+
         [ScriptIgnore]
         public Pv Pv { get; set; }
+
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime sCartCreateDate { get; set; }
+
         public string sCartIp { get; set; }
 
         [Required]
@@ -630,10 +648,12 @@ namespace SystemWeb.Database.Entity
 
         [Required]
         public string sCartSurname { get; set; }
+
         [EmailAddress]
         public string sCartEmail { get; set; }
 
         [Required]
+        [DataType(DataType.PhoneNumber)]
         public string sCartPhone { get; set; }
 
         [Required]
@@ -645,6 +665,7 @@ namespace SystemWeb.Database.Entity
 
         [Required]
         public int sCartVeichle { get; set; }
+
         public string sCartVeichleType { get; set; }
         public bool sCartProcessed { get; set; }
     }

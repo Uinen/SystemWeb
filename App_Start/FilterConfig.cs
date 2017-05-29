@@ -2,6 +2,9 @@
 using System.Web.Routing;
 using NWebsec.Mvc.HttpHeaders;
 using Boilerplate.Web.Mvc.Filters;
+using NWebsec.Mvc.HttpHeaders.Csp;
+using SystemWeb.Service.Static;
+using System;
 
 namespace SystemWeb
 {
@@ -21,10 +24,10 @@ namespace SystemWeb
                 RouteTable.Routes.AppendTrailingSlash,
                 RouteTable.Routes.LowercaseUrls));
         }
-
         /// <summary>
         /// Add filters to improve security.
         /// </summary>
+        /*
         private static void AddSecurityFilters(GlobalFilterCollection filters)
         {
             // Require HTTPS to be used across the whole site. System.Web.Mvc.RequireHttpsAttribute performs a
@@ -32,8 +35,7 @@ namespace SystemWeb
             // 301 Permanent redirect or a 302 temporary redirect. You should perform a 301 permanent redirect if the
             // page can only ever be accessed by HTTPS and a 302 temporary redirect if the page can be accessed over
             // HTTP or HTTPS.
-            filters.Add(new RedirectToHttpsAttribute(true));
-
+            // filters.Add(new RedirectToHttpsAttribute(false));
             // Several NWebsec Security Filters are added here. See
             // http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/ and
             // http://www.dotnetnoob.com/2012/09/security-through-http-response-headers.html and
@@ -90,8 +92,8 @@ namespace SystemWeb
         /// access to content from YouTube.com, then you can add the following attribute to the action:
         /// [CspFrameSrc(CustomSources = "*.youtube.com")].
         /// </summary>
-        //private static void AddContentSecurityPolicyFilters(GlobalFilterCollection filters)
-        //{
+        private static void AddContentSecurityPolicyFilters(GlobalFilterCollection filters)
+        {
             // Content-Security-Policy - Add the Content-Security-Policy HTTP header to enable Content-Security-Policy.
             //filters.Add(new CspAttribute());
             // OR
@@ -109,42 +111,42 @@ namespace SystemWeb
 
             // default-src - Sets a default source list for a number of directives. If the other directives below are
             //               not used then this is the default setting.
-            /*filters.Add(
+            filters.Add(
                 new CspDefaultSrcAttribute()
                 {
                     // Disallow everything from the same domain by default.
                     None = true,
                     // Allow everything from the same domain by default.
-                    // Self = true
+                    //Self = true
                 });
 
-            */
+
             // base-uri - This directive restricts the document base URL
             //            (See http://www.w3.org/TR/html5/infrastructure.html#document-base-url).
-            /*filters.Add(
+            filters.Add(
                 new CspBaseUriAttribute()
                 {
                     // Allow base URL's from example.com.
                     // CustomSources = "*.example.com",
                     // Allow base URL's from the same domain.
                     Self = false
-                });*/
+                });
             // child-src - This directive restricts from where the protected resource can load web workers or embed
             //             frames. This was introduced in CSP 2.0 to replace frame-src. frame-src should still be used
             //             for older browsers.
-           /* filters.Add(
-                new CspChildSrcAttribute()
-                {
+            filters.Add(
+                 new CspChildSrcAttribute()
+                 {
                     // Allow web workers or embed frames from example.com.
                     // CustomSources = "*.example.com",
                     // Allow web workers or embed frames from the same domain.
                     Self = false
-                });*/
+                 });
             // connect-src - This directive restricts which URIs the protected resource can load using script interfaces
             //               (Ajax Calls and Web Sockets).
-           /* filters.Add(
-                new CspConnectSrcAttribute()
-                {
+            filters.Add(
+                 new CspConnectSrcAttribute()
+                 {
 #if DEBUG
                     // Allow Browser Link to work in debug mode only.
                     CustomSources = string.Join(" ", "localhost:*", "ws://localhost:*"),
@@ -154,9 +156,9 @@ namespace SystemWeb
 #endif
                     // Allow all AJAX and Web Sockets calls from the same domain.
                     Self = true
-                });*/
+                 });
             // font-src - This directive restricts from where the protected resource can load fonts.
-            /*filters.Add(
+            filters.Add(
                 new CspFontSrcAttribute()
                 {
                     // Allow fonts from maxcdn.bootstrapcdn.com.
@@ -165,38 +167,38 @@ namespace SystemWeb
                         ContentDeliveryNetwork.MaxCdn.Domain),
                     // Allow all fonts from the same domain.
                     Self = true
-                });*/
+                });
             // form-action - This directive restricts which URLs can be used as the action of HTML form elements.
-            /*filters.Add(
+            filters.Add(
                 new CspFormActionAttribute()
                 {
                     // Allow forms to post back to example.com.
                     // CustomSources = "*.example.com",
                     // Allow forms to post back to the same domain.
                     Self = true
-                });*/
+                });
             // frame-src - This directive restricts from where the protected resource can embed frames.
             //             This is now deprecated in favour of child-src but should still be used for older browsers.
-            /*filters.Add(
+            filters.Add(
                 new CspFrameSrcAttribute()
                 {
                     // Allow iFrames from example.com.
                     // CustomSources = "*.example.com",
                     // Allow iFrames from the same domain.
                     Self = false
-                });*/
+                });
             // frame-ancestors - This directive restricts from where the protected resource can embed frame, iframe,
             //                   object, embed or applet's.
-            /*filters.Add(
+            filters.Add(
                 new CspFrameAncestorsAttribute()
                 {
                     // Allow frame, iframe, object, embed or applet's from example.com.
                     // CustomSources = "*.example.com",
                     // Allow frame, iframe, object, embed or applet's from the same domain.
                     Self = false
-                });*/
+                });
             // img-src - This directive restricts from where the protected resource can load images.
-            /*filters.Add(
+            filters.Add(
                 new CspImgSrcAttribute()
                 {
 #if DEBUG
@@ -208,19 +210,19 @@ namespace SystemWeb
 #endif
                     // Allow images from the same domain.
                     Self = true,
-                });*/
+                });
             // script-src - This directive restricts which scripts the protected resource can execute.
             //              The directive also controls other resources, such as XSLT style sheets, which can cause the
             //              user agent to execute script.
-            /*filters.Add(
-                new CspScriptSrcAttribute()
-                {
+            filters.Add(
+               new CspScriptSrcAttribute()
+               {
                     // Allow scripts from the CDN's.
                     CustomSources = string.Join(
-                        " ",
+                       " ",
 #if DEBUG
-                        // Allow Browser Link to work in debug mode only.
-                        "localhost:*",
+                       // Allow Browser Link to work in debug mode only.
+                       "localhost:*",
 #endif
                         ContentDeliveryNetwork.Google.Domain,
                         ContentDeliveryNetwork.Microsoft.Domain),
@@ -276,7 +278,8 @@ namespace SystemWeb
                     // http://stackoverflow.com/questions/26532234/modernizr-causes-content-security-policy-csp-violation-errors
                     // https://github.com/Modernizr/Modernizr/pull/1263
                     UnsafeInline = true
-                });*/
-        //}
+                });
+            //}
+        }*/
     }
 }

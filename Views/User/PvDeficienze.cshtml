@@ -8,10 +8,10 @@
     @Styles.Render("~/Content/EjResponsive")
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
-<section id="pvdeficienze" class="block">
+<section id="features" class="block">
     <div class="container">
         <div class="row">
-            <div class="center-block">
+            <div class="item">
                 <div class="header-content">
                     <h4 class="alert alert-info">Lista di tutte le deficienze del punto vendita</h4>
                 </div>
@@ -33,32 +33,14 @@
                         </form>
                     </div>
                 }
-                <div id="no-more-tables">
-                    <h4 class="alert alert-info">Statistiche sul erogato</h4>
-                    <div id="totali">
-                        <table class="col-md-12 table-bordered table-striped table-condensed">
-                            @Html.Partial("_TotalPartialDef")
-                        </table>
-                    </div>
-                </div>
+                <h4 class="alert alert-info">Statistiche sul erogato</h4>
+                <table class="table-responsive">
+                    @Html.Partial("_TotalPartialDef")
+                </table>
             </div>
         </div>
-    </div>
-
-</section>
-<section id="adaptive">
-    <div class="container">
         <div class="row">
-            <div class="center-block">
-                <style type="text/css">
-                    ::-ms-clear {
-                        display: none;
-                    }
-
-                    .e-gridAdaptive {
-                        border-width: 0px !important;
-                    }
-                </style>
+            <div class="item">
                 @(Html.EJ().Grid<PvDeficienze>("FlatGridDeficienze")
                                     .Locale("it-IT")
                                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
@@ -116,8 +98,8 @@
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()

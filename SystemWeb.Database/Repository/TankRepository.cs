@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using SystemWeb.Database.Entity;
@@ -10,6 +11,7 @@ namespace SystemWeb.Database.Repository
         public static void Add(PvTank value)
         {
             var context = new MyDbContext();
+            value.LastDate = DateTime.Now.Date;
             context.PvTank.Add(value);
             context.SaveChanges();
         }
@@ -36,7 +38,7 @@ namespace SystemWeb.Database.Repository
             result.Capienza = value.Capienza;
             result.Giacenza = value.Giacenza;
             result.Rimanenza = value.Rimanenza;
-            result.LastDate = value.LastDate;
+            result.LastDate = DateTime.Now.Date;
             result.Descrizione = value.Descrizione;
 
             context.Entry(result).CurrentValues.SetValues(value);
@@ -58,7 +60,7 @@ namespace SystemWeb.Database.Repository
                 result.Capienza = temp.Capienza;
                 result.Giacenza = temp.Giacenza;
                 result.Rimanenza = temp.Rimanenza;
-                result.LastDate = temp.LastDate;
+                result.LastDate = DateTime.Now.Date;
                 result.Descrizione = temp.Descrizione;
 
                 context.Entry(result).CurrentValues.SetValues(temp);

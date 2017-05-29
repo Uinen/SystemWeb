@@ -8,19 +8,10 @@
     @Styles.Render("~/Content/EjResponsive")
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
-<section id="adaptive">
+<section id="features">
     <div class="container">
         <div class="row">
-            <div class="center-block">
-                <style type="text/css">
-                    ::-ms-clear {
-                        display: none;
-                    }
-
-                    .e-gridAdaptive {
-                        border-width: 0px !important;
-                    }
-                </style>
+            <div class="item">
                 @(Html.EJ().Grid<Dispenser>("FlatGridDispenser")
                                     .Locale("it-IT")
                                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
@@ -36,7 +27,7 @@
                                     .AllowMultiSorting()
                                     .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteDispenser"))
                                     .MinWidth(400)
-                                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog))
+                                    .EditSettings(d => d.AllowAdding(true).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.InlineForm))
                                     .ToolbarSettings(toolBar => toolBar.ShowToolbar().ToolbarItems(items =>
                                     {
                                         items.AddTool(ToolBarItems.Add);
@@ -79,8 +70,8 @@
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()

@@ -18,7 +18,7 @@ namespace SystemWeb.Database.Repository
 
         public virtual IEnumerable<Carico> GetOrders()
         {
-            return _db.Carico.Include(c => c.Pv).Include(c => c.Year).ToList();
+            return _db.Carico.Include(c => c.Pv).Include(c => c.Year).Include(c => c.Depot).Include(c => c.Documento).ToList();
         }
 
         public Carico GetOrdersById(Guid? Id)

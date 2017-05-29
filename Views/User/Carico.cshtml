@@ -33,14 +33,10 @@
                     </div>
                 </div>
                 <div class="item">
-                    <div id="no-more-tables">
-                        <h4 class="alert alert-info">Totale di tutti gli ordini registrati sul impianto</h4>
-                        <div id="totali">
-                            <table class="col-md-12 table-bordered table-striped table-condensed">
-                                @Html.Partial("_TotalPartial")
-                            </table>
-                        </div>
-                    </div>
+                    <h4 class="alert alert-info">Totale di tutti gli ordini registrati sul impianto</h4>
+                    <table class="table-responsive">
+                        @Html.Partial("_TotalPartial")
+                    </table>
                 </div>
             </div>
         </div>
@@ -71,7 +67,7 @@
                     .AllowMultiSorting()
                     .ClientSideEvents(eve => eve.ActionComplete("ActionComplete"))
                     .MinWidth(400)
-                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog))
+                    .EditSettings(d => d.AllowAdding(true).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.ExternalForm))
                     .ToolbarSettings(toolbar =>
                     {
                         toolbar.ShowToolbar().ToolbarItems(items =>
@@ -96,10 +92,10 @@
                         col.Field(p => p.Id).HeaderText("ID Ordine").IsPrimaryKey(true).Visible(false).Add();
 
                         col.Field(p => p.pvID).HeaderText("PV").ForeignKeyField("pvID").ForeignKeyValue("pvName")
-                        .DataSource((IEnumerable<object>)ViewBag.datasource3).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
+                        .DataSource((IEnumerable<object>)ViewBag.datasource3).TextAlign(TextAlign.Left).Width(75).AllowEditing(false).Add();
 
                         col.Field(p => p.yearId).HeaderText("Anno").ForeignKeyField("yearId").ForeignKeyValue("Anno")
-                        .DataSource((IEnumerable<object>)ViewBag.datasource2).TextAlign(TextAlign.Left).Width(75).Format("{0:yyyy}").EditType(EditingType.Dropdown).Add();
+                        .DataSource((IEnumerable<object>)ViewBag.datasource2).TextAlign(TextAlign.Left).Width(75).Format("{0:yyyy}").AllowEditing(false).Add();
 
                         col.Field(p => p.Ordine).HeaderText("Ordine").Width("50").Add();
                         col.Field(p => p.cData).HeaderText("Scarico").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
@@ -135,8 +131,8 @@
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()

@@ -8,60 +8,40 @@
     @Styles.Render("~/Content/EjResponsive")
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
-<section id="pverogatori" class="block">
+<section id="features" class="block">
     <div class="container">
-        <div class="center-block">
-            <div class="row">
-                <div class="center-block">
-                    <div class="header-content">
-                        <h4 class="alert alert-info">Lista di tutti i totalizzatori del punto vendita</h4>
-                    </div>
-                    @using (Html.BeginForm("PvErogatori", "User", FormMethod.Get))
-                    {
-                        <div class="grid-filter">
-                            <form id="date-range-form" action="@Url.Action("PvErogatori", "User")" method="post">
-                                <h5 class="alert alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma del erogatoi sul impianto in funzione del range selezionato.</h5>
-                                <h5 class="alert alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
-                                <div class="item">
-                                    <label for="from">Data 1</label>
-                                    <input type="text" id="from" name="dateFrom">
-                                </div>
-                                <div class="item">
-                                    <label for="to">Data 2</label>
-                                    <input type="text" id="to" name="dateTo">
-                                </div>
-                                <input type='submit' value='Ricerca' />
-                            </form>
-                        </div>
-                    }
-                    <div id="no-more-tables">
-                        <h4 class="alert alert-info">Statistiche sul erogato</h4>
-                        <div id="totali">
-                            <table class="col-md-12 table-bordered table-striped table-condensed">
-                                @Html.Partial("_TotalPartialErog")
-                            </table>
-                        </div>
-                    </div>
+        <div class="row">
+            <div class="item">
+                <div class="header-content">
+                    <h4 class="alert alert-info">Lista di tutti i totalizzatori del punto vendita</h4>
                 </div>
+                @using (Html.BeginForm("PvErogatori", "User", FormMethod.Get))
+                {
+                    <div class="grid-filter">
+                        <form id="date-range-form" action="@Url.Action("PvErogatori", "User")" method="post">
+                            <h5 class="alert alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma del erogatoi sul impianto in funzione del range selezionato.</h5>
+                            <h5 class="alert alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
+                            <div class="item">
+                                <label for="from">Data 1</label>
+                                <input type="text" id="from" name="dateFrom">
+                            </div>
+                            <div class="item">
+                                <label for="to">Data 2</label>
+                                <input type="text" id="to" name="dateTo">
+                            </div>
+                            <input type='submit' value='Ricerca' />
+                        </form>
+                    </div>
+                }
+                <h4 class="alert alert-info">Statistiche sul erogato</h4>
+                <table class="col-md-12 table-bordered table-striped table-condensed">
+                    @Html.Partial("_TotalPartialErog")
+                </table>
             </div>
         </div>
-    </div>
-</section>
-<section id="adaptive">
-    <div class="container">
-        <div class="center-block">
-            <div class="row">
-                <div class="center-block">
-                    <style type="text/css">
-                        ::-ms-clear {
-                            display: none;
-                        }
-
-                        .e-gridAdaptive {
-                            border-width: 0px !important;
-                        }
-                    </style>
-                    @(Html.EJ().Grid<PvErogatori>("FlatGridErogatori")
+        <div class="row">
+            <div class="item">
+                @(Html.EJ().Grid<PvErogatori>("FlatGridErogatori")
                     .Locale("it-IT")
                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
                     .UpdateURL("update")
@@ -84,7 +64,7 @@
                     .AllowMultiSorting()
                     .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteErogatori"))
                     .MinWidth(400)
-                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog))
+                    .EditSettings(d => d.AllowAdding(true).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.ExternalForm))
                     .ToolbarSettings(toolbar =>
                     {
                         toolbar.ShowToolbar().ToolbarItems(items =>
@@ -109,7 +89,7 @@
                         col.Field(p => p.PvErogatoriId).HeaderText("ID Rilevazione").IsPrimaryKey(true).Visible(false).Add();
 
                         col.Field(p => p.pvID).HeaderText("PV").ForeignKeyField("pvID").ForeignKeyValue("pvName")
-                        .DataSource((IEnumerable<object>)ViewBag.datasource2).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
+                        .DataSource((IEnumerable<object>)ViewBag.datasource2).TextAlign(TextAlign.Left).Width(75).AllowEditing(false).Add();
 
                         col.Field(p => p.ProductId).HeaderText("Prodotto").ForeignKeyField("ProductId").ForeignKeyValue("Nome")
                         .DataSource((IEnumerable<object>)ViewBag.datasource3).TextAlign(TextAlign.Left).Width(75).Format("{0:yyyy}").EditType(EditingType.Dropdown).Add();
@@ -120,8 +100,7 @@
                         col.Field(p => p.Value).HeaderText("Valore").Width("45").EditType(EditingType.Numeric).Add();
                         col.Field(p => p.FieldDate).HeaderText("Data").Format("{0:MM/dd/yyyy}").Width("50").EditType(EditingType.Datepicker).Add();
                     })
-                    )
-                </div>
+                )
             </div>
         </div>
     </div>
@@ -132,8 +111,8 @@
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()

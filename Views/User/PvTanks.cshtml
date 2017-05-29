@@ -8,21 +8,11 @@
     @Styles.Render("~/Content/EjResponsive")
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
-<section id="adaptive">
+<section id="features">
     <div class="container">
-        <div class="center-block">
-            <div class="row">
-                <div class="center-block">
-                    <style type="text/css">
-                        ::-ms-clear {
-                            display: none;
-                        }
-
-                        .e-gridAdaptive {
-                            border-width: 0px !important;
-                        }
-                    </style>
-                    @(Html.EJ().Grid<PvTank>("FlatGridTank")
+        <div class="row">
+            <div class="item">
+                @(Html.EJ().Grid<PvTank>("FlatGridTank")
                     .Locale("it-IT")
                     .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
                     .UpdateURL("update")
@@ -45,7 +35,7 @@
                     .AllowMultiSorting()
                     .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteTank"))
                     .MinWidth(400)
-                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog))
+                    .EditSettings(d => d.AllowAdding(true).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.ExternalForm))
                     .ToolbarSettings(toolbar =>
                     {
                         toolbar.ShowToolbar().ToolbarItems(items =>
@@ -78,12 +68,11 @@
                         col.Field(p => p.Modello).HeaderText("Modello").Width("50").EditType(EditingType.String).Add();
                         col.Field(p => p.Capienza).HeaderText("Capienza").Width("45").EditType(EditingType.Numeric).Add();
                         col.Field(p => p.Giacenza).HeaderText("Giacenza").Width("50").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.Rimanenza).HeaderText("Rimanenza Iniziale").Width("50").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.LastDate).HeaderText("Ultima Rilevazione").Format("{0:MM/dd/yyyy}").EditType(EditingType.Datepicker).Width("65").Add();
+                        col.Field(p => p.Rimanenza).HeaderText("Rimanenza Iniziale").Width("50").AllowEditing(false).Add();
+                        col.Field(p => p.LastDate).HeaderText("Ultima Rilevazione").Format("{0:MM/dd/yyyy}").AllowEditing(false).Width("65").Add();
                         col.Field(p => p.Descrizione).HeaderText("Descrizione").Width("45").EditType(EditingType.String).Add();
                     })
-                    )
-                </div>
+                )
             </div>
         </div>
     </div>
@@ -94,8 +83,8 @@
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
     @Scripts.Render("~/bundles/jquerybrowser")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
-    @Scripts.Render("http://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
     @Html.EJ().ScriptManager()
