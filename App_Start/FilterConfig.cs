@@ -3,16 +3,18 @@ using System.Web.Routing;
 using NWebsec.Mvc.HttpHeaders;
 using Boilerplate.Web.Mvc.Filters;
 using NWebsec.Mvc.HttpHeaders.Csp;
-using SystemWeb.Service.Static;
+using GestioniDirette.Service.Static;
 using System;
 
-namespace SystemWeb
+namespace GestioniDirette
 {
     public class FilterConfig
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            AddSearchEngineOptimizationFilters(filters);
+            AddSecurityFilters(filters);
+            AddContentSecurityPolicyFilters(filters);
         }
 
         /// <summary>
@@ -27,7 +29,7 @@ namespace SystemWeb
         /// <summary>
         /// Add filters to improve security.
         /// </summary>
-        /*
+        
         private static void AddSecurityFilters(GlobalFilterCollection filters)
         {
             // Require HTTPS to be used across the whole site. System.Web.Mvc.RequireHttpsAttribute performs a
@@ -35,7 +37,8 @@ namespace SystemWeb
             // 301 Permanent redirect or a 302 temporary redirect. You should perform a 301 permanent redirect if the
             // page can only ever be accessed by HTTPS and a 302 temporary redirect if the page can be accessed over
             // HTTP or HTTPS.
-            // filters.Add(new RedirectToHttpsAttribute(false));
+            filters.Add(new RedirectToHttpsAttribute(true));
+
             // Several NWebsec Security Filters are added here. See
             // http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/ and
             // http://www.dotnetnoob.com/2012/09/security-through-http-response-headers.html and
@@ -50,7 +53,7 @@ namespace SystemWeb
             //      Do not apply this attribute here globally, use it sparingly to disable caching. A good place to use
             //      this would be on a page where you want to post back credit card information because caching credit
             //      card information could be a security risk.
-            filters.Add(new SetNoCacheHttpHeadersAttribute());
+            // filters.Add(new SetNoCacheHttpHeadersAttribute());
 
             // X-Robots-Tag - Adds the X-Robots-Tag HTTP header. Disable robots from any action or controller this
             //                attribute is applied to.
@@ -95,7 +98,7 @@ namespace SystemWeb
         private static void AddContentSecurityPolicyFilters(GlobalFilterCollection filters)
         {
             // Content-Security-Policy - Add the Content-Security-Policy HTTP header to enable Content-Security-Policy.
-            //filters.Add(new CspAttribute());
+            filters.Add(new CspAttribute());
             // OR
             // Content-Security-Policy-Report-Only - Add the Content-Security-Policy-Report-Only HTTP header to enable
             //      logging of violations without blocking them. This is good for testing CSP without enabling it. To
@@ -106,7 +109,7 @@ namespace SystemWeb
 
             // Enables logging of CSP violations. See the NWebsecHttpHeaderSecurityModule_CspViolationReported method
             // in Global.asax.cs to see where they are logged.
-            //filters.Add(new CspReportUriAttribute() { EnableBuiltinHandler = true });
+            filters.Add(new CspReportUriAttribute() { EnableBuiltinHandler = true });
 
 
             // default-src - Sets a default source list for a number of directives. If the other directives below are
@@ -115,9 +118,9 @@ namespace SystemWeb
                 new CspDefaultSrcAttribute()
                 {
                     // Disallow everything from the same domain by default.
-                    None = true,
+                    //None = true,
                     // Allow everything from the same domain by default.
-                    //Self = true
+                    Self = true
                 });
 
 
@@ -135,18 +138,18 @@ namespace SystemWeb
             //             frames. This was introduced in CSP 2.0 to replace frame-src. frame-src should still be used
             //             for older browsers.
             filters.Add(
-                 new CspChildSrcAttribute()
-                 {
+                new CspChildSrcAttribute()
+                {
                     // Allow web workers or embed frames from example.com.
                     // CustomSources = "*.example.com",
                     // Allow web workers or embed frames from the same domain.
                     Self = false
-                 });
+                });
             // connect-src - This directive restricts which URIs the protected resource can load using script interfaces
             //               (Ajax Calls and Web Sockets).
             filters.Add(
-                 new CspConnectSrcAttribute()
-                 {
+                new CspConnectSrcAttribute()
+                {
 #if DEBUG
                     // Allow Browser Link to work in debug mode only.
                     CustomSources = string.Join(" ", "localhost:*", "ws://localhost:*"),
@@ -156,7 +159,7 @@ namespace SystemWeb
 #endif
                     // Allow all AJAX and Web Sockets calls from the same domain.
                     Self = true
-                 });
+                });
             // font-src - This directive restricts from where the protected resource can load fonts.
             filters.Add(
                 new CspFontSrcAttribute()
@@ -215,25 +218,28 @@ namespace SystemWeb
             //              The directive also controls other resources, such as XSLT style sheets, which can cause the
             //              user agent to execute script.
             filters.Add(
-               new CspScriptSrcAttribute()
-               {
+                new CspScriptSrcAttribute()
+                {
                     // Allow scripts from the CDN's.
                     CustomSources = string.Join(
-                       " ",
+                        " ",
 #if DEBUG
-                       // Allow Browser Link to work in debug mode only.
-                       "localhost:*",
+                        // Allow Browser Link to work in debug mode only.
+                        "localhost:*",
 #endif
                         ContentDeliveryNetwork.Google.Domain,
-                        ContentDeliveryNetwork.Microsoft.Domain),
+                        ContentDeliveryNetwork.Microsoft.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain,
+                        ContentDeliveryNetwork.Gestionidirette.Domain),
                     // Allow scripts from the same domain.
                     Self = true,
                     // Allow the use of the eval() method to create code from strings. This is unsafe and can open your
                     // site up to XSS vulnerabilities.
-                    // UnsafeEval = true,
+                    UnsafeEval = true,
                     // Allow in-line JavaScript, this is unsafe and can open your site up to XSS vulnerabilities.
-                    // UnsafeInline = true
+                    UnsafeInline = true
                 });
+
             // media-src - This directive restricts from where the protected resource can load video and audio.
             filters.Add(
                 new CspMediaSrcAttribute()
@@ -268,7 +274,9 @@ namespace SystemWeb
                     // Allow CSS from maxcdn.bootstrapcdn.com
                     CustomSources = string.Join(
                         " ",
-                        ContentDeliveryNetwork.MaxCdn.Domain),
+                        ContentDeliveryNetwork.MaxCdn.Domain,
+                        ContentDeliveryNetwork.Gestionidirette.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain),
                     // Allow CSS from the same domain.
                     Self = true,
                     // Allow in-line CSS, this is unsafe and can open your site up to XSS vulnerabilities.
@@ -279,7 +287,6 @@ namespace SystemWeb
                     // https://github.com/Modernizr/Modernizr/pull/1263
                     UnsafeInline = true
                 });
-            //}
-        }*/
+        }
     }
 }

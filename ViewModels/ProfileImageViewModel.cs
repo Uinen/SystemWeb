@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace SystemWeb.ViewModels
+namespace GestioniDirette.ViewModels
 {
     public class ProfileImageViewModel
     {

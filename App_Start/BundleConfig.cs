@@ -1,7 +1,7 @@
 ﻿using System.Web.Optimization;
-using SystemWeb.Service.Static;
+using GestioniDirette.Service.Static;
 
-namespace SystemWeb
+namespace GestioniDirette
 {
     public class BundleConfig
     {

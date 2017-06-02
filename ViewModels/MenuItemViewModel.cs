@@ -1,4 +1,4 @@
-﻿namespace SystemWeb.Models
+﻿namespace GestioniDirette.Models
 {
     public class MenuItemViewModel
     {

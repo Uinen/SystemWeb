@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using SystemWeb.Database.Entity;
+using GestioniDirette.Database.Entity;
 
-namespace SystemWeb.Models
+namespace GestioniDirette.Models
 {
     public class AdminIndexViewModel
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using SystemWeb.Models;
+using GestioniDirette.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
@@ -16,10 +16,10 @@ using Syncfusion.XlsIO;
 using Syncfusion.JavaScript.Models;
 using System.Web.Script.Serialization;
 using System.Reflection;
-using SystemWeb.Database.Entity;
-using SystemWeb.Database.Repository;
+using GestioniDirette.Database.Entity;
+using GestioniDirette.Database.Repository;
 
-namespace SystemWeb.Controllers
+namespace GestioniDirette.Controllers
 {
     [Authorize(Roles = "Administrator")]
     public class AdminController : Controller
@@ -174,101 +174,88 @@ namespace SystemWeb.Controllers
         #endregion
 
         #region NoticesController
+        [Route("admin/notizie")]
         public ActionResult Notices()
         {
-            var notice = _db.Notice.Include(n => n.ApplicationUser);
-            return View(notice.ToList());
-        }
+            var dataSource = _db.Notice.ToList();
+            //var _getUser = (from user in _db.Users select user).FirstOrDefault();
+            ViewBag.datasource = dataSource;
+            //ViewBag.datasource2 = _getUser;
 
-        public ActionResult NoticesDetails(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Notice notice = _db.Notice.Find(id);
-            if (notice == null)
-            {
-                return HttpNotFound();
-            }
-            return View(notice);
-        }
-
-        public ActionResult NoticesCreate()
-        {
-            ViewBag.UsersId = new SelectList(_db.Users, "Id", "UserName");
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult NoticesCreate([Bind(Include = "NoticeId,NoticeName,CreateDate,TextBox,Url,UsersId,Description")] Notice notice)
+        [Route("admin/notizie/update")]
+        public ActionResult UpdateNotices(Notice value)
         {
-            if (ModelState.IsValid)
-            {
-                notice.NoticeId = Guid.NewGuid();
-                notice.CreateDate = DateTime.Now;
-                notice.UsersId = User.Identity.GetUserId();
-                _db.Notice.Add(notice);
-                _db.SaveChanges();
-            }
-
-            ViewBag.UsersId = new SelectList(_db.Users, "Id", "UserName", notice.UsersId);
-            return View(notice);
+            value.CreateDate = DateTime.Today.Date;
+            value.UsersId = User.Identity.GetUserId();
+            NoticeRepository.Update(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
-        
-        
-        public ActionResult NoticesEdit(Guid? id)
+        [Route("admin/notizie/insert")]
+        public ActionResult InsertNotices(Notice value)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Notice notice = _db.Notice.Find(id);
-            if (notice == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.UsersId = new SelectList(_db.Users, "Id", "UserName", notice.UsersId);
-            return View(notice);
+            value.CreateDate = DateTime.Today.Date;
+            value.UsersId = User.Identity.GetUserId();
+            NoticeRepository.Add(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult NoticesEdit([Bind(Include = "NoticeId,NoticeName,CreateDate,TextBox,UsersId")] Notice notice)
+        [Route("admin/notizie/remove")]
+        public ActionResult RemoveNotices(Guid key)
         {
-            if (ModelState.IsValid)
-            {
-                _db.Entry(notice).State = EntityState.Modified;
-                _db.SaveChanges();
-                return RedirectToAction("Notices");
-            }
-            ViewBag.UsersId = new SelectList(_db.Users, "Id", "UserName", notice.UsersId);
-            return View(notice);
-        }
-
-        public ActionResult NoticesDelete(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Notice notice = _db.Notice.Find(id);
-            if (notice == null)
-            {
-                return HttpNotFound();
-            }
-            return View(notice);
-        }
-
-        [HttpPost, ActionName("NoticesDelete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult NoticesDeleteConfirmed(Guid id)
-        {
-            Notice notice = _db.Notice.Find(id);
-            _db.Notice.Remove(notice);
+            _db.Notice.Remove(_db.Notice.Single(o => o.NoticeId == key));
             _db.SaveChanges();
-            return RedirectToAction("Notices");
+            var data = _db.Product.ToList();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/notizie/excell")]
+        public ActionResult NoticesExcell(string gridModel)
+        {
+            var exp = new ExcelExport();
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            IEnumerable dataSource = context.Notice.OrderBy(o => o.CreateDate).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Notizie.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/notizie/word")]
+        public ActionResult NoticesWord(string gridModel)
+        {
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            var exp = new WordExport();
+
+            IEnumerable dataSource = context.Notice.OrderBy(o => o.CreateDate).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Notizie.docx", false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("admin/notizie/pdf")]
+        public ActionResult NoticesPdf(string gridModel)
+        {
+            var context = new MyDbContext();
+
+            var now = Guid.NewGuid();
+
+            var exp = new PdfExport();
+
+            IEnumerable dataSource = context.Notice.OrderBy(o => o.CreateDate).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            exp.Export(obj, dataSource, now + " - Notizie.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
         #endregion
 

@@ -13,7 +13,7 @@ using MvcSiteMapProvider.Web.Mvc;
 using MvcSiteMapProvider.Web.UrlResolver;
 using MvcSiteMapProvider.Xml;
 
-namespace SystemWeb.DI.Autofac.Modules
+namespace GestioniDirette.DI.Autofac.Modules
 {
     public class MvcSiteMapProviderModule
         : global::Autofac.Module

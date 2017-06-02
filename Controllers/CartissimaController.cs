@@ -4,23 +4,23 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Collections;
-using SystemWeb.Service.Static;
+using GestioniDirette.Service.Static;
 using Syncfusion.EJ.Export;
 using Syncfusion.XlsIO;
 using Syncfusion.JavaScript.Models;
 using System.Web.Script.Serialization;
 using System.Reflection;
 using Microsoft.AspNet.Identity.Owin;
-using SystemWeb.Services;
-using SystemWeb.Database.Entity;
-using SystemWeb.Database.Repository.Interface;
+using GestioniDirette.Service;
+using GestioniDirette.Database.Entity;
+using GestioniDirette.Database.Repository.Interface;
 using System.Data.Entity;
 using System.IO;
-using SystemWeb.Mail;
+using GestioniDirette.Mail;
 using System.Configuration;
 using RazorEngine;
 
-namespace SystemWeb.Controllers
+namespace GestioniDirette.Controllers
 {
     public class CartissimaController : Controller
     {

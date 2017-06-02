@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace SystemWeb.Models
+namespace GestioniDirette.Models
 {
     public class PayPalModels
     {

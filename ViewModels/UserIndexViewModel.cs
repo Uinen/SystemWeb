@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SystemWeb.Database.Entity;
+using GestioniDirette.Database.Entity;
 
-namespace SystemWeb.Models
+namespace GestioniDirette.Models
 {
     public class UserIndexViewModel
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Web.Mvc;
-using SystemWeb.Database.Entity;
+using GestioniDirette.Database.Entity;
 
-namespace SystemWeb.Controllers
+namespace GestioniDirette.Controllers
 {
     public class UsersImageController : Controller
     {

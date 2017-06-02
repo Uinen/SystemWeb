@@ -1,17 +1,21 @@
 @{
     Layout = "~/Views/Shared/_Cartissima.cshtml";
 }
-<div class="container">
-    <div class="row">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item active text-success">La tua richiesta con codice @ViewBag.Cod è stata inoltrata con successo.</li>
-        </ol>
-        <p class="warning">
-            La prima fase verso l'acquisizione della tua nuova carta aziendale è stata portata a termine
-            e sei stato messo in lista d'attesa per essere contattato via mail o via telefono da un operatore specializzato che ti guiderà nelle fasi successive.
-            Se hai inserito una mail valida ti verrà inviata nel più breve periodo una mail di conferma dove verranno riportati alcuni tuoi dati sensibili come avvenuta conferma della richiesta.
-        </p>
-        <p class="text-success text-primary">La ringraziamo per averci scelto</p>
-        <ul><li><a href="https://www.gestionidirette.com">Torna Indietro</a></li></ul>
+<section id="features">
+    <div class="container">
+        <div class="row">
+            <div class="item">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active text-success">La tua richiesta con codice @ViewBag.Cod è stata inoltrata con successo.</li>
+                </ol>
+                <p class="warning">
+                    La prima fase verso l'acquisizione della tua nuova carta aziendale è stata portata a termine
+                    e sei stato messo in lista d'attesa per essere contattato via mail o via telefono da un operatore specializzato che ti guiderà nelle fasi successive.
+                    Se hai inserito una mail valida ti verrà inviata nel più breve periodo una mail di conferma dove verranno riportati alcuni tuoi dati sensibili come avvenuta conferma della richiesta.
+                </p>
+                <p class="text-success text-primary">La ringraziamo per averci scelto</p>
+                <ul><li class="fa fa-link">@Html.ActionLink("Torna Indietro", "BusinessCard")</li></ul>
+            </div>
+        </div>
     </div>
-</div>
+</section>

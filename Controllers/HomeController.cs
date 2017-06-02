@@ -6,14 +6,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using SystemWeb.ActionFilters;
-using SystemWeb.Service.Static;
-using SystemWeb.Services;
-using SystemWeb.ViewModels;
+using GestioniDirette.Service.Static;
+using GestioniDirette.Service;
+using GestioniDirette.ViewModels;
 using System;
 using System.Net.Mail;
 
-namespace SystemWeb.Controllers
+namespace GestioniDirette.Controllers
 {
     public class HomeController : Controller
     {

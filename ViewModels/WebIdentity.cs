@@ -1,7 +1,7 @@
 ﻿using System.Security.Principal;
 using System.Web.Security;
 
-namespace SystemWeb.Models
+namespace GestioniDirette.Models
 {
     public class WebIdentity : IIdentity
     {

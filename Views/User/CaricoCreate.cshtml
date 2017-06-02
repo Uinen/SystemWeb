@@ -30,9 +30,9 @@
             </div>
 
             <div class="col-sm-9 col-md-6 col-lg-4">
-                @Html.LabelFor(model => model.documentoId, "Tipo di Documento", htmlAttributes: new { @class = "control-label" })
+                @Html.LabelFor(model => model.DocumentoID, "Tipo di Documento", htmlAttributes: new { @class = "control-label" })
                 @Html.DropDownList("docId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.documentoId, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.DocumentoID, "", new { @class = "text-danger" })
             </div>
 
             <div class="col-sm-9 col-md-9 col-lg-4">
@@ -48,9 +48,9 @@
             </div>
 
             <div class="col-sm-9 col-md-9 col-lg-4">
-                @Html.LabelFor(model => model.Deposito, htmlAttributes: new { @class = "control-label" })
+                @Html.LabelFor(model => model.depId, htmlAttributes: new { @class = "control-label" })
                 @Html.DropDownList("depId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Deposito, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.depId, "", new { @class = "text-danger" })
             </div>
 
             <div class="col-sm-9 col-md-9 col-lg-4">

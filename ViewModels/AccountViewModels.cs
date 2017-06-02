@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace SystemWeb.Models
+namespace GestioniDirette.Models
 {
     // Modelli restituiti dalle azioni AccountController.
     public class ExternalLoginConfirmationViewModel

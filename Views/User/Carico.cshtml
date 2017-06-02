@@ -100,17 +100,19 @@
                         col.Field(p => p.Ordine).HeaderText("Ordine").Width("50").Add();
                         col.Field(p => p.cData).HeaderText("Scarico").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
 
-                        col.Field(p => p.documentoId).HeaderText("Tipo").ForeignKeyField("DocumentoID").ForeignKeyValue("Tipo")
+                        col.Field(p => p.DocumentoID).HeaderText("Tipo").ForeignKeyField("DocumentoID").ForeignKeyValue("Tipo")
                         .DataSource((IEnumerable<object>)ViewBag.datasource4).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
 
                         col.Field(p => p.Numero).HeaderText("Documento").Width("65").Add();
                         col.Field(p => p.rData).HeaderText("Bolla").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
 
-                        col.Field(p => p.Deposito).HeaderText("Emittente").ForeignKeyField("depId").ForeignKeyValue("Nome")
+                        col.Field(p => p.depId).HeaderText("Emittente").ForeignKeyField("depId").ForeignKeyValue("Nome")
                         .DataSource((IEnumerable<object>)ViewBag.datasource5).TextAlign(TextAlign.Left).Width(75).EditType(EditingType.Dropdown).Add();
 
                         col.Field(p => p.Benzina).HeaderText("Benzina").Width("50").Add();
                         col.Field(p => p.Gasolio).HeaderText("Gasolio").Width("50").Add();
+                        @*col.Field(p => p.HiQb).HeaderText("Gasolio").Width("50").Add();
+                        col.Field(p => p.HiQd).HeaderText("Gasolio").Width("50").Add();*@
                         col.Field(p => p.Note).HeaderText("Note").Width("50").Add();
                     })
                 )

@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace SystemWeb.ActionFilters
+namespace GestioniDirette.ActionFilters
 {
     public class SearchBotFilter : ActionFilterAttribute
     {

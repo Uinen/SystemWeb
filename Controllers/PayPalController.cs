@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Configuration;
 using System.Web.Mvc;
-using SystemWeb.Models;
+using GestioniDirette.Models;
 
-namespace SystemWeb.Controllers
+namespace GestioniDirette.Controllers
 {
     public class PayPalController : Controller
     {

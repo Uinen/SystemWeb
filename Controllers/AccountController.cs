@@ -4,19 +4,19 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
-using SystemWeb.Models;
+using GestioniDirette.Models;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security;
 using System.Web.Security;
-using SystemWeb.Database.Entity;
+using GestioniDirette.Database.Entity;
 using System.IO;
 using System.Configuration;
-using SystemWeb.Mail;
+using GestioniDirette.Mail;
 using RazorEngine;
-using SystemWeb.Service.Static;
+using GestioniDirette.Service.Static;
 
-namespace SystemWeb.Controllers
+namespace GestioniDirette.Controllers
 {
     [Authorize]
     public class AccountController : Controller

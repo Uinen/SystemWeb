@@ -4,26 +4,19 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Helpers;
 using Boilerplate.Web.Mvc;
-using SystemWeb.Services;
+using GestioniDirette.Service;
 using NWebsec.Csp;
 using static System.Web.Mvc.DependencyResolver;
 using Autofac;
-using SystemWeb.DI.Autofac.Modules;
+using GestioniDirette.DI.Autofac.Modules;
 using MvcSiteMapProvider.Loader;
 using System.Web.Hosting;
 using MvcSiteMapProvider.Xml;
-using MvcSiteMapProvider.Web.Mvc;
 
-namespace SystemWeb
+namespace GestioniDirette
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        /*protected void Application_BeginRequest()
-        {
-            if (!Context.Request.IsSecureConnection)
-                Response.Redirect(Context.Request.Url.ToString().Replace("http:", "https:"));
-        }*/
-
         protected void Application_Start()
         {
             ConfigureViewEngines();
@@ -44,13 +37,26 @@ namespace SystemWeb
         protected void NWebsecHttpHeaderSecurityModule_CspViolationReported(object sender, CspViolationReportEventArgs e)
         {
             // Log the Content Security Policy (CSP) violation.
-            var violationReport = e.ViolationReport;
-            var reportDetails = violationReport.Details;
-            var violationReportString =
-                $"UserAgent:<{violationReport.UserAgent}>\r\nBlockedUri:<{reportDetails.BlockedUri}>\r\nColumnNumber:<{reportDetails.ColumnNumber}>\r\nDocumentUri:<{reportDetails.DocumentUri}>\r\nEffectiveDirective:<{reportDetails.EffectiveDirective}>\r\nLineNumber:<{reportDetails.LineNumber}>\r\nOriginalPolicy:<{reportDetails.OriginalPolicy}>\r\nReferrer:<{reportDetails.Referrer}>\r\nScriptSample:<{reportDetails.ScriptSample}>\r\nSourceFile:<{reportDetails.SourceFile}>\r\nStatusCode:<{reportDetails.StatusCode}>\r\nViolatedDirective:<{reportDetails.ViolatedDirective}>";
-            var exception = new CspViolationException(violationReportString);
+            CspViolationReport violationReport = e.ViolationReport;
+            CspReportDetails reportDetails = violationReport.Details;
+            string violationReportString = string.Format(
+                "UserAgent:<{0}>\r\nBlockedUri:<{1}>\r\nColumnNumber:<{2}>\r\nDocumentUri:<{3}>\r\nEffectiveDirective:<{4}>\r\nLineNumber:<{5}>\r\nOriginalPolicy:<{6}>\r\nReferrer:<{7}>\r\nScriptSample:<{8}>\r\nSourceFile:<{9}>\r\nStatusCode:<{10}>\r\nViolatedDirective:<{11}>",
+                violationReport.UserAgent,
+                reportDetails.BlockedUri,
+                reportDetails.ColumnNumber,
+                reportDetails.DocumentUri,
+                reportDetails.EffectiveDirective,
+                reportDetails.LineNumber,
+                reportDetails.OriginalPolicy,
+                reportDetails.Referrer,
+                reportDetails.ScriptSample,
+                reportDetails.SourceFile,
+                reportDetails.StatusCode,
+                reportDetails.ViolatedDirective);
+            CspViolationException exception = new CspViolationException(violationReportString);
             Current.GetService<ILoggingService>().Log(exception);
         }
+
         private static void ConfigureDI()
         {
             // Create a container builder (typically part of your DI setup already)
@@ -101,7 +107,7 @@ namespace SystemWeb
 
             // If you have enabled SSL. Uncomment this line to ensure that the Anti-Forgery 
             // cookie requires SSL to be sent across the wire. 
-            AntiForgeryConfig.RequireSsl = false;
+            AntiForgeryConfig.RequireSsl = true;
         }
     }
 }

@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 
-namespace SystemWeb.Mail
+namespace GestioniDirette.Mail
 {
     public class Message
     {

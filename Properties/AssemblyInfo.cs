@@ -1,34 +1,34 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-// Le informazioni generali relative a un assembly sono controllate dal seguente
-// set di attributi. Modificare i valori di questi attributi per modificare le informazioni
-// associate a un assembly.
-[assembly: AssemblyTitle("Gestioni Dirette")]
+// General Information about an assembly is controlled through the following
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("GestioniDirette")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MTM di Fabbri Marcello & C. Snc")]
-[assembly: AssemblyProduct("SystemWeb")]
+[assembly: AssemblyProduct("GestioniDirette")]
 [assembly: AssemblyCopyright("Gestioni Dirette ©  2017")]
-[assembly: AssemblyTrademark("Gestioni Dirette ®  2017")]
+[assembly: AssemblyTrademark("Gestioni Dirette ©  2017")]
 [assembly: AssemblyCulture("")]
 
-// Se si imposta il valore di ComVisible su falso, i tipi nell'assembly non sono più visibili
-// dai componenti COM. Se è necessario accedere al tipo nell'assembly da
-// COM, impostare su true l'attributo ComVisible per tale tipo.
+// Setting ComVisible to false makes the types in this assembly not visible
+// to COM components.  If you need to access a type in this assembly from
+// COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-// Se il progetto viene esposto a COM, il GUID seguente verrà utilizzato per creare l'ID di typelib
-[assembly: Guid("7dfb9505-3132-4e3c-a5d7-629526f75bda")]
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("86a6808d-0066-44e0-a1d5-be5d9ccb88d0")]
 
-// Le informazioni sulla versione di un assembly sono costituite dai quattro valori seguenti:
+// Version information for an assembly consists of the following four values:
 //
-//      Versione principale
-//      Versione secondaria
-//      Numero build
-//      Revisione
+//      Major Version
+//      Minor Version
+//      Build Number
+//      Revision
 //
-// È possibile specificare tutti i valori o lasciare i valori predefiniti per Revisione e Numeri build
-// utilizzando l'asterisco (*) come illustrato di seguito:
-[assembly: AssemblyVersion("3.3.3.*")]
-[assembly: AssemblyFileVersion("3.3.3")]
+// You can specify all the values or you can default the Revision and Build Numbers
+// by using the '*' as shown below:
+[assembly: AssemblyVersion("4.0.1.*")]
+[assembly: AssemblyFileVersion("4.0.1")]

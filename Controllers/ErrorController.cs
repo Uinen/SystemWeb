@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Web.Mvc;
-using SystemWeb.Service.Static;
+using GestioniDirette.Service.Static;
 
-namespace SystemWeb.Controllers
+namespace GestioniDirette.Controllers
 {
     /// <summary>
     /// Provides methods that respond to HTTP requests with HTTP errors.

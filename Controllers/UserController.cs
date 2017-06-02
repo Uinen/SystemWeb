@@ -3,18 +3,17 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using SystemWeb.Models;
+using GestioniDirette.Models;
 using PagedList;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using System.Data.Entity;
 using Microsoft.Owin.Security;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.IO;
-using SystemWeb.Database.Repository.Interface;
-using SystemWeb.Database.Repository;
+using GestioniDirette.Database.Repository.Interface;
+using GestioniDirette.Database.Repository;
 using System.Data;
 using System.Collections;
 using System.Globalization;
@@ -23,10 +22,11 @@ using Syncfusion.JavaScript.Models;
 using Syncfusion.XlsIO;
 using System.Web.Script.Serialization;
 using System.Reflection;
-using SystemWeb.ActionFilters;
-using SystemWeb.Database.Entity;
+using GestioniDirette.ActionFilters;
+using GestioniDirette.Database.Entity;
+using System.Data.Entity;
 
-namespace SystemWeb.Controllers
+namespace GestioniDirette.Controllers
 {
     [Authorize]
     public class UserController : Controller
@@ -148,6 +148,9 @@ namespace SystemWeb.Controllers
             var somequalsD5 = _db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileCity + ", " + s.UserProfiles.ProfileAdress).SingleOrDefault(); 
             var somequalsD6 = _db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileName + " " + s.UserProfiles.ProfileSurname).SingleOrDefault();
             var somequalsD7 = _db.Users.Include(s => s.Company).Where(s => s.Id == currentUser.Id).Select(s => s.Company.Name).DefaultIfEmpty("Azienda non configurata").SingleOrDefault();
+            var somequalsD8 = _db.Notice.AsEnumerable().Select(s => string.Format("{0}", s.TextBox)).FirstOrDefault();
+            var somequalsD9 = _db.Notice.AsEnumerable().Select(s => string.Format("{0}", s.NoticeName)).FirstOrDefault();
+            var somequalsD10 = _db.Notice.AsEnumerable().Select(s => string.Format("{0}", s.CreateDate)).FirstOrDefault();
             //ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
             //ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
             ViewBag.FullAdress = somequalsD5;
@@ -162,6 +165,9 @@ namespace SystemWeb.Controllers
             ViewBag.PvInd = somequalsD1;
             ViewBag.PvCity = somequalsD2;
             ViewBag.CompanyId = somequalsD7;
+            ViewBag.NoticeName = somequalsD9;
+            ViewBag.Notice = somequalsD8;
+            ViewBag.NoiceCreateDate = somequalsD10;
 
             UserProfiles profile = _db.UserProfiles.Include(s => s.UsersImage).Include(s => s.ApplicationUser).SingleOrDefault(s => s.ProfileId == id);
             list.userprofiles = profile;
@@ -271,81 +277,93 @@ namespace SystemWeb.Controllers
                 #endregion
 
                 #region TotaleContatoriPrecedente
-
+                var createdDate = from a in _db.Users where currentUser.Id == a.Id select a.CreateDate.Year;
+                
                 dateFrom2 = new DateTime(2015, 12, 31);
                 dateTo2 = DateTime.Now.AddYears(-1);
 
-                var getAll2 = from a in _pvErogatoriRepository.GetPvErogatori()
-                              where (Convert.ToDateTime(a.FieldDate) >= dateFrom2)
-                                      && (Convert.ToDateTime(a.FieldDate) <= dateTo2
-                                      && currentUser.pvID == a.pvID)
-                              //where (a.FieldDate.Year.ToString().Contains(ly))
-                              select a;
+                if (createdDate.Single() == DateTime.Today.Year)
+                {
+                    ViewBag.SSPBTotalAmount2 = 0;
+                    ViewBag.DieselTotalAmount2 = 0;
+                    //ViewBag.HiQbTotalAmount2 = 0;
+                    //ViewBag.HiQdTotalAmount2 = 0;
+                    ViewBag.TotalAmount2 = 0;
+                }
+                else
+                {
+                    var getAll2 = from a in _pvErogatoriRepository.GetPvErogatori()
+                                  where (Convert.ToDateTime(a.FieldDate) >= dateFrom2)
+                                          && (Convert.ToDateTime(a.FieldDate) <= dateTo2
+                                          && currentUser.pvID == a.pvID)
+                                  //where (a.FieldDate.Year.ToString().Contains(ly))
+                                  select a;
 
-                var pvErogatoris = getAll2 as IList<PvErogatori> ?? getAll2.ToList();
+                    var pvErogatoris = getAll2 as IList<PvErogatori> ?? getAll2.ToList();
 
-                var maxB2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Max(row => row.Value);
-                var minB2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Min(row => row.Value);
+                    var maxB2 = pvErogatoris
+                        .DefaultIfEmpty()
+                        .Where(z => (z.Product.Nome.Contains("B")))
+                        .Max(row => row.Value);
+                    var minB2 = pvErogatoris
+                        .DefaultIfEmpty()
+                        .Where(z => (z.Product.Nome.Contains("B")))
+                        .Min(row => row.Value);
 
-                var maxG2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Max(row => row.Value);
-                var minG2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Min(row => row.Value);
+                    var maxG2 = pvErogatoris
+                        .DefaultIfEmpty()
+                        .Where(z => (z.Product.Nome.Contains("G")))
+                        .Max(row => row.Value);
+                    var minG2 = pvErogatoris
+                        .DefaultIfEmpty()
+                        .Where(z => (z.Product.Nome.Contains("G")))
+                        .Min(row => row.Value);
 
-                /* System.InvalidOperationException: La sequenza non contiene elementi
-                var maxHiqB2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.Nome.Contains("HiQb")))
-                    .Max(row => row.Value);
-                var minHiqB2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.Nome.Contains("HiQb")))
-                    .Min(row => row.Value);
+                    /* System.InvalidOperationException: La sequenza non contiene elementi
+                    var maxHiqB2 = pvErogatoris
+                        .DefaultIfEmpty()
+                        .Where(z => (z.Product.Nome.Contains("HiQb")))
+                        .Max(row => row.Value);
+                    var minHiqB2 = pvErogatoris
+                        .DefaultIfEmpty()
+                        .Where(z => (z.Product.Nome.Contains("HiQb")))
+                        .Min(row => row.Value);
 
-                var maxHiqD2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.Nome.Contains("HiQd")))
-                    .Max(row => row.Value);
-                var minHiqD2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.Nome.Contains("HiQd")))
-                    .Min(row => row.Value);*/
+                    var maxHiqD2 = pvErogatoris
+                        .DefaultIfEmpty()
+                        .Where(z => (z.Product.Nome.Contains("HiQd")))
+                        .Max(row => row.Value);
+                    var minHiqD2 = pvErogatoris
+                        .DefaultIfEmpty()
+                        .Where(z => (z.Product.Nome.Contains("HiQd")))
+                        .Min(row => row.Value);*/
 
-                #region Risultati
+                    #region Risultati
 
-                var _resultB2 = maxB2 - minB2;
-                var _resultG2 = maxG2 - minG2;
-                //var _resultHiqB2 = maxHiqB2 - minHiqB2;
-                //var _resultHiqD2 = maxHiqD2 - minHiqD2;
-                var _totalResult2 = _resultB2 + _resultG2 /*+ _resultHiqB2 + _resultHiqD2*/;
+                    var _resultB2 = maxB2 - minB2;
+                    var _resultG2 = maxG2 - minG2;
+                    //var _resultHiqB2 = maxHiqB2 - minHiqB2;
+                    //var _resultHiqD2 = maxHiqD2 - minHiqD2;
+                    var _totalResult2 = _resultB2 + _resultG2 /*+ _resultHiqB2 + _resultHiqD2*/;
 
-                #endregion
+                    #endregion
 
-                ViewBag.SSPBTotalAmount2 = _resultB2;
-                ViewBag.DieselTotalAmount2 = _resultG2;
-                //ViewBag.HiQbTotalAmount2 = _resultHiqB2;
-                //ViewBag.HiQdTotalAmount2 = _resultHiqD2;
-                ViewBag.TotalAmount2 = _totalResult2;
+                    ViewBag.SSPBTotalAmount2 = _resultB2;
+                    ViewBag.DieselTotalAmount2 = _resultG2;
+                    //ViewBag.HiQbTotalAmount2 = _resultHiqB2;
+                    //ViewBag.HiQdTotalAmount2 = _resultHiqD2;
+                    ViewBag.TotalAmount2 = _totalResult2;
 
-                #endregion
+                    #endregion
 
+                    #region Difference
 
-                #region Difference
+                    ViewBag.TotalAmountDifference = _totalResult - _totalResult2;
 
-                ViewBag.TotalAmountDifference = _totalResult - _totalResult2;
-
-                #endregion
+                    #endregion
+                }
             }
+
             return View(list);
         }
 
@@ -485,7 +503,7 @@ namespace SystemWeb.Controllers
             var currentUser = userManager.FindById(User.Identity.GetUserId());
             lastYear = DateTime.Today.Year;
             Ly = lastYear.ToString();
-            var thisYear = DateTime.Now.Year;
+            var thisYear = DateTime.Today.Year;
             #endregion
 
             var dataSource = _db.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year == thisYear).OrderBy(o => o.Ordine).ToList();
@@ -535,11 +553,16 @@ namespace SystemWeb.Controllers
             var currentUser = userManager.FindById(User.Identity.GetUserId());
             lastYear = DateTime.Today.Year;
             Ly = lastYear.ToString();
+            var thisYear = DateTime.Today.Year;
+            var _selectThisYear = (from a in _db.Year
+                                   where a.Anno.Year == thisYear
+                                   select a.yearId).Single();
             #endregion
 
+            value.yearId = _selectThisYear;
             OrderRepository.Update(value);
             var data = _db.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(Ly));
-            return Json(data, JsonRequestBehavior.AllowGet);
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
 
         [Route("user/ordini/insert")]
@@ -550,11 +573,16 @@ namespace SystemWeb.Controllers
             var currentUser = userManager.FindById(User.Identity.GetUserId());
             lastYear = DateTime.Today.Year;
             Ly = lastYear.ToString();
+            var thisYear = DateTime.Today.Year;
+            var _selectThisYear = (from a in _db.Year
+                                   where a.Anno.Year == thisYear
+                                   select a.yearId).Single();
             #endregion
 
+            value.yearId = _selectThisYear;
             OrderRepository.Add(value);
             var data = _db.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(Ly));
-            return Json(data, JsonRequestBehavior.AllowGet);
+            return Json(value, JsonRequestBehavior.AllowGet);
         }
 
         [Route("user/ordini/remove")]
@@ -714,6 +742,7 @@ namespace SystemWeb.Controllers
             if (ModelState.IsValid)
             {
                 #region var
+                /*
                 var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
                 var currentUser = userManager.FindById(User.Identity.GetUserId());
 
@@ -732,9 +761,10 @@ namespace SystemWeb.Controllers
 
                 ViewBag.pvID = new SelectList(getall, "pvID", "pvName", insertOrder.pvID);
                 ViewBag.yearId = new SelectList(year, "yearId", "Anno", insertOrder.yearId);
-                ViewBag.depId = new SelectList(dep, "depId", "Nome", insertOrder.Deposito);
-                ViewBag.docId = new SelectList(doc, "DocumentoID", "Tipo", insertOrder.documentoId);
+                ViewBag.depId = new SelectList(dep, "depId", "Nome", insertOrder.depId);
+                ViewBag.docId = new SelectList(doc, "DocumentoID", "Tipo", insertOrder.DocumentoID);*/
                 #endregion
+
                 OrderRepository.Add(insertOrder);
                 return RedirectToAction("Index");
             }
@@ -1254,12 +1284,14 @@ namespace SystemWeb.Controllers
         [Route("user/cisterne/update")]
         public ActionResult UpdatePvTanks(PvTank value)
         {
+            value.LastDate = DateTime.Today.Date;
             TankRepository.Update(value);
             return Json(value, JsonRequestBehavior.AllowGet);
         }
         [Route("user/cisterne/insert")]
         public ActionResult InsertPvTanks(PvTank value)
         {
+            value.LastDate = DateTime.Today.Date;
             TankRepository.Add(value);
             return Json(value, JsonRequestBehavior.AllowGet);
         }
@@ -2942,17 +2974,17 @@ namespace SystemWeb.Controllers
                                 select a.Rimanenza;
 
             var _ordiniEccedenze = (from a in _db.Carico
-                                    where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly) && /*a.Tipo.Tipo.Contains("T")*/ a.documentoId.ToString() == "ce657bdc-ef45-4014-b638-ebac50214031"
+                                    where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly) && /*a.Tipo.Tipo.Contains("T")*/ a.DocumentoID.ToString() == "ce657bdc-ef45-4014-b638-ebac50214031"
                                     select a);
 
-            var _ordiniScatti = (from a in _db.Carico
-                                 where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly) && /*a.Tipo.Tipo.Contains("R")*/ a.documentoId.ToString() == "cb8deef4-a81d-45f6-bc6b-6ee445a5f6c7"
-                                 select a);
+            //var _ordiniScatti = (from a in _db.Carico
+            //                    where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly) && /*a.Tipo.Tipo.Contains("R")*/ a.DocumentoID.ToString() == "cb8deef4-a81d-45f6-bc6b-6ee445a5f6c7"
+            //                 select a);
 
             var _rimIB = _cisternaRimB.Sum();
             var _rimIG = _cisternaRimG.Sum();
 
-            if (_carico.Count() > 0 && _ordiniEccedenze.Count() > 0 && _ordiniScatti.Count() > 0 && _contatori.Count() > 0 && _deficienze.Count() > 0 && _cali.Count() > 0)
+            if (_carico.Count() > 0 && _ordiniEccedenze.Count() > 0 /*&& _ordiniScatti.Count() > 0*/ && _contatori.Count() > 0 && _deficienze.Count() > 0 && _cali.Count() > 0)
             {
                 var _eccB = _ordiniEccedenze.Sum(s => s.Benzina);
                 var _eccG = _ordiniEccedenze.Sum(s => s.Gasolio);
@@ -2960,11 +2992,11 @@ namespace SystemWeb.Controllers
                 ViewBag.eccB = _eccB;
                 ViewBag.eccG = _eccG;
 
-                var _scatB = _ordiniScatti.Sum(s => s.Benzina);
-                var _scatG = _ordiniScatti.Sum(s => s.Gasolio);
+                //var _scatB = _ordiniScatti.Sum(s => s.Benzina);
+                //var _scatG = _ordiniScatti.Sum(s => s.Gasolio);
 
-                ViewBag.scatB = _scatB;
-                ViewBag.scatG = _scatG;
+                ViewBag.scatB = /*_scatB;*/0;
+                ViewBag.scatG = /*_scatG;*/0;
 
                 #region Carico
                 var _totCaricoB = _carico.Sum(s => s.Benzina);

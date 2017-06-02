@@ -4,7 +4,7 @@ using System.Text;
 using System.Web.Mvc;
 using Tidy.Core;
 
-namespace SystemWeb.ActionFilters
+namespace GestioniDirette.ActionFilters
 {
     public class TidyHtml : ActionFilterAttribute
     {

@@ -1,52 +1,110 @@
-@model IEnumerable<Notice>
-
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Notizie";
+    Layout = "~/Views/Shared/_ThirdLayout.cshtml";
+}
+<section id="features" class="block">
+    <div class="container">
+        <div class="row">
+            <div class="item">
+                @(Html.EJ().Grid<Notice>("FlatGridNotice")
+                    .Locale("it-IT")
+                    .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
+                    .UpdateURL("update")
+                    .InsertURL("insert")
+                    .RemoveURL("remove")
+                    .Adaptor(AdaptorType.RemoteSaveAdaptor))
+                    .AllowGrouping()
+                    .AllowPaging()
+                    .EnableAltRow()
+                    .PageSettings(p => p.PageCount(2).PageSize(5))
+                    .IsResponsive(true)
+                    .EnableResponsiveRow(true)
+                    .AllowSorting()
+                    .AllowFiltering()
+                                    .FilterSettings(filter =>
+                                    {
+                                        filter.FilterType(FilterType.Excel);
+                                    })
+
+                    .AllowMultiSorting()
+                    .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteNotice"))
+                    .MinWidth(400)
+                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog))
+                    .ToolbarSettings(toolbar =>
+                    {
+                        toolbar.ShowToolbar().ToolbarItems(items =>
+                        {
+                            items.AddTool(ToolBarItems.Add);
+                            items.AddTool(ToolBarItems.Edit);
+                            items.AddTool(ToolBarItems.Delete);
+                            items.AddTool(ToolBarItems.Update);
+                            items.AddTool(ToolBarItems.Cancel);
+                            items.AddTool(ToolBarItems.Search);
+                            items.AddTool(ToolBarItems.ExcelExport);
+                            items.AddTool(ToolBarItems.WordExport);
+                            items.AddTool(ToolBarItems.PdfExport);
+                        });
+                    })
+
+                    .Mappers(map => map.ExportToExcelAction("noticeexcell")
+                                    .ExportToPdfAction("noticepdf")
+                                    .ExportToWordAction("noticeword"))
+                    .Columns(col =>
+                    {
+                        col.Field(p => p.NoticeId).HeaderText("ID Notizia").IsPrimaryKey(true).Visible(false).Width("90").Add();
+                        col.Field(p => p.NoticeName).HeaderText("Nome").Width("50").EditType(EditingType.String).Add();
+                        col.Field(p => p.TextBox).HeaderText("Contenuto").Width("45").EditType(EditingType.String).Add();
+
+                        col.Field(p => p.UsersId).HeaderText("Autore").TextAlign(TextAlign.Left).Width(75).AllowEditing(false).Add();
+
+                        col.Field(p => p.Description).HeaderText("Descrizione").Width("50").EditType(EditingType.String).Add();
+                        col.Field(p => p.CreateDate).HeaderText("Data di Creazione").Width("50").AllowEditing(false).Add();
+                    })
+                )
+            </div>
+        </div>
+    </div>
+</section>
+
+@section style{
+    @Styles.Render("~/Content/EjWidgetCore")
+    @Styles.Render("~/Content/EjTheme")
+    @Styles.Render("~/Content/EjResponsive")
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
 
-<h2>Index</h2>
+@section script{
 
-<p>
-    @Html.ActionLink("Create New", "NoticesCreate")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NoticeName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreateDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TextBox)
-        </th>
-        <th></th>
-    </tr>
+    @Scripts.Render("~/bundles/jqueryeasing")
+    @Scripts.Render("~/bundles/jsrender")
+    @Scripts.Render("~/bundles/jqueryglobalize")
+    @Scripts.Render("~/bundles/jquerybrowser")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/GridOption")
+    @Html.EJ().ScriptManager()
 
-@foreach (var item in Model ) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NoticeName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreateDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TextBox)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "NoticesEdit", new { id = item.NoticeId }) |
-            @Html.ActionLink("Details", "NoticesDetails", new { id = item.NoticeId }) |
-            @Html.ActionLink("Delete", "NoticesDelete", new { id = item.NoticeId })
-            @Html.ActionLink("RSS", "RssFeed", new { NoticeName = item.NoticeName, CreateDate = item.CreateDate, TextBox = item.TextBox, UsersId = item.ApplicationUser.UserName, Description = item.Description }, new { target = "_blank" })
-        </td>
-    </tr>
+    <script type="text/javascript">
+    ej.Grid.Locale["it-IT"] = {
+        EmptyRecord: "Nessun record da visualizzare",
+        GroupDropArea: "Trascinare una colonna qui",
+        DeleteOperationAlert: "Nessuna voce selezionata per l'eliminazione",
+        EditOperationAlert: "Entrate selezionate per operazione di modifica",
+        SaveButton: "Salva",
+        CancelButton: "Annulla",
+        EditFormTitle: "Modifica",
+        GroupCaptionFormat: "{{:field}}: {{:key}} - {{:count}} {{if count == 1}}Oggetto{{else}}Oggetti{{/if}}",
+        UnGroup: "Clicca qui per separare"
+    };
+    ej.Pager.Locale["it-IT"] = {
+        pagerInfo: "{0} di {1} Pagine ({2} Oggetti)",
+        firstPageTooltip: "Per la prima pagina",
+        lastPageTooltip: "L'ultima pagina",
+        nextPageTooltip: "Pagina successiva",
+        previousPageTooltip: "Pagina precedente",
+        nextPagerTooltip: "Alla prossima pagina",
+        previousPagerTooltip: "Pagina precedente"
+    };
+    </script>
 }
-
-</table>

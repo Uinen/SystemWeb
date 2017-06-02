@@ -1,5 +1,5 @@
-﻿using SystemWeb.Database.Utility;
-using SystemWeb.Models;
+﻿using GestioniDirette.Database.Utility;
+using GestioniDirette.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin;
-using SystemWeb.Database.Entity;
+using GestioniDirette.Database.Entity;
 
-namespace SystemWeb.Controllers
+namespace GestioniDirette.Controllers
 {
     public class ValidationController : Controller
     {

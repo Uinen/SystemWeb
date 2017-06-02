@@ -8,10 +8,10 @@ using System.Reflection;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
-using SystemWeb.Services;
-using SystemWeb.Database.Entity;
+using GestioniDirette.Service;
+using GestioniDirette.Database.Entity;
 
-namespace SystemWeb
+namespace GestioniDirette
 {
     public partial class Startup
     {

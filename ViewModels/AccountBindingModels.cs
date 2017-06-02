@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using SystemWeb.Database.Entity;
+using GestioniDirette.Database.Entity;
 using System.Collections;
 
-namespace SystemWeb.Models
+namespace GestioniDirette.Models
 {
     // Modelli utilizzati come parametri per le azioni AccountController.
 
