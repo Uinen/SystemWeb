@@ -68,7 +68,7 @@
                         col.Field(p => p.Modello).HeaderText("Modello").Width("50").EditType(EditingType.String).Add();
                         col.Field(p => p.Capienza).HeaderText("Capienza").Width("45").EditType(EditingType.Numeric).Add();
                         col.Field(p => p.Giacenza).HeaderText("Giacenza").Width("50").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.Rimanenza).HeaderText("Rimanenza Iniziale").Width("50").AllowEditing(false).Add();
+                        col.Field(p => p.Rimanenza).HeaderText("Rimanenza Iniziale").Width("50").EditType(EditingType.Numeric).Add();
                         col.Field(p => p.LastDate).HeaderText("Ultima Rilevazione").Format("{0:MM/dd/yyyy}").AllowEditing(false).Width("65").Add();
                         col.Field(p => p.Descrizione).HeaderText("Descrizione").Width("45").EditType(EditingType.String).Add();
                     })
@@ -108,15 +108,97 @@
     });
 
     ej.Grid.Locale["it-IT"] = {
-        EmptyRecord: "Nessun record da visualizzare",
-        GroupDropArea: "Trascinare una colonna qui",
-        DeleteOperationAlert: "Nessuna voce selezionata per l'eliminazione",
-        EditOperationAlert: "Entrate selezionate per operazione di modifica",
+        EmptyRecord: "Non esistono dati da visualizzare. Inseriscine uno.",
+
+        //Editing option localization strings
+
+        DeleteOperationAlert: "Nessun record selezionato per l'operazione di eliminazione",
+
+        EditOperationAlert: "Nessun record selezionato per l'operazione di modifica",
+
         SaveButton: "Salva",
+
+        OkButton: "OK",
+
         CancelButton: "Annulla",
-        EditFormTitle: "Modifica",
+
+        EditFormTitle: "Dettagli di ",
+
+        AddFormTitle: "Aggiungi nuovo record ",
+
+        //Key Combination alert message
+
+        Notactionkeyalert: "Questa combinazione di tasti non è disponibile",
+
+        Keyconfigalerttext: "Questa combinazione di tasti è già stata assegnata ",
+
+        //Group drop area and caption format
+
+        GroupDropArea: "Trascina un'intestazione di colonna per raggrupparla",
+
+        GroupCaptionFormat: ":  - 8  oggetto  oggetti ",
+
+        //Bulk Editing Alert Messages
+
+        BatchSaveConifrm: "Sei sicuro di voler salvare le modifiche?",
+
+        BatchSaveLostChanges: "Le modifiche non salvate verranno perse. Sei sicuro di voler continuare?",
+
+        //Pager bar message string 
+
+        PagerInfo: "{0} di {1} pagine ({2} oggetti)",
+
         GroupCaptionFormat: "{{:field}}: {{:key}} - {{:count}} {{if count == 1}}Oggetto{{else}}Oggetti{{/if}}",
-        UnGroup: "Clicca qui per separare"
+
+        UnGroup: "Clicca qui per separare",
+
+        //Frozen Alert Messages
+
+        FrozenColumnsViewAlert: "Le colonne congelate dovrebbero essere in area di griglia",
+
+        FrozenColumnsScrollAlert: "Attiva allowScrolling durante l'utilizzo di colonne congelate",
+
+        FrozenNotSupportedException: "Le colonne e le righe congelate non sono supportate per il raggruppamento, il modello di riga, il modello di dettaglio e la modifica batch",
+
+        //Toolbar tooltip
+
+        Add: "Inserisci",
+
+        Edit: "Modifica",
+
+        Delete: "Elimina",
+
+        Update: "Aggiorna",
+
+        Cancel: "Annulla",
+
+        //Filter menu strings
+
+        StringMenuOptions: [{ text: "Inizia con", value: "StartsWith" }, { text: "Finisce con", value: "EndsWith" }, { text: "Contiene", value: "Contains" }, { text: "Pari", value: "Equal" }, { text: "Diverso", value: "NotEqual" }],
+
+        NumberMenuOptions: [{ text: "Minori di", value: "LessThan" }, { text: "Più grande di", value: "GreaterThan" }, { text: "Minore di o Uguali", value: "LessThanOrEqual" }, { text: "Più grande di o uguale", value: "GreaterThanOrEqual" }, { text: "Uguale", value: "Equal" }, { text: "Diverso", value: "NotEqual" }],
+
+        PredicateAnd: "E",
+
+        PredicateOr: "O",
+
+        Filter: "Filtro",
+
+        MatchCase: "Caso di corrispondenza",
+
+        Clear: "Pulisci",
+
+        PrintGrid: "Stampa",
+
+        ExcelExport: "Esportazione in formato Excel",
+
+        WordExport: "Esportazione in formato Word",
+
+        PdfExport: "Esportazione in formato PDF",
+
+        ResponsiveFilter: "Filtro",
+
+        ResponsiveSorting: "Ordinare"
     };
     ej.Pager.Locale["it-IT"] = {
         pagerInfo: "{0} di {1} Pagine ({2} Oggetti)",

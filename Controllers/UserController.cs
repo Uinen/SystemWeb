@@ -125,9 +125,6 @@ namespace GestioniDirette.Controllers
                     .Include(i => i.Roles)
                     .Include(i => i.Logins)
                     .Include(i => i.Claims)
-                    .ToList(),
-                usersimage = _db.UsersImage
-                    .Include(i => i.UserProfiles)
                     .ToList()
             };
             #endregion
@@ -135,11 +132,15 @@ namespace GestioniDirette.Controllers
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
 
-            var getPId = from a in _db.UserProfiles
+            /*var getPId = from a in _db.UserProfiles
                          where a.ProfileId == currentUser.ProfileId
                          select a;
             
-            ViewBag.profileId = getPId;
+            ViewBag.profileId = getPId;*/
+
+            list.usersimage = _db.UsersImage
+                    .Where(s => currentUser.ProfileId == s.ProfileID)
+                    .ToList();
 
             var somequalsD1 = (from pvProfile in _db.PvProfile where currentUser.pvID == pvProfile.pvID select pvProfile.Indirizzo).DefaultIfEmpty("Indirizzo non configurato").SingleOrDefault();
             var somequalsD2 = (from pvProfile in _db.PvProfile where currentUser.pvID == pvProfile.pvID select pvProfile.Città).DefaultIfEmpty("Città non configurata").SingleOrDefault();
@@ -148,29 +149,26 @@ namespace GestioniDirette.Controllers
             var somequalsD5 = _db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileCity + ", " + s.UserProfiles.ProfileAdress).SingleOrDefault(); 
             var somequalsD6 = _db.Users.Include(s => s.UserProfiles).Where(s => s.Id == currentUser.Id).Select(s => s.UserProfiles.ProfileName + " " + s.UserProfiles.ProfileSurname).SingleOrDefault();
             var somequalsD7 = _db.Users.Include(s => s.Company).Where(s => s.Id == currentUser.Id).Select(s => s.Company.Name).DefaultIfEmpty("Azienda non configurata").SingleOrDefault();
-            var somequalsD8 = _db.Notice.AsEnumerable().Select(s => string.Format("{0}", s.TextBox)).FirstOrDefault();
-            var somequalsD9 = _db.Notice.AsEnumerable().Select(s => string.Format("{0}", s.NoticeName)).FirstOrDefault();
-            var somequalsD10 = _db.Notice.AsEnumerable().Select(s => string.Format("{0}", s.CreateDate)).FirstOrDefault();
-            //ViewBag.ProfileName = currentUser.UserProfiles.ProfileName;
-            //ViewBag.ProfileSurname = currentUser.UserProfiles.ProfileSurname;
+            var somequalsD8 = _db.Licenza.Where(c => currentUser.pvID == c.pvID);
+            var somequalsD9 = _db.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID);
             ViewBag.FullAdress = somequalsD5;
             ViewBag.ProfileFullName = somequalsD6;
-            //ViewBag.ProfileAdress = currentUser.UserProfiles.ProfileAdress;
-            //ViewBag.ProfileCity = currentUser.UserProfiles.ProfileCity;
-            //ViewBag.ProfileZipCode = currentUser.UserProfiles.ProfileZipCode;
-            //ViewBag.ProfileNation = currentUser.UserProfiles.ProfileNation;
-            //ViewBag.ProfileInfo = currentUser.UserProfiles.ProfileInfo;
             ViewBag.Flag = somequalsD4;
             ViewBag.PvNamee = somequalsD3;
             ViewBag.PvInd = somequalsD1;
             ViewBag.PvCity = somequalsD2;
             ViewBag.CompanyId = somequalsD7;
-            ViewBag.NoticeName = somequalsD9;
-            ViewBag.Notice = somequalsD8;
-            ViewBag.NoiceCreateDate = somequalsD10;
+            ViewBag.Licenza = somequalsD8.Select(c => c.Codice).DefaultIfEmpty("Nessuna licenza inserita").Single();
+            ViewBag.Scadenza = somequalsD8.Select(c => c.Scadenza).SingleOrDefault();
+            //ViewBag.Bollino = somequalsD9.Select(c => c.Scadenza).SingleOrDefault();
 
-            UserProfiles profile = _db.UserProfiles.Include(s => s.UsersImage).Include(s => s.ApplicationUser).SingleOrDefault(s => s.ProfileId == id);
-            list.userprofiles = profile;
+            IEnumerable<UserProfiles> userprofiles = (from up in _db.UserProfiles
+                                                      where currentUser.ProfileId == up.ProfileId
+                                                      select up);
+            list.userprofiles = userprofiles;
+
+            var notice = _db.Notice.AsEnumerable().Take(5);
+            list.notice = notice;
 
             #region CaricoCreate
 
@@ -774,7 +772,7 @@ namespace GestioniDirette.Controllers
         
         #endregion
 
-        #region PvErogatori
+        #region Contatori
         [Route("user/contatori/")]
         [WhitespaceFilter]
         public ActionResult PvErogatori(DateTime? dateFrom, DateTime? dateTo)
@@ -1146,8 +1144,138 @@ namespace GestioniDirette.Controllers
         }
         #endregion
 
+        #region Licenza
+
+        [Route("user/licenza/")]
+        [WhitespaceFilter]
+        public ActionResult Licenza()
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            var dataSource = new MyDbContext().Licenza.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.nSuccessivo).ToList();
+            ViewBag.datasource = dataSource;
+
+            IEnumerable dataSource2 = new MyDbContext().Pv.Where(c => currentUser.pvID == c.pvID).ToList();
+            ViewBag.datasource2 = dataSource2;
+            
+
+            return View();
+        }
+
+        [Route("user/licenza/update")]
+        public ActionResult UpdateLicenza(Licenza value)
+        {
+            LicenzaRepository.Update(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+        [Route("user/licenza/insert")]
+        public ActionResult InsertLicenza(Licenza value)
+        {
+            LicenzaRepository.Add(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/licenza/remove")]
+        public ActionResult RemoveLicenza(Guid key)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            context.Licenza.Remove(context.Licenza.Single(o => o.LicenzaID == key));
+            context.SaveChanges();
+
+            var data = context.Licenza.Where(c => currentUser.pvID == c.pvID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/licenza/licenzaexcell")]
+        public ActionResult LicenzaExcell(string gridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            var exp = new ExcelExport();
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            IEnumerable dataSource = context.Licenza.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.nSuccessivo).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, dataSource, now + " - Licenza.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/licenza/licenzaword")]
+        public ActionResult LicenzaWord(string gridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            var exp = new WordExport();
+
+            IEnumerable dataSource = context.Licenza.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.nSuccessivo).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, dataSource, now + " - Licenza.docx", false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/licenza/licenzapdf")]
+        public ActionResult LicenzaPdf(string gridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            var context = new MyDbContext();
+
+            var now = Guid.NewGuid();
+
+            var exp = new PdfExport();
+
+            IEnumerable dataSource = context.Licenza.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.nSuccessivo).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            exp.Export(obj, dataSource, now + " - Licenza.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
         #region PvProfiles
-       
+
         public ActionResult PvProfiles()
         {
             ViewBag.pvID = new SelectList(_db.Pv, "pvID", "pvName");
@@ -2792,144 +2920,143 @@ namespace GestioniDirette.Controllers
             return View(profile);
         }
 
-            /*
-            // GET: Profiles/Create
-            public ActionResult Create()
+        /*
+        // GET: Profiles/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Profiles/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "ProfileID,ProfileName,ProfileSurname,ProfileCF")] Profile profile, HttpPostedFileBase upload)
+        {
+            try
             {
-                return View();
+                if (ModelState.IsValid)
+                {
+                    if (upload != null && upload.ContentLength > 0)
+                    {
+                        var avatar = new File
+                        {
+                            FileName = string.Format(Guid.NewGuid() + "-" + System.IO.Path.GetFileName(upload.FileName)),
+                            FileType = FileType.Avatar,
+                            ContentType = upload.ContentType,
+                            UploadDate = DateTime.Now.Date
+                        };
+                        using (var reader = new System.IO.BinaryReader(upload.InputStream))
+                        {
+                            avatar.Content = reader.ReadBytes(upload.ContentLength);
+                        }
+                        profile.File = new List<File> { avatar };
+                    }
+                    db.Profiles.Add(profile);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (RetryLimitExceededException)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            return View(profile);
+        }
+        */
+        // GET: Profiles/Edit/5
+        public ActionResult EditProfiles(Guid? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            UserProfiles profile = _db.UserProfiles.Include(s => s.UsersImage).SingleOrDefault(s => s.ProfileId == id);
+            if (profile == null)
+            {
+                return HttpNotFound();
+            }
+            return View(profile);
+        }
+        [HttpPost, ActionName("EditProfiles")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPost(Guid id, HttpPostedFileBase upload)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // POST: Profiles/Create
-            // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-            // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public ActionResult Create([Bind(Include = "ProfileID,ProfileName,ProfileSurname,ProfileCF")] Profile profile, HttpPostedFileBase upload)
+            var profileToUpdate = _db.UserProfiles.Find(id);
+            var myOldImage = _db.UsersImage.Where(s => s.ProfileID == id).Select(s => s.UsersImageID).Single();
+            if (TryUpdateModel(profileToUpdate, "",
+                new string[] { "ProfileName", "ProfileSurname", "ProfileAdress", "ProfileCity", "ProfileZipCode", "ProfileNation", "ProfileInfo" }))
             {
                 try
                 {
-                    if (ModelState.IsValid)
+                    if (upload != null && upload.ContentLength > 0)
                     {
-                        if (upload != null && upload.ContentLength > 0)
+                        if (profileToUpdate.UsersImage.Any(f => f.FileType == FileType.Avatar))
                         {
-                            var avatar = new File
-                            {
-                                FileName = string.Format(Guid.NewGuid() + "-" + System.IO.Path.GetFileName(upload.FileName)),
-                                FileType = FileType.Avatar,
-                                ContentType = upload.ContentType,
-                                UploadDate = DateTime.Now.Date
-                            };
-                            using (var reader = new System.IO.BinaryReader(upload.InputStream))
-                            {
-                                avatar.Content = reader.ReadBytes(upload.ContentLength);
-                            }
-                            profile.File = new List<File> { avatar };
+                            profileToUpdate.UsersImage.Remove(profileToUpdate.UsersImage.Single(f => f.FileType == FileType.Avatar && myOldImage == f.UsersImageID));
                         }
-                        db.Profiles.Add(profile);
-                        db.SaveChanges();
-                        return RedirectToAction("Index");
-                    }
-                }
-                catch (RetryLimitExceededException)
-                {
-                    //Log the error (uncomment dex variable name and add a line here to write a log.
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                }
-                return View(profile);
-            }
-            */
-            // GET: Profiles/Edit/5
-            public ActionResult EditProfiles(Guid? id)
-            {
-                if (id == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                UserProfiles profile = _db.UserProfiles.Include(s => s.UsersImage).SingleOrDefault(s => s.ProfileId == id);
-                if (profile == null)
-                {
-                    return HttpNotFound();
-                }
-                return View(profile);
-            }
 
-            // POST: Profiles/Edit/5
-            // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-            // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-            [HttpPost, ActionName("EditProfiles")]
-            [ValidateAntiForgeryToken]
-            public ActionResult EditPost(Guid? id, HttpPostedFileBase upload)
-            {
-                if (id == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                var profileToUpdate = _db.UserProfiles.Find(id);
-                if (TryUpdateModel(profileToUpdate, "",
-                    new string[] { "ProfileName", "ProfileSurname", "ProfileAdress", "ProfileCity", "ProfileZipCode", "ProfileNation", "ProfileInfo" }))
-                {
-                    try
-                    {
-                        if (upload != null && upload.ContentLength > 0)
+                        var avatar = new UsersImage
                         {
-                            if (profileToUpdate.UsersImage.Any(f => f.FileType == FileType.Avatar))
-                            {
-                                _db.UsersImage.Remove(profileToUpdate.UsersImage.First(f => f.FileType == FileType.Avatar));
-                            }
-                            var avatar = new UsersImage
-                            {
+                                //UsersImageID = myOldImage,
                                 UsersImageName = string.Format(Guid.NewGuid() + "-" + System.IO.Path.GetFileName(upload.FileName)),
                                 FileType = FileType.Avatar,
                                 ContentType = upload.ContentType,
                                 UploadDate = DateTime.Now.Date
-                            };
-                            using (var reader = new System.IO.BinaryReader(upload.InputStream))
-                            {
-                                avatar.Content = reader.ReadBytes(upload.ContentLength);
-                            }
+                        };
+
+                        using (var reader = new System.IO.BinaryReader(upload.InputStream))
+                        {
+                            avatar.Content = reader.ReadBytes(upload.ContentLength);
+                        }
                             profileToUpdate.UsersImage = new List<UsersImage> { avatar };
                         }
+
                         _db.Entry(profileToUpdate).State = EntityState.Modified;
                         _db.SaveChanges();
 
                         return RedirectToAction("Index");
                     }
-                    catch (RetryLimitExceededException /* dex */)
-                    {
-                        //Log the error (uncomment dex variable name and add a line here to write a log.
-                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-                    }
-                }
-                return View(profileToUpdate);
-            }
-
-            [Authorize(Roles = "Administrators")]
-            // GET: Profiles/Delete/5
-            public ActionResult DeleteProfiles(Guid? id)
-            {
-                if (id == null)
+                catch (RetryLimitExceededException dex)
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    var error = string.Format("{0}, {1}, {2}", dex.Message, dex.Source, dex.HResult);
+                    ModelState.AddModelError(error, "Impossibile salvare le modifiche. Prova di nuovo, e se il problema persiste contattaci copiando l'errore sopraciato nel messaggio.");
                 }
-                UserProfiles profile = _db.UserProfiles.Find(id);
-                if (profile == null)
-                {
-                    return HttpNotFound();
-                }
-                return View(profile);
             }
+            return View(profileToUpdate);
+        }
 
-            // POST: Profiles/Delete/5
-            [Authorize(Roles = "Administrators")]
-            [HttpPost, ActionName("DeleteProfiles")]
-            [ValidateAntiForgeryToken]
-            public ActionResult DeleteProfilesConfirmed(Guid id)
+        [Authorize(Roles = "Administrators")]
+        public ActionResult DeleteProfiles(Guid? id)
+        {
+            if (id == null)
             {
-                UserProfiles profile = _db.UserProfiles.Find(id);
-                _db.UserProfiles.Remove(profile);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            UserProfiles profile = _db.UserProfiles.Find(id);
+            if (profile == null)
+            {
+                return HttpNotFound();
+            }
+            return View(profile);
+        }
+        [Authorize(Roles = "Administrators")]
+        [HttpPost, ActionName("DeleteProfiles")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteProfilesConfirmed(Guid id)
+        {
+            UserProfiles profile = _db.UserProfiles.Find(id);
+            _db.UserProfiles.Remove(profile);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
         #endregion
 
@@ -2945,6 +3072,22 @@ namespace GestioniDirette.Controllers
             var da = new DateTime(2016, 12, 31);
             var al = DateTime.Now;
             #endregion
+
+            var Licenza = from a in _db.Licenza
+                               where currentUser.pvID == a.pvID
+                               select a;
+
+            ViewBag.nPrecedente = Licenza.Select(a => a.nPrecedente).Single();
+
+            ViewBag.nSuccessivo = Licenza.Select(a => a.nSuccessivo).Single();
+
+            ViewBag.Code = Licenza.Select(a => a.Codice).Single();
+
+            var _città = from a in _db.PvProfile
+                         where currentUser.pvID == a.pvID
+                         select a;
+
+            ViewBag.Città = _città.Select(a => a.Città).Single();
 
             var _carico = from a in _db.Carico
                           where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly)
@@ -3035,6 +3178,8 @@ namespace GestioniDirette.Controllers
                 var totalG = maxG - minG;
                 ViewBag.totalB = totalB;
                 ViewBag.totalG = totalG;
+                ViewBag.nettoB = totalB - 0;
+                ViewBag.nettoG = totalG - 0;
 
                 #endregion
 

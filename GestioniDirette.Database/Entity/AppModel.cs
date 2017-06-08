@@ -314,6 +314,7 @@ namespace GestioniDirette.Database.Entity
             PvProfile = new HashSet<PvProfile>();
             ApplicationUser = new HashSet<ApplicationUser>();
             Cartissima = new HashSet<Cartissima>();
+            Licenza = new HashSet<Licenza>();
             pvID = Guid.NewGuid();
         }
 
@@ -329,6 +330,7 @@ namespace GestioniDirette.Database.Entity
         public ICollection<PvProfile> PvProfile { get; set; }
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
         public ICollection<Cartissima> Cartissima { get; set; }
+        public ICollection<Licenza> Licenza { get; set; }
     }
     #endregion
 
@@ -506,6 +508,9 @@ namespace GestioniDirette.Database.Entity
         public PvTank PvTank { get; set; }
         public ICollection<PvErogatori> PvErogatori { get; set; }
         public bool? isActive { get; set; }
+
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
+        public DateTime? Scadenza { get; set; }
     }
     #endregion
 
@@ -672,8 +677,26 @@ namespace GestioniDirette.Database.Entity
 
     #endregion
 
-    #region Mail
+    #region Licenza
+    public class Licenza
+    {
+        public Licenza()
+        {
+            LicenzaID = Guid.NewGuid();
+        }
+        [Key]
+        public Guid LicenzaID { get; set; }
+        public Guid pvID { get; set; }
+        public string Codice { get; set; }
+        public string nPrecedente { get; set; }
+        public string nSuccessivo { get; set; }
 
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
+        public DateTime? Scadenza { get; set; }
+
+        [ScriptIgnore]
+        public Pv Pv { get; set; }
+    }
     #endregion
 
     #region MyDbContext: IdentityDbContext
@@ -754,6 +777,9 @@ namespace GestioniDirette.Database.Entity
             modelBuilder.Entity<Carico>().HasRequired(p => p.Documento)
                 .WithMany(b => b.Carico)
                 .HasForeignKey(p => p.DocumentoID);
+            modelBuilder.Entity<Licenza>().HasRequired(p => p.Pv)
+               .WithMany(b => b.Licenza)
+               .HasForeignKey(p => p.pvID);
         }
         #endregion
 
@@ -781,6 +807,7 @@ namespace GestioniDirette.Database.Entity
         public DbSet<Cartissima> Cartissima { get; set; }
         public DbSet<Deposito> Deposito { get; set; }
         public DbSet<Documento> Documento { get; set; }
+        public DbSet<Licenza> Licenza { get; set; }
 
         #endregion
     }

@@ -16,7 +16,8 @@ namespace GestioniDirette.Models
         public IEnumerable<CompanyTask> companytask { get; set; }
         public IEnumerable<UserArea> userarea { get; set; }
         public IEnumerable<ApplicationUser> applicationuser { get; set; }
-        public UserProfiles userprofiles { get; set; }
+        public IEnumerable<UserProfiles> userprofiles { get; set; }
         public IEnumerable<UsersImage> usersimage { get; set; }
+        public IEnumerable<Notice> notice { get; set; }
     }
 }

@@ -1,0 +1,18 @@
+{
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "https://gestionidirette.com/Contenuti/icons/android-chrome-192x192.png?v=DAKpa062Ar",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://gestionidirette.com/Contenuti/icons/android-chrome-512x512.png?v=DAKpa062Ar",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "name": "Gestioni Dirette",
+  "theme_color": "#ffffff"
+}

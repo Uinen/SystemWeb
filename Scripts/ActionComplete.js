@@ -170,3 +170,15 @@ function ActionCompleteDocumento(args, sender) {
     }
 }
 
+function ActionCompleteLicenza(args, sender) {
+    var gridObj = $("#FlatGridLicenza").ejGrid("instance");
+    this.getContent().addClass("e-widget");
+    var browserDetails = gridObj.getBrowserDetails();
+    if (browserDetails.browser == "msie" && parseInt(browserDetails.version, 10) <= 9)
+        $("#FlatGridLicenza").ejGrid("model.enableResponsiveRow", false);
+    if (args.requestType == "filtering" || args.requestType == "searching") {
+        var proxy = this;
+        setTimeout(function () { proxy.windowonresize(); }, 30);
+    }
+}
+

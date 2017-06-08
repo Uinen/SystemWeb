@@ -114,14 +114,20 @@ namespace GestioniDirette
 
             // default-src - Sets a default source list for a number of directives. If the other directives below are
             //               not used then this is the default setting.
-            filters.Add(
+            /*filters.Add(
                 new CspDefaultSrcAttribute()
                 {
+                    // Allow scripts from the CDN's.
+                    CustomSources = string.Join(
+                        ContentDeliveryNetwork.Google.Domain,
+                        ContentDeliveryNetwork.Microsoft.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain,
+                        ContentDeliveryNetwork.Gestionidirette.Domain),
                     // Disallow everything from the same domain by default.
                     //None = true,
                     // Allow everything from the same domain by default.
                     Self = true
-                });
+                });*/
 
 
             // base-uri - This directive restricts the document base URL
@@ -201,22 +207,21 @@ namespace GestioniDirette
                     Self = false
                 });
             // img-src - This directive restricts from where the protected resource can load images.
-            filters.Add(
+            /*filters.Add(
                 new CspImgSrcAttribute()
                 {
-#if DEBUG
-                    // Allow Browser Link to work in debug mode only.
-                    CustomSources = "data:",
-#else
-                    // Allow images from example.com.
-                    // CustomSources = "*.example.com",
-#endif
-                    // Allow images from the same domain.
-                    Self = true,
-                });
+                    CustomSources = string.Join(
+                        ContentDeliveryNetwork.Google.Domain,
+                        ContentDeliveryNetwork.Microsoft.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain,
+                        ContentDeliveryNetwork.Gestionidirette.Domain),
+                    // Allow scripts from the same domain.
+                    Self = true
+                });*/
             // script-src - This directive restricts which scripts the protected resource can execute.
             //              The directive also controls other resources, such as XSLT style sheets, which can cause the
             //              user agent to execute script.
+            /*
             filters.Add(
                 new CspScriptSrcAttribute()
                 {
@@ -239,7 +244,7 @@ namespace GestioniDirette
                     // Allow in-line JavaScript, this is unsafe and can open your site up to XSS vulnerabilities.
                     UnsafeInline = true
                 });
-
+                */
             // media-src - This directive restricts from where the protected resource can load video and audio.
             filters.Add(
                 new CspMediaSrcAttribute()
@@ -268,6 +273,7 @@ namespace GestioniDirette
             //         MediaTypes = "application/x-shockwave-flash application/xaml+xml"
             //     });
             // style-src - This directive restricts which styles the user applies to the protected resource.
+
             filters.Add(
                 new CspStyleSrcAttribute()
                 {

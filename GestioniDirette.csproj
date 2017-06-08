@@ -16,7 +16,7 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44301</IISExpressSSLPort>
+    <IISExpressSSLPort>44306</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
@@ -140,23 +140,23 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <HintPath>packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Repos\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <HintPath>packages\Microsoft.Owin.Host.SystemWeb.3.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Repos\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <HintPath>packages\Microsoft.Owin.Security.3.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Security.Cookies, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Repos\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+      <HintPath>packages\Microsoft.Owin.Security.Cookies.3.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Security.OAuth, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Repos\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+      <HintPath>packages\Microsoft.Owin.Security.OAuth.3.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -368,6 +368,34 @@
     <Content Include="Contenuti\fonts\IONICONS.EOT" />
     <Content Include="Contenuti\fonts\ionicons.TTF" />
     <Content Include="Contenuti\fonts\ionicons.woff" />
+    <Content Include="Contenuti\icons\android-chrome-192x192.png" />
+    <Content Include="Contenuti\icons\android-chrome-512x512.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-114x114-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-114x114.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-120x120-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-120x120.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-144x144-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-144x144.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-152x152-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-152x152.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-180x180-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-180x180.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-57x57-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-57x57.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-60x60-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-60x60.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-72x72-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-72x72.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-76x76-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-76x76.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon-precomposed.png" />
+    <Content Include="Contenuti\icons\apple-touch-icon.png" />
+    <Content Include="Contenuti\icons\browserconfig.xml" />
+    <Content Include="Contenuti\icons\favicon-16x16.png" />
+    <Content Include="Contenuti\icons\favicon-32x32.png" />
+    <Content Include="Contenuti\icons\favicon.ico" />
+    <Content Include="Contenuti\icons\mstile-150x150.png" />
+    <Content Include="Contenuti\icons\safari-pinned-tab.svg" />
     <Content Include="Contenuti\LESS\_ionicons-font.less" />
     <Content Include="Contenuti\LESS\_ionicons-icons.less" />
     <Content Include="Contenuti\LESS\_ionicons-variables.less" />
@@ -417,6 +445,7 @@
     <Content Include="Mvc.Sitemap">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Contenuti\icons\manifest.json" />
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -754,6 +783,7 @@
     <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModelList.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapPathHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapTitleHelperModel.cshtml" />
+    <Content Include="Views\User\Licenza.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Documents\" />
@@ -791,7 +821,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49442</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:48176/</IISUrl>
+          <IISUrl>http://localhost:49176/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

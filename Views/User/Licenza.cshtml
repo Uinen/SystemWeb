@@ -1,75 +1,73 @@
 ﻿@{
-    Layout = "~/Views/Shared/_ThirdLayout.cshtml";
+    ViewBag.Title = "Licenza";
+    Layout = "~/Views/Shared/_SecondLayout.cshtml";
 }
-
-<section id="features" class="block">
-    <div class="container">
-        <div class="row">
-            <div class="item">
-                @(Html.EJ().Grid<Documento>("FlatGridDocumento")
-                    .Locale("it-IT")
-                    .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
-                    .UpdateURL("update")
-                    .InsertURL("insert")
-                    .RemoveURL("remove")
-                    .Adaptor(AdaptorType.RemoteSaveAdaptor))
-                    .AllowGrouping()
-                    .AllowPaging()
-                    .EnableAltRow()
-                    .PageSettings(p => p.PageCount(2).PageSize(5))
-                    .IsResponsive(true)
-                    .EnableResponsiveRow(true)
-                    .AllowSorting()
-                    .AllowFiltering()
-                                    .FilterSettings(filter =>
-                                    {
-                                        filter.FilterType(FilterType.Excel);
-                                    })
-
-                    .AllowMultiSorting()
-                    .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteDocumento"))
-                    .MinWidth(400)
-                    .EditSettings(d => d.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog))
-                    .ToolbarSettings(toolbar =>
-                    {
-                        toolbar.ShowToolbar().ToolbarItems(items =>
-                        {
-                            items.AddTool(ToolBarItems.Add);
-                            items.AddTool(ToolBarItems.Edit);
-                            items.AddTool(ToolBarItems.Delete);
-                            items.AddTool(ToolBarItems.Update);
-                            items.AddTool(ToolBarItems.Cancel);
-                            items.AddTool(ToolBarItems.Search);
-                            items.AddTool(ToolBarItems.ExcelExport);
-                            items.AddTool(ToolBarItems.WordExport);
-                            items.AddTool(ToolBarItems.PdfExport);
-                        });
-                    })
-
-                    .Mappers(map => map.ExportToExcelAction("documentiexcell")
-                                    .ExportToPdfAction("documentipdf")
-                                    .ExportToWordAction("documentiword"))
-                    .Columns(col =>
-                    {
-                        col.Field(p => p.DocumentoID).HeaderText("ID Documento").IsPrimaryKey(true).Visible(true).Width("90").Add();
-                        col.Field(p => p.Tipo).HeaderText("Tipo").Width("50").EditType(EditingType.String).Add();
-
-                    })
-                )
-            </div>
-        </div>
-    </div>
-</section>
-
 @section style{
     @Styles.Render("~/Content/EjWidgetCore")
     @Styles.Render("~/Content/EjTheme")
     @Styles.Render("~/Content/EjResponsive")
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
+<section id="features">
+    <div class="container">
+        <div class="row">
+            <div class="item">
+                @(Html.EJ().Grid<Licenza>("FlatGridLicenza")
+                                    .Locale("it-IT")
+                                    .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
+                                    .UpdateURL("update")
+                                    .InsertURL("insert")
+                                    .RemoveURL("remove")
+                                    .Adaptor(AdaptorType.RemoteSaveAdaptor))
+                                    .AllowPaging()
+                                    .PageSettings(p => p.PageCount(2).PageSize(5))
+                                    .IsResponsive(true)
+                                    .EnableResponsiveRow(true)
+                                    .AllowSorting()
+                                    .AllowMultiSorting()
+                                    .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteLicenza"))
+                                    .MinWidth(400)
+                                    .EditSettings(d => d.AllowAdding(true).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.InlineForm))
+                                    .ToolbarSettings(toolBar => toolBar.ShowToolbar().ToolbarItems(items =>
+                                    {
+                                        items.AddTool(ToolBarItems.Add);
+                                        items.AddTool(ToolBarItems.Edit);
+                                        items.AddTool(ToolBarItems.Delete);
+                                        items.AddTool(ToolBarItems.Cancel);
+                                        items.AddTool(ToolBarItems.Search);
+                                        items.AddTool(ToolBarItems.ExcelExport);
+                                        items.AddTool(ToolBarItems.WordExport);
+                                        items.AddTool(ToolBarItems.PdfExport);
+
+                                    }))
+
+                                    .AllowFiltering()
+                                    .FilterSettings(filter =>
+                                    {
+                                        filter.FilterType(FilterType.Excel);
+                                    })
+
+                                    .Mappers(map => map.ExportToExcelAction("licenzaexcell")
+                                    .ExportToPdfAction("licenzapdf")
+                                    .ExportToWordAction("licenzaword"))
+                                    .Columns(col =>
+                                    {
+                                        col.Field(p => p.LicenzaID).HeaderText("ID Dispenser").IsPrimaryKey(true).Visible(false).Width(45).Add();
+                                        col.Field(p => p.pvID).HeaderText("Punto Vendita").ForeignKeyField("pvID").ForeignKeyValue("pvName")
+                                        .DataSource((IEnumerable<object>)ViewBag.dataSource2).Width(45).EditType(EditingType.Dropdown).Add();
+
+                                        col.Field(p => p.Codice).HeaderText("Modello").Width("50").EditType(EditingType.String).Add();
+                                        col.Field(p => p.nPrecedente).HeaderText("Numero Precedente").Width("45").EditType(EditingType.String).Add();
+                                        col.Field(p => p.nSuccessivo).HeaderText("Numro Successivo").Width("45").EditType(EditingType.String).Add();
+                                        col.Field(p => p.Scadenza).HeaderText("Validità").Width("50").EditType(EditingType.Datepicker).Add();
+                                    })
+                )
+            </div>
+        </div>
+    </div>
+</section>
 
 @section script{
-
     @Scripts.Render("~/bundles/jqueryeasing")
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
@@ -185,4 +183,9 @@
     };
     </script>
 }
+
+
+
+
+
 

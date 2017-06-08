@@ -53,6 +53,7 @@ namespace GestioniDirette.Database.Repository
             result.PvTankId = value.PvTankId;
             result.Modello = value.Modello;
             result.isActive = value.isActive;
+            result.Scadenza = value.Scadenza;
                 
             context.Entry(result).CurrentValues.SetValues(value);
             context.Entry(result).State = EntityState.Modified;
@@ -70,6 +71,7 @@ namespace GestioniDirette.Database.Repository
                 result.PvTankId = temp.PvTankId;
                 result.Modello = temp.Modello;
                 result.isActive = temp.isActive;
+                result.Scadenza = temp.Scadenza;
 
                 context.Entry(result).CurrentValues.SetValues(temp);
                 context.Entry(result).State = EntityState.Modified;

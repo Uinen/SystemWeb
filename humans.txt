@@ -4,16 +4,18 @@
 */
 
 /* TEAM */
-Your title: Your name.
-Site: email, link to a contact form, etc. (Prepare yourself to get spammed if you add an email address)
-Twitter: your Twitter username.
-Location: City, Country.
-
-/* THANKS */
-Name: name or url
+Company: Mtm di Fabbri Marcello & C. Snc.
+Site: https://www.gestionidirette.com
+Facebook: https://fb.me/gestionidirette
+Location: italy.
 
 /* SITE */
-Last update: YYYY/MM/DD (Updating this could get annoying)
-Standards: HTML5, CSS3,.. (This is not a good idea from a security standpoint)
-Components: Modernizr, jQuery, etc. (This is not a good idea from a security standpoint)
-Software: Software used for the development (This is not a good idea from a security standpoint)
+Last update: 07/06/2017 (dd/MM/YYYY)
+
+Standards: HTML5, CSS3, ASP.NET MVC RAZOR
+
+Third Parties Softwares: Autofac, Boilerplate, Elmah, EntityFramework, 
+Glimpse, MvcSiteMapProvider, Newtonsoft.Json, NWebsec, Owin, PagedList, 
+RazorEngine, Syncfusion, TidyNet, WebActivatorEx, WebGrease
+
+IDE: Microsoft Visual Studio, Microsoft SQL Server Management Studio
