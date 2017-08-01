@@ -35,7 +35,7 @@
                     .AllowMultiSorting()
                     .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteTank"))
                     .MinWidth(400)
-                    .EditSettings(d => d.AllowAdding(true).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.ExternalForm))
+                    .EditSettings(d => d.AllowAdding(true).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.Dialog))
                     .ToolbarSettings(toolbar =>
                     {
                         toolbar.ShowToolbar().ToolbarItems(items =>
@@ -69,7 +69,7 @@
                         col.Field(p => p.Capienza).HeaderText("Capienza").Width("45").EditType(EditingType.Numeric).Add();
                         col.Field(p => p.Giacenza).HeaderText("Giacenza").Width("50").EditType(EditingType.Numeric).Add();
                         col.Field(p => p.Rimanenza).HeaderText("Rimanenza Iniziale").Width("50").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.LastDate).HeaderText("Ultima Rilevazione").Format("{0:MM/dd/yyyy}").AllowEditing(false).Width("65").Add();
+                        col.Field(p => p.LastDate).HeaderText("Ultima Rilevazione").AllowEditing(false).Width("65").ValidationRules(v => v.AddRule("required", true)).Format("{0:dd/MM/yyyy}").Add();
                         col.Field(p => p.Descrizione).HeaderText("Descrizione").Width("45").EditType(EditingType.String).Add();
                     })
                 )

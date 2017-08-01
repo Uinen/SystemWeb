@@ -21,6 +21,7 @@ namespace GestioniDirette.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+        #region init
         private readonly MyDbContext _db = new MyDbContext();
         public AccountController()
         {
@@ -43,6 +44,16 @@ namespace GestioniDirette.Controllers
             {
                 _userManager = value;
             }
+        }
+        #endregion
+
+        #region Login
+        [AllowAnonymous]
+        [Route("Account", Name = AccountControllerRoute.GetSignIn)]
+        public ActionResult SignIn()
+        {
+            ViewBag.FlagId = new SelectList(_db.Flag, "pvFlagId", "Nome");
+            return View(AccountControllerAction.SignIn);
         }
 
         //
@@ -97,6 +108,19 @@ namespace GestioniDirette.Controllers
         }
 
         //
+        // POST: /Account/LogOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff()
+        {
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index", "Home");
+        }
+
+        #endregion
+
+        #region VerifyCode
+        //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl)
@@ -136,7 +160,9 @@ namespace GestioniDirette.Controllers
                     return View(model);
             }
         }
+        #endregion
 
+        #region Register Proccess
         [AllowAnonymous]
         [Route("Account/Registrati")]
         public ActionResult Register()
@@ -182,7 +208,16 @@ namespace GestioniDirette.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    result = UserManager.AddToRole(user.Id, "User");
+                    if (user.isPremium == false)
+                    {
+                        result = UserManager.AddToRole(user.Id, "User");
+                    }
+
+                    else
+                    {
+                        result = UserManager.AddToRole(user.Id, "Premium");
+                    }
+                    
                     model.Id = user.Id;
 
                     string body;
@@ -224,14 +259,6 @@ namespace GestioniDirette.Controllers
         }
 
         [AllowAnonymous]
-        [Route("Account", Name = AccountControllerRoute.GetSignIn)]
-        public ActionResult SignIn()
-        {
-            ViewBag.FlagId = new SelectList(_db.Flag, "pvFlagId", "Nome");
-            return View(AccountControllerAction.SignIn);
-        }
-
-        [AllowAnonymous]
         [Route("Account/Registrati/ConfermaEmail")]
         public ActionResult Confirm(string Email)
         {
@@ -263,6 +290,10 @@ namespace GestioniDirette.Controllers
                 return RedirectToAction("Confirm", "Account", new { Email = "" });
             }
         }
+
+        #endregion
+
+        #region ResetPassword
         //
         // GET: /Account/ForgotPassword
         [AllowAnonymous]
@@ -346,6 +377,7 @@ namespace GestioniDirette.Controllers
         {
             return View();
         }
+        #endregion
 
         //
         // POST: /Account/Disassociate
@@ -365,6 +397,8 @@ namespace GestioniDirette.Controllers
             }
             return RedirectToAction("Manage", new { Message = message });
         }
+
+        #region Two-Factor
         //
         // GET: /Account/SendCode
         [AllowAnonymous]
@@ -409,6 +443,10 @@ namespace GestioniDirette.Controllers
 
             return callbackUrl;
         }
+
+        #endregion
+
+        #region Manage
         //
         // GET: /Account/Manage
         [Authorize]
@@ -491,6 +529,9 @@ namespace GestioniDirette.Controllers
             return View(model);
         }
 
+        #endregion
+
+        #region External Login
         //
         // POST: /Account/ExternalLogin
         [HttpPost]
@@ -594,16 +635,7 @@ namespace GestioniDirette.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }
-
-        //
-        // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
-        {
-            AuthenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
-        }
+        
 
         //
         // GET: /Account/ExternalLoginFailure
@@ -620,6 +652,7 @@ namespace GestioniDirette.Controllers
             ViewBag.ShowRemoveButton = HasPassword() || linkedAccounts.Count > 1;
             return (ActionResult)PartialView("_RemoveAccountPartial", linkedAccounts);
         }
+        #endregion
 
         protected override void Dispose(bool disposing)
         {

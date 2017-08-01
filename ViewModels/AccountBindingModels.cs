@@ -96,6 +96,7 @@ namespace GestioniDirette.Models
                 UserName = Username,
                 Email = Email,
                 TwoFactorEnabled = false,
+                isPremium = false,
                 CreateDate = DateTime.Now
             };
             user.UserProfiles = new UserProfiles()

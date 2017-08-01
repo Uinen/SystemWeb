@@ -34,6 +34,8 @@ namespace GestioniDirette.Database.Entity
         public Guid? pvID { get; set; }
         public Pv Pv { get; set; }
         public Guid? CompanyId { get; set; }
+        public bool? isPremium { get; set; }
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime CreateDate { get; set; }
         [ScriptIgnore]
         public Company Company { get; set; }
@@ -45,6 +47,7 @@ namespace GestioniDirette.Database.Entity
             UserArea = new HashSet<UserArea>();
             CompanyTask = new HashSet<CompanyTask>();
             FilePaths = new HashSet<FilePath>();
+            PayPal = new HashSet<PayPal>();
         }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(ApplicationUserManager manager)
         {
@@ -56,7 +59,32 @@ namespace GestioniDirette.Database.Entity
         public ICollection<UserArea> UserArea { get; set; }
         public ICollection<CompanyTask> CompanyTask { get; set; }
         public ICollection<FilePath> FilePaths { get; set; }
+        public ICollection<PayPal> PayPal { get; set; }
     }
+    #endregion
+
+    #region PayPal
+
+    public class PayPal
+    {
+        public PayPal()
+        {
+            PayPalID = Guid.NewGuid();
+        }
+
+        public Guid PayPalID { get; set; }
+        public string UserID { get; set; }
+        public string PlanID { get; set; }
+        public string Nome { get; set; }
+        public string Stato { get; set; }
+        public string Tipo { get; set; }
+        public string CreatedDate { get; set; }
+        public string Update { get; set; }
+
+        [ScriptIgnore]
+        public ApplicationUser User { get; set; }
+    }
+
     #endregion
 
     #region Role
@@ -90,6 +118,7 @@ namespace GestioniDirette.Database.Entity
         public string ContentType { get; set; }
         public byte[] Content { get; set; }
         public FileType FileType { get; set; }
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime UploadDate { get; set; }
         public Guid ProfileID { get; set; }
         [ScriptIgnore]
@@ -248,6 +277,13 @@ namespace GestioniDirette.Database.Entity
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime FieldDate { get; set; }
         public int Value { get; set; }
+        public int Value1 { get; set; }
+        public int Value2 { get; set; }
+        public int Value3 { get; set; } 
+        public int Value4 { get; set; }
+        public int Value5 { get; set; } 
+        public int Value6 { get; set; }
+
         [ScriptIgnore]
         public Product Product { get; set; }
         [ScriptIgnore]
@@ -264,7 +300,6 @@ namespace GestioniDirette.Database.Entity
     #region Flag
     public class Flag
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Flag()
         {
             Pv = new HashSet<Pv>();
@@ -276,8 +311,6 @@ namespace GestioniDirette.Database.Entity
         public string Nome { get; set; }
         [MaxLength(64)]
         public string Descrizione { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ICollection<Pv> Pv { get; set; }
     }
     #endregion
@@ -285,7 +318,6 @@ namespace GestioniDirette.Database.Entity
     #region Product
     public class Product
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Product()
         {
             PvTank = new HashSet<PvTank>();
@@ -297,8 +329,6 @@ namespace GestioniDirette.Database.Entity
         public string Nome { get; set; }
         public float Peso { get; set; }
         public float Prezzo { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ICollection<PvTank> PvTank { get; set; }
     }
     #endregion
@@ -372,6 +402,7 @@ namespace GestioniDirette.Database.Entity
         public Guid ProductId { get; set; }
         [MaxLength(14)]
         public string Modello { get; set; }
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime LastDate { get; set; }
         [Range(1000, 50000)]
         public int Capienza { get; set; }
@@ -577,8 +608,7 @@ namespace GestioniDirette.Database.Entity
         [Key]
         public Guid yearId { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Anno { get; set; }
         public ICollection<Carico> Carico { get; set; }
     }
@@ -597,6 +627,7 @@ namespace GestioniDirette.Database.Entity
         [StringLength(255)]
         public string FileName { get; set; }
         public FileType FileType { get; set; }
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime UploadDate { get; set; }
         public string UserID { get; set; }
         [ScriptIgnore]
@@ -691,12 +722,29 @@ namespace GestioniDirette.Database.Entity
         public string nPrecedente { get; set; }
         public string nSuccessivo { get; set; }
 
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? Scadenza { get; set; }
 
         [ScriptIgnore]
         public Pv Pv { get; set; }
     }
+    #endregion
+
+    #region CheckList
+    /*
+    public class CheckList
+    {
+        public CheckList()
+        {
+            CheckListID = Guid.NewGuid();
+        }
+        public Guid CheckListID { get; set; }
+        public Guid pvID { get; set; }
+        public DateTime Data { get; set; }
+        public bool isChecked { get; set; }
+        public string Note { get; set; }
+    }*/
+
     #endregion
 
     #region MyDbContext: IdentityDbContext
@@ -780,6 +828,9 @@ namespace GestioniDirette.Database.Entity
             modelBuilder.Entity<Licenza>().HasRequired(p => p.Pv)
                .WithMany(b => b.Licenza)
                .HasForeignKey(p => p.pvID);
+            modelBuilder.Entity<PayPal>().HasRequired(p => p.User)
+               .WithMany(b => b.PayPal)
+               .HasForeignKey(p => p.UserID);
         }
         #endregion
 
@@ -808,6 +859,7 @@ namespace GestioniDirette.Database.Entity
         public DbSet<Deposito> Deposito { get; set; }
         public DbSet<Documento> Documento { get; set; }
         public DbSet<Licenza> Licenza { get; set; }
+        public DbSet<PayPal> PayPal { get; set; }
 
         #endregion
     }
