@@ -10,6 +10,7 @@ using Autofac;
 using Autofac.Integration.Mvc;
 using GestioniDirette.Service;
 using GestioniDirette.Database.Entity;
+using GestioniDirette.Service.PayPal;
 
 namespace GestioniDirette
 {

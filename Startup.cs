@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.Owin;
 using Owin;
-using NWebsec.Owin;
 using System.Web.Mvc;
 
 [assembly: OwinStartup(typeof(GestioniDirette.Startup))]

@@ -1,0 +1,19 @@
+﻿{
+  "Data": {
+    "DefaultConnection": {
+      "ConnectionString": "Server=plumeria.arvixe.com; Initial Catalog=UTF;Integrated Security=false;User ID=sys_login;Password=Ld80BcaK;"
+    }
+  },
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Verbose",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "PayPal": {
+    "clientId": "AcTvax7CRzf8I6OrbmHk1TDc9lFE3KmRU2d5Ur5znCMPzaG9Vk2iLz0dVIoy5lpxCkwEVqlb3YxPeipz",
+    "clientSecret": "EG_oIWT5aUh7wdlibZBTe08i8GgVqwf4_SJG_KkaZFKeTiMH6VfnqS_ED6FITki0TrKWJrirbIoz5bYz"
+  }
+}

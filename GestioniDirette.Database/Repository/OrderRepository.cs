@@ -11,12 +11,12 @@ namespace GestioniDirette.Database.Repository
         public static void Add(Carico value)
         {
             var _context = new MyDbContext();
-            var thisYear = DateTime.Today.Year;
+            /*var thisYear = DateTime.Today.Year;
             var _selectThisYear = (from a in _context.Year
                                   where a.Anno.Year == thisYear
                                   select a.yearId).Single();
 
-            value.yearId = _selectThisYear;
+            value.yearId = _selectThisYear;*/
             _context.Carico.Add(value);
             _context.SaveChanges();
         }

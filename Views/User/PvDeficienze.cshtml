@@ -19,7 +19,7 @@
                 {
                     <div class="grid-filter">
                         <form id="date-range-form" action="@Url.Action("PvDeficienze", "User")" method="post">
-                            <h5 class="alert alert-info">Compilando il campo sottostante con range in data avente formato <strong>MM/DD/YY</strong>, verrà calcolata la somma del erogatoi sul impianto in funzione del range selezionato.</h5>
+                            <h5 class="alert alert-info">Compilando il campo sottostante con range in data avente formato <strong>DD/MM/YYYY</strong>, verrà calcolata la somma del erogatoi sul impianto in funzione del range selezionato.</h5>
                             <h5 class="alert alert-info">La Somma è riportata a fondo pagina nella sezione <strong>TOTALI</strong></h5>
                             <div class="item">
                                 <label for="from">Data 1</label>
@@ -86,7 +86,7 @@
                                         .DataSource((IEnumerable<object>)ViewBag.dataSource2).Width(45).EditType(EditingType.Dropdown).Add();
 
                                         col.Field(p => p.Value).HeaderText("Valore").Width("50").EditType(EditingType.Numeric).Add();
-                                        col.Field(p => p.FieldDate).HeaderText("Data").Format("{0:MM/dd/yyyy}").Width("45").EditType(EditingType.Datepicker).Add();
+                                        col.Field(p => p.FieldDate).HeaderText("Data").Width("45").EditType(EditingType.Datepicker).ValidationRules(v => v.AddRule("required", true)).Format("{0:dd/MM/yyyy}").Add();
                                     })
                 )
             </div>
@@ -108,6 +108,7 @@
     $(function () {
         $("#from").ejDatePicker({
             locale: "it-IT",
+            dateFormat: "dd/MM/yyyy",
             onClose: function (selectedDate) {
                 $("#to").ejDatePicker("minDate", selectedDate);
 
@@ -115,6 +116,7 @@
         });
         $("#to").ejDatePicker({
             locale: "it-IT",
+            dateFormat: "dd/MM/yyyy",
             onClose: function (selectedDate) {
                 $("#from").ejDatePicker("maxDate", selectedDate);
 

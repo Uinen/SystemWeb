@@ -207,6 +207,10 @@
     <Compile Include="Migrations\201706081150574_22.Designer.cs">
       <DependentUpon>201706081150574_22.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706131243427_23.cs" />
+    <Compile Include="Migrations\201706131243427_23.Designer.cs">
+      <DependentUpon>201706131243427_23.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CaliRepository.cs" />
@@ -313,6 +317,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706081150574_22.resx">
       <DependentUpon>201706081150574_22.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706131243427_23.resx">
+      <DependentUpon>201706131243427_23.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
