@@ -227,19 +227,20 @@ namespace GestioniDirette.Controllers
             {
                 var enumerable = getAll as IList<PvErogatori> ?? getAll.ToList();
 
-                var maxB = (enumerable
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Max(row => row.Value));
+                var maxB = enumerable
+                       .Where(z => z.Product.Nome.Contains("B"))
+                       .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+
                 var minB = enumerable
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Min(row => row.Value);
+                   .Where(z => z.Product.Nome.Contains("B"))
+                   .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
 
                 var maxG = enumerable
                     .Where(z => (z.Product.Nome.Contains("G")))
-                    .Max(row => row.Value);
+                    .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
                 var minG = enumerable
                     .Where(z => (z.Product.Nome.Contains("G")))
-                    .Min(row => row.Value);
+                    .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
 
                 /* System.InvalidOperationException: La sequenza non contiene elementi
                 var maxHiqB = enumerable
@@ -303,20 +304,20 @@ namespace GestioniDirette.Controllers
                     var maxB2 = pvErogatoris
                         .DefaultIfEmpty()
                         .Where(z => (z.Product.Nome.Contains("B")))
-                        .Max(row => row.Value);
+                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
                     var minB2 = pvErogatoris
                         .DefaultIfEmpty()
                         .Where(z => (z.Product.Nome.Contains("B")))
-                        .Min(row => row.Value);
+                        .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
 
                     var maxG2 = pvErogatoris
                         .DefaultIfEmpty()
                         .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(row => row.Value);
+                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
                     var minG2 = pvErogatoris
                         .DefaultIfEmpty()
                         .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(row => row.Value);
+                        .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
 
                     /* System.InvalidOperationException: La sequenza non contiene elementi
                     var maxHiqB2 = pvErogatoris
@@ -3191,7 +3192,6 @@ namespace GestioniDirette.Controllers
                 
                     #region contatori
                     var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
-                    var forMod = 0;
                     var maxB = pvErogatoris
                        .Where(z => z.Product.Nome.Contains("B"))
                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
