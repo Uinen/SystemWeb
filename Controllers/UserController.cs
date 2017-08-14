@@ -276,11 +276,12 @@ namespace GestioniDirette.Controllers
 
                 #region TotaleContatoriPrecedente
                 var createdDate = from a in _db.Users where currentUser.Id == a.Id select a.CreateDate.Year;
-                
+                var thisID = "7c949a00-01bd-4057-a156-b6b33a4142ef";
+                var exID = Guid.Parse(thisID);
                 dateFrom2 = new DateTime(2015, 12, 31);
                 dateTo2 = DateTime.Now.AddYears(-1);
 
-                if (createdDate.Single() == DateTime.Today.Year)
+                if (currentUser.pvID == exID)
                 {
                     ViewBag.SSPBTotalAmount2 = 0;
                     ViewBag.DieselTotalAmount2 = 0;
@@ -2452,6 +2453,7 @@ namespace GestioniDirette.Controllers
             #endregion
 
             MyDbContext context = new MyDbContext();
+            value.isActive = true;
             DispenserRepository.Add(value);
             var data = context.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID);
             return Json(value, JsonRequestBehavior.AllowGet);
@@ -3185,30 +3187,30 @@ namespace GestioniDirette.Controllers
                     ViewBag.TotCaricoG = TotCaricoG;
                     #endregion
 
-                    #region Scarico
+                #region Scarico
 
-                    #region contatori
-                    var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
-                    var maxB = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Max(row => row.Value);
-                    var minB = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Min(row => row.Value);
+                #region contatori
+                var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
+                var maxB = pvErogatoris
+                    .Where(z => (z.Product.Nome.Contains("B")))
+                    .Max(row => row.Value);
+                var minB = pvErogatoris
+                    .Where(z => (z.Product.Nome.Contains("B")))
+                    .Min(row => row.Value);
 
-                    var maxG = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(row => row.Value);
-                    var minG = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(row => row.Value);
+                var maxG = pvErogatoris
+                    .Where(z => (z.Product.Nome.Contains("G")))
+                    .Max(row => row.Value);
+                var minG = pvErogatoris
+                    .Where(z => (z.Product.Nome.Contains("G")))
+                    .Min(row => row.Value);
 
-                    var totalB = maxB - minB;
-                    var totalG = maxG - minG;
-                    ViewBag.totalB = totalB;
-                    ViewBag.totalG = totalG;
-                    ViewBag.nettoB = totalB - 0;
-                    ViewBag.nettoG = totalG - 0;
+                var totalB = maxB - minB;
+                var totalG = maxG - minG;
+                ViewBag.totalB = totalB;
+                ViewBag.totalG = totalG;
+                ViewBag.nettoB = totalB - 0;
+                ViewBag.nettoG = totalG - 0;
 
                     #endregion
 

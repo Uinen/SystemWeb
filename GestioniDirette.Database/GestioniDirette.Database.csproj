@@ -207,10 +207,6 @@
     <Compile Include="Migrations\201706081150574_22.Designer.cs">
       <DependentUpon>201706081150574_22.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201706131243427_23.cs" />
-    <Compile Include="Migrations\201706131243427_23.Designer.cs">
-      <DependentUpon>201706131243427_23.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CaliRepository.cs" />
@@ -220,14 +216,14 @@
     <Compile Include="Repository\DepotRepository.cs" />
     <Compile Include="Repository\DispenserRepository.cs" />
     <Compile Include="Repository\DocumentiRepository.cs" />
-    <Compile Include="Repository\Interface\iCaricoRepository.cs" />
-    <Compile Include="Repository\Interface\iCartissimaInterface.cs" />
-    <Compile Include="Repository\Interface\iProductRepository.cs" />
-    <Compile Include="Repository\Interface\iPvCaliRepository.cs" />
-    <Compile Include="Repository\Interface\iPvDeficienzeRepository.cs" />
-    <Compile Include="Repository\Interface\iPvErogatoriRepository.cs" />
-    <Compile Include="Repository\Interface\iPvRepository.cs" />
-    <Compile Include="Repository\Interface\iUsersImageRepository.cs" />
+    <Compile Include="Migrations\Interface\iCaricoRepository.cs" />
+    <Compile Include="Migrations\Interface\iCartissimaInterface.cs" />
+    <Compile Include="Migrations\Interface\iProductRepository.cs" />
+    <Compile Include="Migrations\Interface\iPvCaliRepository.cs" />
+    <Compile Include="Migrations\Interface\iPvDeficienzeRepository.cs" />
+    <Compile Include="Migrations\Interface\iPvErogatoriRepository.cs" />
+    <Compile Include="Migrations\Interface\iPvRepository.cs" />
+    <Compile Include="Migrations\Interface\iUsersImageRepository.cs" />
     <Compile Include="Repository\LicenzaRepository.cs" />
     <Compile Include="Repository\NoticeRepository.cs" />
     <Compile Include="Repository\OrderRepository.cs" />
@@ -317,9 +313,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706081150574_22.resx">
       <DependentUpon>201706081150574_22.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201706131243427_23.resx">
-      <DependentUpon>201706131243427_23.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
