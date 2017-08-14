@@ -3191,21 +3191,21 @@ namespace GestioniDirette.Controllers
                 
                     #region contatori
                     var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
-                    var forMod = 0;
+                    
                     var maxB = pvErogatoris
                        .Where(z => z.Product.Nome.Contains("B"))
-                       .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                       .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
 
                     var minB = pvErogatoris
                        .Where(z => z.Product.Nome.Contains("B"))
-                       .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                       .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
 
                     var maxG = pvErogatoris
                         .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
                     var minG = pvErogatoris
                         .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                        .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
 
                     var totalB = maxB - minB;
                     var totalG = maxG - minG;

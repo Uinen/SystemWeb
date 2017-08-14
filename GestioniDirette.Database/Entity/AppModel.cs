@@ -283,6 +283,7 @@ namespace GestioniDirette.Database.Entity
         public int Value4 { get; set; }
         public int Value5 { get; set; } 
         public int Value6 { get; set; }
+        public int Value7 { get; set; }
 
         [ScriptIgnore]
         public Product Product { get; set; }
