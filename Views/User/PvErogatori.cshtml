@@ -97,15 +97,8 @@
                         col.Field(p => p.DispenserId).HeaderText("Dispenser").ForeignKeyField("DispenserId").ForeignKeyValue("Modello")
                         .DataSource((IEnumerable<object>)ViewBag.datasource4).Width("50").EditType(EditingType.Dropdown).Add();
 
-                        col.Field(p => p.Value).HeaderText("Contatore").Width("45").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.Value1).HeaderText("Contatore").Width("45").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.Value2).HeaderText("Contatore").Width("45").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.Value3).HeaderText("Contatore").Width("45").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.Value4).HeaderText("Contatore").Width("45").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.Value5).HeaderText("Contatore").Width("45").EditType(EditingType.Numeric).Add();
-                        col.Field(p => p.Value6).HeaderText("Contatore").Width("45").EditType(EditingType.Numeric).Add();
-
-                        col.Field(p => p.FieldDate).HeaderText("Data").Width("50").EditType(EditingType.Datepicker).ValidationRules(v => v.AddRule("required", true)).Format("{0:dd/MM/yyyy}").Add();
+                        col.Field(p => p.Value).HeaderText("Valore").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.FieldDate).HeaderText("Data").Format("{0:MM/dd/yyyy}").Width("50").EditType(EditingType.Datepicker).Add();
                     })
                 )
             </div>
