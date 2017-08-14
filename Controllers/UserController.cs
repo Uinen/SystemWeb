@@ -3191,7 +3191,7 @@ namespace GestioniDirette.Controllers
                 
                     #region contatori
                     var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
-
+                    var forMod = 0;
                     var maxB = pvErogatoris
                        .Where(z => z.Product.Nome.Contains("B"))
                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
