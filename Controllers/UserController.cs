@@ -276,11 +276,12 @@ namespace GestioniDirette.Controllers
 
                 #region TotaleContatoriPrecedente
                 var createdDate = from a in _db.Users where currentUser.Id == a.Id select a.CreateDate.Year;
-                
+                var thisID = "7c949a00-01bd-4057-a156-b6b33a4142ef";
+                var exID = Guid.Parse(thisID);
                 dateFrom2 = new DateTime(2015, 12, 31);
                 dateTo2 = DateTime.Now.AddYears(-1);
 
-                if (createdDate.Single() == DateTime.Today.Year)
+                if (currentUser.pvID == exID)
                 {
                     ViewBag.SSPBTotalAmount2 = 0;
                     ViewBag.DieselTotalAmount2 = 0;
