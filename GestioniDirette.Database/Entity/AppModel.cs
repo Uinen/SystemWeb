@@ -276,14 +276,14 @@ namespace GestioniDirette.Database.Entity
         public Guid DispenserId { get; set; }
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime FieldDate { get; set; }
-        public int Value { get; set; }
-        public int Value1 { get; set; }
-        public int Value2 { get; set; }
-        public int Value3 { get; set; } 
-        public int Value4 { get; set; }
-        public int Value5 { get; set; } 
-        public int Value6 { get; set; }
-        public int Value7 { get; set; }
+        public int? Value { get; set; }
+        public int? Value1 { get; set; }
+        public int? Value2 { get; set; }
+        public int? Value3 { get; set; } 
+        public int? Value4 { get; set; }
+        public int? Value5 { get; set; } 
+        public int? Value6 { get; set; }
+        public int? Value7 { get; set; }
 
         [ScriptIgnore]
         public Product Product { get; set; }

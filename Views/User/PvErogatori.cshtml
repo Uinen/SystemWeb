@@ -97,7 +97,14 @@
                         col.Field(p => p.DispenserId).HeaderText("Dispenser").ForeignKeyField("DispenserId").ForeignKeyValue("Modello")
                         .DataSource((IEnumerable<object>)ViewBag.datasource4).Width("50").EditType(EditingType.Dropdown).Add();
 
-                        col.Field(p => p.Value).HeaderText("Valore").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.Value).HeaderText("Pistola 1").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.Value1).HeaderText("Pistola 2").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.Value2).HeaderText("Pistola 3").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.Value3).HeaderText("Pistola 4").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.Value4).HeaderText("Pistola 5").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.Value5).HeaderText("Pistola 6").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.Value6).HeaderText("Pistola 7").Width("45").EditType(EditingType.Numeric).Add();
+                        col.Field(p => p.Value7).HeaderText("Pistola 8").Width("45").EditType(EditingType.Numeric).Add();
                         col.Field(p => p.FieldDate).HeaderText("Data").Format("{0:MM/dd/yyyy}").Width("50").EditType(EditingType.Datepicker).Add();
                     })
                 )

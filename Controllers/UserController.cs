@@ -228,19 +228,22 @@ namespace GestioniDirette.Controllers
                 var enumerable = getAll as IList<PvErogatori> ?? getAll.ToList();
 
                 var maxB = enumerable
-                       .Where(z => z.Product.Nome.Contains("B"))
-                       .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
-
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
                 var minB = enumerable
-                   .Where(z => z.Product.Nome.Contains("B"))
-                   .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                .DefaultIfEmpty()
+                .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                .Min(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
 
                 var maxG = enumerable
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                .DefaultIfEmpty()
+                .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
                 var minG = enumerable
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                .DefaultIfEmpty()
+                .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
 
                 /* System.InvalidOperationException: La sequenza non contiene elementi
                 var maxHiqB = enumerable
@@ -302,22 +305,22 @@ namespace GestioniDirette.Controllers
                     var pvErogatoris = getAll2 as IList<PvErogatori> ?? getAll2.ToList();
 
                     var maxB2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
                     var minB2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Min(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
 
                     var maxG2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
                     var minG2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
 
                     /* System.InvalidOperationException: La sequenza non contiene elementi
                     var maxHiqB2 = pvErogatoris
@@ -825,18 +828,22 @@ namespace GestioniDirette.Controllers
                 {
                     var pvErogatoris = getall as IList<PvErogatori> ?? getall.ToList();
                     var maxB = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Max(row => row.Value);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
                     var minB = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Min(row => row.Value);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Min(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
 
                     var maxG = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(row => row.Value);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
                     var minG = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(row => row.Value);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
 
                     ViewBag.SSPBTotalAmount = maxB - minB;
                     ViewBag.DieselTotalAmount = maxG - minG;
@@ -866,19 +873,24 @@ namespace GestioniDirette.Controllers
                 else
                 {
                     var enumerable = getAllfromParam as IList<PvErogatori> ?? getAllfromParam.ToList();
+
                     var maxB = enumerable
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Max(row => row.Value);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
                     var minB = enumerable
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Min(row => row.Value);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Min(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
 
                     var maxG = enumerable
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(row => row.Value);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
                     var minG = enumerable
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(row => row.Value);
+                    .DefaultIfEmpty()
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
 
                     ViewBag.SSPBTotalAmountFrom = maxB - minB;
                     ViewBag.DieselTotalAmountFrom = maxG - minG;
@@ -3161,129 +3173,256 @@ namespace GestioniDirette.Controllers
             // caso in cui ho tutto
             if (_carico.Count() > 0 && _ordiniEccedenze.Count() > 0 && _ordiniScatti.Count() > 0 && _contatori.Count() > 0 && _deficienze.Count() > 0 && _cali.Count() > 0)
             {
-                    var _eccB = _ordiniEccedenze.Sum(s => s.Benzina);
-                    var _eccG = _ordiniEccedenze.Sum(s => s.Gasolio);
+                var _eccB = _ordiniEccedenze.Sum(s => s.Benzina);
+                var _eccG = _ordiniEccedenze.Sum(s => s.Gasolio);
 
-                    ViewBag.eccB = _eccB;
-                    ViewBag.eccG = _eccG;
+                ViewBag.eccB = _eccB;
+                ViewBag.eccG = _eccG;
 
-                    var _scatB = _ordiniScatti.Sum(s => s.Benzina);
-                    var _scatG = _ordiniScatti.Sum(s => s.Gasolio);
+                var _scatB = _ordiniScatti.Sum(s => s.Benzina);
+                var _scatG = _ordiniScatti.Sum(s => s.Gasolio);
 
-                    ViewBag.scatB = _scatB;
-                    ViewBag.scatG = _scatG;
+                ViewBag.scatB = _scatB;
+                ViewBag.scatG = _scatG;
 
-                    #region Carico
-                    var _totCaricoB = _carico.Sum(s => s.Benzina);
-                    var _totCaricoG = _carico.Sum(s => s.Gasolio);
-                    var TotCaricoB = _rimIB + _totCaricoB;
-                    var TotCaricoG = _rimIG + _totCaricoG;
-                    var rCaricoB = _totCaricoB - _eccB - _scatB;
-                    var rCaricoG = _totCaricoG - _eccG - _scatG;
-                    ViewBag.RimIB = _rimIB;
-                    ViewBag.RimIG = _rimIG;
-                    ViewBag.rCaricoB = rCaricoB;
-                    ViewBag.rCaricoG = rCaricoG;
-                    ViewBag.TotCaricoB = TotCaricoB;
-                    ViewBag.TotCaricoG = TotCaricoG;
-                    #endregion
+                #region Carico
+                var _totCaricoB = _carico.Sum(s => s.Benzina);
+                var _totCaricoG = _carico.Sum(s => s.Gasolio);
+                var TotCaricoB = _rimIB + _totCaricoB;
+                var TotCaricoG = _rimIG + _totCaricoG;
+                var rCaricoB = _totCaricoB - _eccB - _scatB;
+                var rCaricoG = _totCaricoG - _eccG - _scatG;
+                ViewBag.RimIB = _rimIB;
+                ViewBag.RimIG = _rimIG;
+                ViewBag.rCaricoB = rCaricoB;
+                ViewBag.rCaricoG = rCaricoG;
+                ViewBag.TotCaricoB = TotCaricoB;
+                ViewBag.TotCaricoG = TotCaricoG;
+                #endregion
 
-                    #region Scarico
+                #region Scarico
+
+                #region contatori
+
+                var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
                 
-                    #region contatori
-                    var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
-                    var maxB = pvErogatoris
-                       .Where(z => z.Product.Nome.Contains("B"))
-                       .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
 
-                    var minB = pvErogatoris
-                       .Where(z => z.Product.Nome.Contains("B"))
-                       .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                var max1B = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value);
 
-                    var maxG = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
-                    var minG = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6);
+                var min1B = pvErogatoris
+                    .TakeWhile(z => z.Value > 0)
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Min(s => s.Value);
 
-                    var totalB = maxB - minB;
-                    var totalG = maxG - minG;
+                var max2B = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value1);
 
-                    ViewBag.totalB = totalB;
-                    ViewBag.totalG = totalG;
-                    ViewBag.nettoB = totalB - 0;
-                    ViewBag.nettoG = totalG - 0;
+                var min2B = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .SkipWhile(z => z.Value1 == 0)
+                    .Min(s => s.Value1);
 
-                    #endregion
+                var max3B = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .SkipWhile(z => z.Value2 == 0)
+                    .Max(s => s.Value2);
 
-                    #region deficienze
-                    var enumerable = _deficienze as IList<PvDeficienze> ?? _deficienze.ToList();
-                    var sumdG = enumerable
-                        .Where(z => currentUser.pvID == z.PvTank.pvID
-                        && z.PvTank.Modello.Contains("MC-10993"))//z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
-                        .Sum(row => row.Value);
+                var min3B = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .SkipWhile(z => z.Value2 == 0)
+                    .Min(s => s.Value2);
 
-                    var sumdB = enumerable
-                        .Where(z => currentUser.pvID == z.PvTank.pvID
-                        && z.PvTank.Modello.Contains("MC-10688"))//z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
-                        .Sum(row => row.Value);
+                var max4B = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .SkipWhile(z => z.Value3 == 0)
+                    .Max(s => s.Value3);
 
-                    ViewBag.sumdB = sumdB;
-                    ViewBag.sumdG = sumdG;
+                var min4B = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .SkipWhile(z => z.Value3 == 0)
+                    .Min(s => s.Value3);
 
-                    #endregion
+                // Inizio seconda riga
 
-                    #region cali
-                    var pvcali = _cali as IList<PvCali> ?? _cali.ToList();
-                    var SumcG = pvcali
-                        .Where(z => currentUser.pvID == z.PvTank.pvID
-                        && z.PvTank.Modello.Contains("MC-10993"))//z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
-                        .Sum(row => row.Value);
+                var max1G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value == 0)
+                    .Max(s => s.Value);
 
-                    var SumcB = pvcali
-                        .Where(z => currentUser.pvID == z.PvTank.pvID
-                        && z.PvTank.Modello.Contains("MC-10688"))//z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
-                        .Sum(row => row.Value);
+                var min1G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value == 0)
+                    .Min(s => s.Value);
 
-                    ViewBag.SumcB = SumcB;
-                    ViewBag.SumcG = SumcG;
+                var max2G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value1 == 0)
+                    .Max(s => s.Value1);
 
-                    #endregion
+                var min2G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value1 == 0)
+                    .Min(s => s.Value1);
 
-                    #endregion
+                var max3G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value2 == 0)
+                    .Max(s => s.Value2);
 
-                    var totScaricoB = totalB + sumdB + SumcB;
-                    var totScaricoG = totalG + sumdG + SumcG;
+                var min3G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value2 == 0)
+                    .Min(s => s.Value2);
 
-                    #region Cisterne 
+                var max4G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value3 == 0)
+                    .Max(s => s.Value3);
 
-                    var _cisternaB = from a in _db.PvTank
+                var min4G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value3 == 0)
+                    .Min(s => s.Value3);
+
+                var max5G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value4 == 0)
+                    .Max(s => s.Value4);
+
+                var min5G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value4 == 0)
+                    .Min(s => s.Value4);
+
+                var max6G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value5 == 0)
+                    .Max(s => s.Value5);
+
+                var min6G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value5 == 0)
+                    .Min(s => s.Value5);
+
+                var max7G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value6 == 0)
+                    .Max(s => s.Value6);
+
+                var min7G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value6 == 0)
+                    .Min(s => s.Value6);
+
+                var max8G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value7 == 0)
+                    .Max(s => s.Value7);
+
+                var min8G = pvErogatoris
+                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .SkipWhile(z => z.Value7 == 0)
+                    .Min(s => s.Value7);
+
+                //var pist1B = max1B - min1B;
+                var pist2B = max2B - min2B;
+                var pist3B = max3B - min3B;
+                var pist4B = max4B - min4B;
+                var totalB = min1B;//(pist1B + pist2B + pist3B + pist4B);
+
+                var pist1G = max1G - min1G;
+                var pist2G = max2G - min2G;
+                var pist3G = max3G - min3G;
+                var pist4G = max4G - min4G;
+                var pist5G = max5G - min5G;
+                var pist6G = max6G - min6G;
+                var pist7G = max7G - min7G;
+                var pist8G = max8G - min8G;
+                var totalG = (pist1G + pist2G + pist3G + pist4G + pist5G + pist6G + pist7G + pist8G);
+
+                ViewBag.totalB = totalB;
+                ViewBag.totalG = totalG;
+                ViewBag.nettoB = totalB - 0;
+                ViewBag.nettoG = totalG - 0;
+
+                #endregion
+
+                #region deficienze
+
+                var enumerable = _deficienze as IList<PvDeficienze> ?? _deficienze.ToList();
+
+                var sumdG = enumerable
+                    .Where(z => currentUser.pvID == z.PvTank.pvID
+                    && z.PvTank.Modello.Contains("MC-10993"))//z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
+                    .Sum(row => row.Value);
+
+                var sumdB = enumerable
+                    .Where(z => currentUser.pvID == z.PvTank.pvID
+                    && z.PvTank.Modello.Contains("MC-10688"))//z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
+                    .Sum(row => row.Value);
+
+                ViewBag.sumdB = sumdB;
+                ViewBag.sumdG = sumdG;
+
+                #endregion
+
+                #region cali
+
+                var pvcali = _cali as IList<PvCali> ?? _cali.ToList();
+
+                var SumcG = pvcali
+                    .Where(z => currentUser.pvID == z.PvTank.pvID
+                    && z.PvTank.Modello.Contains("MC-10993"))//z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
+                    .Sum(row => row.Value);
+
+                var SumcB = pvcali
+                    .Where(z => currentUser.pvID == z.PvTank.pvID
+                    && z.PvTank.Modello.Contains("MC-10688"))//z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
+                    .Sum(row => row.Value);
+
+                ViewBag.SumcB = SumcB;
+                ViewBag.SumcG = SumcG;
+
+                #endregion
+
+                #endregion
+
+                var totScaricoB = totalB + sumdB + SumcB;
+                var totScaricoG = totalG + sumdG + SumcG;
+
+                #region Cisterne 
+
+                var _cisternaB = from a in _db.PvTank
                                      where currentUser.pvID == a.pvID && a.Product.Nome.Contains("B")
                                      select a.Giacenza;
 
-                    var rimEfB = _cisternaB.Sum();
+                var rimEfB = _cisternaB.Sum();
 
-                    var _cisternaG = from a in _db.PvTank
-                                     where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
-                                     select a.Giacenza;
+                var _cisternaG = from a in _db.PvTank
 
-                    var rimEfG = _cisternaG.Sum();
-                    #endregion
+                                 where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
+                                 select a.Giacenza;
 
-                    ViewBag.TotScaricoB = totScaricoB;
-                    ViewBag.TotScaricoG = totScaricoG;
+                var rimEfG = _cisternaG.Sum();
 
-                    var rimContB = TotCaricoB - totScaricoB;
-                    var rimContG = TotCaricoG - totScaricoG;
+                #endregion
 
-                    ViewBag.RiportoB = rimContB;
-                    ViewBag.RiportoG = rimContG;
-                    ViewBag.RiportoEB = rimEfB;
-                    ViewBag.RiportoEG = rimEfG;
-                    ViewBag.DifEB = rimEfB - rimContB;
-                    ViewBag.DifEG = rimEfG - rimContG;
-                }
+                ViewBag.TotScaricoB = totScaricoB;
+                ViewBag.TotScaricoG = totScaricoG;
+
+                var rimContB = TotCaricoB - totScaricoB;
+                var rimContG = TotCaricoG - totScaricoG;
+
+                ViewBag.RiportoB = rimContB;
+                ViewBag.RiportoG = rimContG;
+                ViewBag.RiportoEB = rimEfB;
+                ViewBag.RiportoEG = rimEfG;
+                ViewBag.DifEB = rimEfB - rimContB;
+                ViewBag.DifEG = rimEfG - rimContG;
+            }
 
             ViewBag.pvId = new SelectList(_db.Pv, "pvID", "pvName");
             return View();
