@@ -3169,7 +3169,7 @@ namespace GestioniDirette.Controllers
                 ViewBag.DifEB = 0;
                 ViewBag.DifEG = 0;
             }
-            
+
             // caso in cui ho tutto
             if (_carico.Count() > 0 && _ordiniEccedenze.Count() > 0 && _ordiniScatti.Count() > 0 && _contatori.Count() > 0 && _deficienze.Count() > 0 && _cali.Count() > 0)
             {
@@ -3202,228 +3202,319 @@ namespace GestioniDirette.Controllers
 
                 #region Scarico
 
-                #region contatori
+                #region contatori <= 2
 
-                var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
-                
+                var pvDispenser = from a in _db.Dispenser
+                                  where a.PvTank.pvID == currentUser.pvID
+                                  select a;
 
-                var max1B = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .Max(s => s.Value);
+                if (pvDispenser.Count() <= 2)
+                {
+                    var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
 
-                var min1B = pvErogatoris
-                    .TakeWhile(z => z.Value > 0)
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .Min(s => s.Value);
 
-                var max2B = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .Max(s => s.Value1);
+                    var max1B = pvErogatoris
+                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Max(s => s.Value);
 
-                var min2B = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .SkipWhile(z => z.Value1 == 0)
-                    .Min(s => s.Value1);
+                    var min1B = pvErogatoris
+                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Min(s => s.Value);
 
-                var max3B = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .SkipWhile(z => z.Value2 == 0)
-                    .Max(s => s.Value2);
+                    var max1G = pvErogatoris
+                       .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                       .Max(s => s.Value);
 
-                var min3B = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .SkipWhile(z => z.Value2 == 0)
-                    .Min(s => s.Value2);
+                    var min1G = pvErogatoris
+                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value);
 
-                var max4B = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .SkipWhile(z => z.Value3 == 0)
-                    .Max(s => s.Value3);
+                    var totalB = max1B - min1B;
+                    var totalG = max1G - min1G;
 
-                var min4B = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .SkipWhile(z => z.Value3 == 0)
-                    .Min(s => s.Value3);
+                    ViewBag.totalB = totalB;
+                    ViewBag.totalG = totalG;
+                    ViewBag.nettoB = totalB - 0;
+                    ViewBag.nettoG = totalG - 0;
 
-                // Inizio seconda riga
+                    #region deficienze
 
-                var max1G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value == 0)
-                    .Max(s => s.Value);
+                    var enumerable = _deficienze as IList<PvDeficienze> ?? _deficienze.ToList();
 
-                var min1G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value == 0)
-                    .Min(s => s.Value);
+                    var sumdG = enumerable
+                        .Where(z => currentUser.pvID == z.PvTank.pvID
+                        && z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
+                        .Sum(row => row.Value);
 
-                var max2G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value1 == 0)
-                    .Max(s => s.Value1);
+                    var sumdB = enumerable
+                        .Where(z => currentUser.pvID == z.PvTank.pvID
+                        && z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
+                        .Sum(row => row.Value);
 
-                var min2G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value1 == 0)
-                    .Min(s => s.Value1);
+                    ViewBag.sumdB = sumdB;
+                    ViewBag.sumdG = sumdG;
 
-                var max3G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value2 == 0)
-                    .Max(s => s.Value2);
+                    #endregion
 
-                var min3G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value2 == 0)
-                    .Min(s => s.Value2);
+                    #region cali
 
-                var max4G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value3 == 0)
-                    .Max(s => s.Value3);
+                    var pvcali = _cali as IList<PvCali> ?? _cali.ToList();
 
-                var min4G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value3 == 0)
-                    .Min(s => s.Value3);
+                    var SumcG = pvcali
+                        .Where(z => currentUser.pvID == z.PvTank.pvID
+                        && z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
+                        .Sum(row => row.Value);
 
-                var max5G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value4 == 0)
-                    .Max(s => s.Value4);
+                    var SumcB = pvcali
+                        .Where(z => currentUser.pvID == z.PvTank.pvID
+                        && z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
+                        .Sum(row => row.Value);
 
-                var min5G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value4 == 0)
-                    .Min(s => s.Value4);
+                    ViewBag.SumcB = SumcB;
+                    ViewBag.SumcG = SumcG;
 
-                var max6G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value5 == 0)
-                    .Max(s => s.Value5);
+                    #endregion
 
-                var min6G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value5 == 0)
-                    .Min(s => s.Value5);
+                    var totScaricoB = totalB + sumdB + SumcB;
+                    var totScaricoG = totalG + sumdG + SumcG;
 
-                var max7G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value6 == 0)
-                    .Max(s => s.Value6);
+                    #region Cisterne 
 
-                var min7G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value6 == 0)
-                    .Min(s => s.Value6);
-
-                var max8G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value7 == 0)
-                    .Max(s => s.Value7);
-
-                var min8G = pvErogatoris
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .SkipWhile(z => z.Value7 == 0)
-                    .Min(s => s.Value7);
-
-                //var pist1B = max1B - min1B;
-                var pist2B = max2B - min2B;
-                var pist3B = max3B - min3B;
-                var pist4B = max4B - min4B;
-                var totalB = min1B;//(pist1B + pist2B + pist3B + pist4B);
-
-                var pist1G = max1G - min1G;
-                var pist2G = max2G - min2G;
-                var pist3G = max3G - min3G;
-                var pist4G = max4G - min4G;
-                var pist5G = max5G - min5G;
-                var pist6G = max6G - min6G;
-                var pist7G = max7G - min7G;
-                var pist8G = max8G - min8G;
-                var totalG = (pist1G + pist2G + pist3G + pist4G + pist5G + pist6G + pist7G + pist8G);
-
-                ViewBag.totalB = totalB;
-                ViewBag.totalG = totalG;
-                ViewBag.nettoB = totalB - 0;
-                ViewBag.nettoG = totalG - 0;
-
-                #endregion
-
-                #region deficienze
-
-                var enumerable = _deficienze as IList<PvDeficienze> ?? _deficienze.ToList();
-
-                var sumdG = enumerable
-                    .Where(z => currentUser.pvID == z.PvTank.pvID
-                    && z.PvTank.Modello.Contains("MC-10993"))//z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
-                    .Sum(row => row.Value);
-
-                var sumdB = enumerable
-                    .Where(z => currentUser.pvID == z.PvTank.pvID
-                    && z.PvTank.Modello.Contains("MC-10688"))//z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
-                    .Sum(row => row.Value);
-
-                ViewBag.sumdB = sumdB;
-                ViewBag.sumdG = sumdG;
-
-                #endregion
-
-                #region cali
-
-                var pvcali = _cali as IList<PvCali> ?? _cali.ToList();
-
-                var SumcG = pvcali
-                    .Where(z => currentUser.pvID == z.PvTank.pvID
-                    && z.PvTank.Modello.Contains("MC-10993"))//z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
-                    .Sum(row => row.Value);
-
-                var SumcB = pvcali
-                    .Where(z => currentUser.pvID == z.PvTank.pvID
-                    && z.PvTank.Modello.Contains("MC-10688"))//z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
-                    .Sum(row => row.Value);
-
-                ViewBag.SumcB = SumcB;
-                ViewBag.SumcG = SumcG;
-
-                #endregion
-
-                #endregion
-
-                var totScaricoB = totalB + sumdB + SumcB;
-                var totScaricoG = totalG + sumdG + SumcG;
-
-                #region Cisterne 
-
-                var _cisternaB = from a in _db.PvTank
+                    var _cisternaB = from a in _db.PvTank
                                      where currentUser.pvID == a.pvID && a.Product.Nome.Contains("B")
                                      select a.Giacenza;
 
-                var rimEfB = _cisternaB.Sum();
+                    var rimEfB = _cisternaB.Sum();
 
-                var _cisternaG = from a in _db.PvTank
+                    var _cisternaG = from a in _db.PvTank
 
-                                 where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
-                                 select a.Giacenza;
+                                     where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
+                                     select a.Giacenza;
 
-                var rimEfG = _cisternaG.Sum();
+                    var rimEfG = _cisternaG.Sum();
 
+                    #endregion
+
+                    ViewBag.TotScaricoB = totScaricoB;
+                    ViewBag.TotScaricoG = totScaricoG;
+
+                    var rimContB = TotCaricoB - totScaricoB;
+                    var rimContG = TotCaricoG - totScaricoG;
+
+                    ViewBag.RiportoB = rimContB;
+                    ViewBag.RiportoG = rimContG;
+                    ViewBag.RiportoEB = rimEfB;
+                    ViewBag.RiportoEG = rimEfG;
+                    ViewBag.DifEB = rimEfB - rimContB;
+                    ViewBag.DifEG = rimEfG - rimContG;
+                }
                 #endregion
 
-                ViewBag.TotScaricoB = totScaricoB;
-                ViewBag.TotScaricoG = totScaricoG;
+                #region contatori > 2
+                else
+                {
+                    var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
 
-                var rimContB = TotCaricoB - totScaricoB;
-                var rimContG = TotCaricoG - totScaricoG;
+                    #region Max e Min benzina
+                    var max1B = pvErogatoris
+                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Max(s => s.Value);
 
-                ViewBag.RiportoB = rimContB;
-                ViewBag.RiportoG = rimContG;
-                ViewBag.RiportoEB = rimEfB;
-                ViewBag.RiportoEG = rimEfG;
-                ViewBag.DifEB = rimEfB - rimContB;
-                ViewBag.DifEG = rimEfG - rimContG;
+                    var min1B = pvErogatoris
+                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Min(s => s.Value);
+
+                    var max2B = pvErogatoris
+                        .Where(z => z.Value1 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Max(s => s.Value1);
+
+                    var min2B = pvErogatoris
+                        .Where(z => z.Value1 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Min(s => s.Value1);
+
+                    var max3B = pvErogatoris
+                        .Where(z => z.Value2 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Max(s => s.Value2);
+
+                    var min3B = pvErogatoris
+                        .Where(z => z.Value2 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Min(s => s.Value2);
+
+                    var max4B = pvErogatoris
+                        .Where(z => z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Max(s => s.Value3);
+
+                    var min4B = pvErogatoris
+                        .Where(z => z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Min(s => s.Value3);
+                    #endregion
+
+                    #region Max e Min gasolio
+                    // Inizio seconda riga
+
+                    var max1G = pvErogatoris
+                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Max(s => s.Value);
+
+                    var min1G = pvErogatoris
+                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value);
+
+                    var max2G = pvErogatoris
+                        .Where(z => z.Value1 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Max(s => s.Value1);
+
+                    var min2G = pvErogatoris
+                        .Where(z => z.Value1 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value1);
+
+                    var max3G = pvErogatoris
+                        .Where(z => z.Value2 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Max(s => s.Value2);
+
+                    var min3G = pvErogatoris
+                        .Where(z => z.Value2 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value2);
+
+                    var max4G = pvErogatoris
+                        .Where(z => z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Max(s => s.Value3);
+
+                    var min4G = pvErogatoris
+                        .Where(z => z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value3);
+
+                    var max5G = pvErogatoris
+                        .Where(z => z.Value4 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Max(s => s.Value4);
+
+                    var min5G = pvErogatoris
+                        .Where(z => z.Value4 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value4);
+
+                    var max6G = pvErogatoris
+                        .Where(z => z.Value5 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Max(s => s.Value5);
+
+                    var min6G = pvErogatoris
+                        .Where(z => z.Value5 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value5);
+
+                    var max7G = pvErogatoris
+                        .Where(z => z.Value6 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Max(s => s.Value6);
+
+                    var min7G = pvErogatoris
+                        .Where(z => z.Value6 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value6);
+
+                    var max8G = pvErogatoris
+                        .Where(z => z.Value7 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Max(s => s.Value7);
+
+                    var min8G = pvErogatoris
+                        .Where(z => z.Value7 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value7);
+                    #endregion
+
+                    int cost = 500000;
+                    var pist1B = max1B - min1B;
+                    var pist2B = max2B - min2B;
+                    var pist3B = max3B - min3B;
+                    var pist4B = max4B - min4B;
+                    var totalB = (pist1B + pist2B + pist3B + pist4B);
+                    var totalBcost = totalB - cost;
+
+                    var pist1G = max1G - min1G;
+                    var pist2G = max2G - min2G;
+                    var pist3G = max3G - min3G;
+                    var pist4G = max4G - min4G;
+                    var pist5G = max5G - min5G;
+                    var pist6G = max6G - min6G;
+                    var pist7G = max7G - min7G;
+                    var pist8G = max8G - min8G;
+                    var totalG = (pist1G + pist2G + pist3G + pist4G + pist5G + pist6G + pist7G + pist8G);
+
+                    ViewBag.totalB = totalBcost;
+                    ViewBag.totalG = totalG;
+                    ViewBag.nettoB = totalB - 0;
+                    ViewBag.nettoG = totalG - 0;
+
+                    #region deficienze
+
+                    var enumerable = _deficienze as IList<PvDeficienze> ?? _deficienze.ToList();
+
+                    var sumdG = enumerable
+                        .Where(z => currentUser.pvID == z.PvTank.pvID
+                        && z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
+                        .Sum(row => row.Value);
+
+                    var sumdB = enumerable
+                        .Where(z => currentUser.pvID == z.PvTank.pvID
+                        && z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
+                        .Sum(row => row.Value);
+
+                    ViewBag.sumdB = sumdB;
+                    ViewBag.sumdG = sumdG;
+
+                    #endregion
+
+                    #region cali
+
+                    var pvcali = _cali as IList<PvCali> ?? _cali.ToList();
+
+                    var SumcG = pvcali
+                        .Where(z => currentUser.pvID == z.PvTank.pvID
+                        && z.PvTank.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
+                        .Sum(row => row.Value);
+
+                    var SumcB = pvcali
+                        .Where(z => currentUser.pvID == z.PvTank.pvID
+                        && z.PvTank.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
+                        .Sum(row => row.Value);
+
+                    ViewBag.SumcB = SumcB;
+                    ViewBag.SumcG = SumcG;
+
+                    #endregion
+
+                    var totScaricoB = totalBcost + sumdB + SumcB;
+                    var totScaricoG = totalG + sumdG + SumcG;
+
+                    #region Cisterne 
+
+                    var _cisternaB = from a in _db.PvTank
+                                     where currentUser.pvID == a.pvID && a.Product.Nome.Contains("B")
+                                     select a.Giacenza;
+
+                    var rimEfB = _cisternaB.Sum();
+
+                    var _cisternaG = from a in _db.PvTank
+
+                                     where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
+                                     select a.Giacenza;
+
+                    var rimEfG = _cisternaG.Sum();
+
+                    #endregion
+
+                    ViewBag.TotScaricoB = totScaricoB;
+                    ViewBag.TotScaricoG = totScaricoG;
+
+                    var rimContB = TotCaricoB - totScaricoB;
+                    var rimContG = TotCaricoG - totScaricoG;
+
+                    ViewBag.RiportoB = rimContB;
+                    ViewBag.RiportoG = rimContG;
+                    ViewBag.RiportoEB = rimEfB;
+                    ViewBag.RiportoEG = rimEfG;
+                    ViewBag.DifEB = rimEfB - rimContB;
+                    ViewBag.DifEG = rimEfG - rimContG;
+                }
+                #endregion
+
+                #endregion
             }
-
             ViewBag.pvId = new SelectList(_db.Pv, "pvID", "pvName");
             return View();
         }
@@ -3432,7 +3523,7 @@ namespace GestioniDirette.Controllers
 
         #region Premium
 
-        
+
 
         #endregion
 
