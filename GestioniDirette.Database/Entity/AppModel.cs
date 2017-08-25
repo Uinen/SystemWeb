@@ -752,7 +752,7 @@ namespace GestioniDirette.Database.Entity
     public class MyDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, ApplicationUserLogin, ApplicationUserRole, ApplicationUserClaim>
     {
         public MyDbContext()
-            : base("DefaultConnection")
+            : base("Remote")
         {
             /*
             Configuration.LazyLoadingEnabled = true;

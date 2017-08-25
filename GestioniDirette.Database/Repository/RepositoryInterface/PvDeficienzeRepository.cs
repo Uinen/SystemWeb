@@ -18,7 +18,7 @@ namespace GestioniDirette.Database.Repository
 
         public IList<PvDeficienze> GetRecords()
         {
-            return db.PvDeficienze.Include(s => s.PvTank).ToList();
+            return db.PvDeficienze.Include(s => s.PvTank).Include(s=>s.PvTank.Product).ToList();
         }
 
         public PvDeficienze GetRecordsById(Guid? Id)
