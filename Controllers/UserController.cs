@@ -227,23 +227,123 @@ namespace GestioniDirette.Controllers
             {
                 var enumerable = getAll as IList<PvErogatori> ?? getAll.ToList();
 
-                var maxB = enumerable
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .Max(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
-                var minB = enumerable
-                .DefaultIfEmpty()
-                .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                .Min(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
+                #region Max e Min benzina
+                var max1B = enumerable
+                    .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value);
 
-                var maxG = enumerable
-                .DefaultIfEmpty()
-                .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
-                var minG = enumerable
-                .DefaultIfEmpty()
-                .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
+                var min1B = enumerable
+                    .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Min(s => s.Value);
+
+                var max2B = enumerable
+                    .Where(z => z.Value1 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value1);
+
+                var min2B = enumerable
+                    .Where(z => z.Value1 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Min(s => s.Value1);
+
+                var max3B = enumerable
+                    .Where(z => z.Value2 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value2);
+
+                var min3B = enumerable
+                    .Where(z => z.Value2 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Min(s => s.Value2);
+
+                var max4B = enumerable
+                    .Where(z => z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value3);
+
+                var min4B = enumerable
+                    .Where(z => z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Min(s => s.Value3);
+                #endregion
+
+                #region Max e Min gasolio
+                // Inizio seconda riga
+
+                var max1G = enumerable
+                    .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value);
+
+                var min1G = enumerable
+                    .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value);
+
+                var max2G = enumerable
+                    .Where(z => z.Value1 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value1);
+
+                var min2G = enumerable
+                    .Where(z => z.Value1 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value1);
+
+                var max3G = enumerable
+                    .Where(z => z.Value2 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value2);
+
+                var min3G = enumerable
+                    .Where(z => z.Value2 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value2);
+
+                var max4G = enumerable
+                    .Where(z => z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value3);
+
+                var min4G = enumerable
+                    .Where(z => z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value3);
+
+                var max5G = enumerable
+                    .Where(z => z.Value4 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value4);
+
+                var min5G = enumerable
+                    .Where(z => z.Value4 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value4);
+
+                var max6G = enumerable
+                    .Where(z => z.Value5 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value5);
+
+                var min6G = enumerable
+                    .Where(z => z.Value5 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value5);
+
+                var max7G = enumerable
+                    .Where(z => z.Value6 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value6);
+
+                var min7G = enumerable
+                    .Where(z => z.Value6 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value6);
+
+                var max8G = enumerable
+                    .Where(z => z.Value7 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Max(s => s.Value7);
+
+                var min8G = enumerable
+                    .Where(z => z.Value7 > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                    .Min(s => s.Value7);
+                #endregion
+
+                var pist1B = max1B - min1B;
+                var pist2B = max2B - min2B;
+                var pist3B = max3B - min3B;
+                var pist4B = max4B - min4B;
+                var totalB = (pist1B + pist2B + pist3B + pist4B);
+
+                var pist1G = max1G - min1G;
+                var pist2G = max2G - min2G;
+                var pist3G = max3G - min3G;
+                var pist4G = max4G - min4G;
+                var pist5G = max5G - min5G;
+                var pist6G = max6G - min6G;
+                var pist7G = max7G - min7G;
+                var pist8G = max8G - min8G;
+                var totalG = (pist1G + pist2G + pist3G + pist4G + pist5G + pist6G + pist7G + pist8G);
 
                 /* System.InvalidOperationException: La sequenza non contiene elementi
                 var maxHiqB = enumerable
@@ -259,23 +359,14 @@ namespace GestioniDirette.Controllers
                 var minHiqD = enumerable
                     .Where(z => (z.Product.Nome.Contains("HiQd")))
                     .Min(row => row.Value);*/
+                var _totalResult = totalB + totalG;
+                    ViewBag.SSPBTotalAmount = totalB;
+                    ViewBag.DieselTotalAmount = totalG;
 
-                #region Risultati
-
-                var _resultB = maxB - minB;
-                var _resultG = maxG - minG;
-                //var _resultHiqB = maxHiqB - minHiqB;
-                //var _resultHiqD = maxHiqD - minHiqD;
-                var _totalResult = _resultB + _resultG /*+ _resultHiqB + _resultHiqD*/;
-
-                #endregion
-
-                ViewBag.SSPBTotalAmount = _resultB;
-                ViewBag.DieselTotalAmount = _resultG;
-                //ViewBag.HiQbTotalAmount = _resultHiqB;
-                //ViewBag.HiQdTotalAmount = _resultHiqD;
-                ViewBag.TotalAmount = _totalResult;
-
+                    //ViewBag.HiQbTotalAmount = _resultHiqB;
+                    //ViewBag.HiQdTotalAmount = _resultHiqD;
+                    ViewBag.TotalAmount = _totalResult;
+                
                 #endregion
 
                 #region TotaleContatoriPrecedente
@@ -306,21 +397,27 @@ namespace GestioniDirette.Controllers
 
                     var maxB2 = pvErogatoris
                     .DefaultIfEmpty()
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .Max(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
+                    .Where(z => z.Value > 0 & z.Value1 > 0 & z.Value2 > 0 & z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                    .Max(s => s.Value | s.Value1 | s.Value2 | s.Value3);
+
                     var minB2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                    .Min(s => s.Value | s.Value1 | s.Value2 | s.Value3 /*+ s.Value4 + s.Value5 + s.Value6 + s.Value7*/);
+                        .DefaultIfEmpty()
+                        .Where(z => z.Value > 0 & z.Value1 > 0 & z.Value2 > 0 & z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Min(s => s.Value | s.Value1 | s.Value2 | s.Value3);
 
                     var maxG2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
+                        .DefaultIfEmpty()
+                        .Where(z => z.Value > 0 & z.Value1 > 0 & z.Value2 > 0 & z.Value3 > 0
+                        & z.Value4 > 0 & z.Value5 > 0 & z.Value6 > 0 & z.Value7 > 0
+                        & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Max(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
+
                     var minG2 = pvErogatoris
-                    .DefaultIfEmpty()
-                    .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                    .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
+                        .DefaultIfEmpty()
+                        .Where(z => z.Value > 0 & z.Value1 > 0 & z.Value2 > 0 & z.Value3 > 0
+                        & z.Value4 > 0 & z.Value5 > 0 & z.Value6 > 0 & z.Value7 > 0
+                        & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Min(s => s.Value + s.Value1 + s.Value2 + s.Value3 + s.Value4 + s.Value5 + s.Value6 + s.Value7);
 
                     /* System.InvalidOperationException: La sequenza non contiene elementi
                     var maxHiqB2 = pvErogatoris
@@ -3206,7 +3303,7 @@ namespace GestioniDirette.Controllers
 
                 var pvDispenser = from a in _db.Dispenser
                                   where a.PvTank.pvID == currentUser.pvID
-                                  select a;
+                                  select a.DispenserId;
 
                 if (pvDispenser.Count() <= 2)
                 {
@@ -3347,6 +3444,7 @@ namespace GestioniDirette.Controllers
                     var min4B = pvErogatoris
                         .Where(z => z.Value3 > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
                         .Min(s => s.Value3);
+
                     #endregion
 
                     #region Max e Min gasolio
@@ -3417,13 +3515,11 @@ namespace GestioniDirette.Controllers
                         .Min(s => s.Value7);
                     #endregion
 
-                    int cost = 500000;
                     var pist1B = max1B - min1B;
                     var pist2B = max2B - min2B;
                     var pist3B = max3B - min3B;
                     var pist4B = max4B - min4B;
                     var totalB = (pist1B + pist2B + pist3B + pist4B);
-                    var totalBcost = totalB - cost;
 
                     var pist1G = max1G - min1G;
                     var pist2G = max2G - min2G;
@@ -3435,10 +3531,16 @@ namespace GestioniDirette.Controllers
                     var pist8G = max8G - min8G;
                     var totalG = (pist1G + pist2G + pist3G + pist4G + pist5G + pist6G + pist7G + pist8G);
 
-                    ViewBag.totalB = totalBcost;
+                    ViewBag.totalB = totalB;
                     ViewBag.totalG = totalG;
                     ViewBag.nettoB = totalB - 0;
                     ViewBag.nettoG = totalG - 0;
+                    ViewBag.pist1B = pist1B;
+                    ViewBag.pist2B = pist2B;
+                    ViewBag.pist3B = pist3B;
+                    ViewBag.pist4B = pist4B;
+                    ViewBag.max4B = max4B;
+                    ViewBag.min4B = min4B;
 
                     #region deficienze
 
@@ -3478,7 +3580,7 @@ namespace GestioniDirette.Controllers
 
                     #endregion
 
-                    var totScaricoB = totalBcost + sumdB + SumcB;
+                    var totScaricoB = totalB + sumdB + SumcB;
                     var totScaricoG = totalG + sumdG + SumcG;
 
                     #region Cisterne 
