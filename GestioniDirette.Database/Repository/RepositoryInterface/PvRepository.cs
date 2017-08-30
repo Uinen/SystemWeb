@@ -4,6 +4,9 @@ using System.Linq;
 using GestioniDirette.Database.Repository.Interface;
 using System.Data.Entity;
 using GestioniDirette.Database.Entity;
+using System.Web;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity;
 
 namespace GestioniDirette.Database.Repository
 {
@@ -20,7 +23,18 @@ namespace GestioniDirette.Database.Repository
         {
             return db.Pv.ToList();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string GetMyPv()
+        {
+            ApplicationUser user = HttpContext.Current.GetOwinContext()
+                .GetUserManager<ApplicationUserManager>()
+                .FindById(HttpContext.Current.User.Identity.GetUserId());
+            var _pvID = db.Users.Where(w => w.Id == user.Id).Select(s => s.pvID).ToString();
+            return _pvID;
+        }
         public Pv GetPvsById(Guid? Id)
         {
             return db.Pv.Find(Id);

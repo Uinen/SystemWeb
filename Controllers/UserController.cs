@@ -3301,29 +3301,29 @@ namespace GestioniDirette.Controllers
 
                 #region contatori <= 2
 
-                var pvDispenser = from a in _db.Dispenser
-                                  where a.PvTank.pvID == currentUser.pvID
-                                  select a.DispenserId;
+                var nPvDispenser = _db.Dispenser
+                    .Where(a => a.PvTank.pvID == currentUser.pvID)
+                    .Select(s => s.DispenserId);
 
-                if (pvDispenser.Count() <= 2)
+                if (nPvDispenser.Count() <= 2)
                 {
                     var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
 
 
                     var max1B = pvErogatoris
-                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
                         .Max(s => s.Value);
 
                     var min1B = pvErogatoris
-                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                        .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
                         .Min(s => s.Value);
 
                     var max1G = pvErogatoris
-                       .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                       .Where(z =>  (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
                        .Max(s => s.Value);
 
                     var min1G = pvErogatoris
-                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                        .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
                         .Min(s => s.Value);
 
                     var totalB = max1B - min1B;
@@ -3617,6 +3617,7 @@ namespace GestioniDirette.Controllers
 
                 #endregion
             }
+
             ViewBag.pvId = new SelectList(_db.Pv, "pvID", "pvName");
             return View();
         }

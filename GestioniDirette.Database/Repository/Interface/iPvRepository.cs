@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GestioniDirette.Database.Entity;
+using System.Linq;
 
 namespace GestioniDirette.Database.Repository.Interface
 {
@@ -18,6 +19,12 @@ namespace GestioniDirette.Database.Repository.Interface
         /// <param name="Id"></param>
         /// <returns>It return the pv by given Id</returns>
         Pv GetPvsById(Guid? Id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        string GetMyPv();
 
         /// <summary>
         /// Insert specified pv

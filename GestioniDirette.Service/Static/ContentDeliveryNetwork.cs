@@ -25,26 +25,26 @@
 
         public static class Gestionidirette
         {
-            public const string Domain = "static.gestionidirette.com";
-            public const string BootstrapUrl = "//static.gestionidirette.com/Contenuti/Bootstrap/bootstrap.min.css";
-            public const string Bootstrap4Url = "//static.gestionidirette.com/Contenuti/bootstrap.min.css";
-            public const string StyleUrl = "//static.gestionidirette.com/Contenuti/CSS/style.min.css";
-            public const string CustomUrl = "//static.gestionidirette.com/Contenuti/CSS/COLORS/custom.min.css";
-            public const string IonIconsUrl = "//static.gestionidirette.com/Contenuti/CSS/ionicons.min.css";
-            public const string AnimateUrl = "//static.gestionidirette.com/Contenuti/CSS/animate.min.css";
-            public const string OwlCarouselUrl = "//static.gestionidirette.com/Contenuti/CSS/owl.carousel.min.css";
-            public const string OwlCarouselThemeUrl = "//static.gestionidirette.com/Contenuti/CSS/owl.theme.min.css";
-            public const string NivoLightBoxUrl = "//static.gestionidirette.com/Contenuti/CSS/nivo-lightbox/nivo-lightbox.min.css";
-            public const string JQueryGlobalizeUrl = "//static.gestionidirette.com/Scripts/jquery.globalize.min.js";
-            public const string JQueryBrowser = "//static.gestionidirette.com/Scripts/jquery.browser.min.js";
-            public const string JQueryAjaxChimp = "//static.gestionidirette.com/Scripts/jquery.ajaxchimp.min.js";
-            public const string ThemeUrl = "//static.gestionidirette.com/Scripts/Theme.min.js";
-            public const string SortableUrl = "//static.gestionidirette.com/Scripts/sortable.min.js";
-            public const string ActionCompleteUrl = "//static.gestionidirette.com/Scripts/ActionComplete.min.js";
-            public const string LoginUrl = "//static.gestionidirette.com/Contenuti/css/Login.min.css";
-            public const string DashboardUrl = "//static.gestionidirette.com/Contenuti/css/Dashboard/dashboard.min.css";
-            public const string SignInStyleUrl = "//static.gestionidirette.com/Contenuti/css/Signin Form/style.min.css";
-            public const string SignInFormElementsUrl = "//static.gestionidirette.com/Contenuti/css/Signin Form/form-elements.min.css";
+            public const string Domain = "cdn.gestionidirette.com";
+            public const string BootstrapUrl = "//cdn.gestionidirette.com/Contenuti/Bootstrap/bootstrap.min.css";
+            public const string Bootstrap4Url = "//cdn.gestionidirette.com/Contenuti/bootstrap.min.css";
+            public const string StyleUrl = "//cdn.gestionidirette.com/Contenuti/CSS/style.min.css";
+            public const string CustomUrl = "//cdn.gestionidirette.com/Contenuti/CSS/COLORS/custom.min.css";
+            public const string IonIconsUrl = "//cdn.gestionidirette.com/Contenuti/CSS/ionicons.min.css";
+            public const string AnimateUrl = "//cdn.gestionidirette.com/Contenuti/CSS/animate.min.css";
+            public const string OwlCarouselUrl = "//cdn.gestionidirette.com/Contenuti/CSS/owl.carousel.min.css";
+            public const string OwlCarouselThemeUrl = "//cdn.gestionidirette.com/Contenuti/CSS/owl.theme.min.css";
+            public const string NivoLightBoxUrl = "//cdn.gestionidirette.com/Contenuti/CSS/nivo-lightbox/nivo-lightbox.min.css";
+            public const string JQueryGlobalizeUrl = "//cdn.gestionidirette.com/Scripts/jquery.globalize.min.js";
+            public const string JQueryBrowser = "//cdn.gestionidirette.com/Scripts/jquery.browser.min.js";
+            public const string JQueryAjaxChimp = "//cdn.gestionidirette.com/Scripts/jquery.ajaxchimp.min.js";
+            public const string ThemeUrl = "//cdn.gestionidirette.com/Scripts/Theme.min.js";
+            public const string SortableUrl = "//cdn.gestionidirette.com/Scripts/sortable.min.js";
+            public const string ActionCompleteUrl = "//cdn.gestionidirette.com/Scripts/ActionComplete.min.js";
+            public const string LoginUrl = "//cdn.gestionidirette.com/Contenuti/css/Login.min.css";
+            public const string DashboardUrl = "//cdn.gestionidirette.com/Contenuti/css/Dashboard/dashboard.min.css";
+            public const string SignInStyleUrl = "//cdn.gestionidirette.com/Contenuti/css/Signin Form/style.min.css";
+            public const string SignInFormElementsUrl = "//cdn.gestionidirette.com/Contenuti/css/Signin Form/form-elements.min.css";
         }
 
         public static class Syncfusion
