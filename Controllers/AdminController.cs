@@ -27,6 +27,7 @@ namespace GestioniDirette.Controllers
 
         #region Inizializzatori
         private readonly MyDbContext _db = new MyDbContext();
+        private readonly UserInfo _userInfo = new UserInfo();
         public AdminController()
         {
         }
@@ -76,6 +77,8 @@ namespace GestioniDirette.Controllers
             list.notizia = _db.Notice.ToList();
             #endregion
 
+            ViewBag.GetTotalUser = _userInfo.GetTotalUsers();
+            ViewBag.GetMypvID = _userInfo.GetPVID();
             return View(list);
         }
         #endregion

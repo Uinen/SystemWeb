@@ -24,7 +24,7 @@ namespace GestioniDirette.Database.Repository
             return db.Pv.ToList();
         }
         /// <summary>
-        /// 
+        /// Metodo che ritorna l'ID del punto vendita usando l'ID utente fornito dalla classe HttpContext
         /// </summary>
         /// <returns></returns>
         public string GetMyPv()
@@ -32,7 +32,8 @@ namespace GestioniDirette.Database.Repository
             ApplicationUser user = HttpContext.Current.GetOwinContext()
                 .GetUserManager<ApplicationUserManager>()
                 .FindById(HttpContext.Current.User.Identity.GetUserId());
-            var _pvID = db.Users.Where(w => w.Id == user.Id).Select(s => s.pvID).ToString();
+
+            var _pvID = db.Users.Where(w => w.Id == user.Id).Select(s => s.pvID.ToString()).SingleOrDefault();
             return _pvID;
         }
         public Pv GetPvsById(Guid? Id)

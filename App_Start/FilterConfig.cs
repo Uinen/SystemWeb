@@ -29,7 +29,6 @@ namespace GestioniDirette
         /// <summary>
         /// Add filters to improve security.
         /// </summary>
-        
         private static void AddSecurityFilters(GlobalFilterCollection filters)
         {
             // Require HTTPS to be used across the whole site. System.Web.Mvc.RequireHttpsAttribute performs a
@@ -37,7 +36,7 @@ namespace GestioniDirette
             // 301 Permanent redirect or a 302 temporary redirect. You should perform a 301 permanent redirect if the
             // page can only ever be accessed by HTTPS and a 302 temporary redirect if the page can be accessed over
             // HTTP or HTTPS.
-            filters.Add(new RedirectToHttpsAttribute(true));
+            // filters.Add(new RedirectToHttpsAttribute(true));
 
             // Several NWebsec Security Filters are added here. See
             // http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/ and
@@ -61,7 +60,7 @@ namespace GestioniDirette
 
             // X-Content-Type-Options - Adds the X-Content-Type-Options HTTP header. Stop IE9 and below from sniffing
             //                          files and overriding the Content-Type header (MIME type).
-            //filters.Add(new XContentTypeOptionsAttribute());
+            filters.Add(new XContentTypeOptionsAttribute());
 
             // X-Download-Options - Adds the X-Download-Options HTTP header. When users save the page, stops them from
             //                      opening it and forces a save and manual open.
@@ -78,7 +77,7 @@ namespace GestioniDirette
             filters.Add(
                 new XFrameOptionsAttribute()
                 {
-                    Policy = XFrameOptionsPolicy.SameOrigin
+                    Policy = XFrameOptionsPolicy.Deny
                 });
         }
 
@@ -110,6 +109,188 @@ namespace GestioniDirette
             // Enables logging of CSP violations. See the NWebsecHttpHeaderSecurityModule_CspViolationReported method
             // in Global.asax.cs to see where they are logged.
             filters.Add(new CspReportUriAttribute() { EnableBuiltinHandler = true });
+
+
+            // default-src - Sets a default source list for a number of directives. If the other directives below are
+            //               not used then this is the default setting.
+            filters.Add(
+                new CspDefaultSrcAttribute()
+                {
+                    // Disallow everything from the same domain by default.
+                    //None = true,
+                    // Allow everything from the same domain by default.
+                    Self = true
+                });
+
+
+            // base-uri - This directive restricts the document base URL
+            //            (See http://www.w3.org/TR/html5/infrastructure.html#document-base-url).
+            filters.Add(
+                new CspBaseUriAttribute()
+                {
+                    // Allow base URL's from example.com.
+                    // CustomSources = "*.example.com",
+                    // Allow base URL's from the same domain.
+                    Self = false
+                });
+            // child-src - This directive restricts from where the protected resource can load web workers or embed
+            //             frames. This was introduced in CSP 2.0 to replace frame-src. frame-src should still be used
+            //             for older browsers.
+            filters.Add(
+                new CspChildSrcAttribute()
+                {
+                    // Allow web workers or embed frames from example.com.
+                    // CustomSources = "*.example.com",
+                    // Allow web workers or embed frames from the same domain.
+                    Self = false
+                });
+            // connect-src - This directive restricts which URIs the protected resource can load using script interfaces
+            //               (Ajax Calls and Web Sockets).
+            filters.Add(
+                new CspConnectSrcAttribute()
+                {
+#if DEBUG
+                    // Allow Browser Link to work in debug mode only.
+                    CustomSources = string.Join(" ", "localhost:*", "ws://localhost:*"),
+#else
+                    // Allow AJAX and Web Sockets to example.com.
+                    // CustomSources = "*.example.com",
+#endif
+                    // Allow all AJAX and Web Sockets calls from the same domain.
+                    Self = true
+                });
+            // font-src - This directive restricts from where the protected resource can load fonts.
+            filters.Add(
+                new CspFontSrcAttribute()
+                {
+                    // Allow fonts from maxcdn.bootstrapcdn.com.
+                    CustomSources = string.Join(
+                        " ",
+                        ContentDeliveryNetwork.MaxCdn.Domain,
+                        ContentDeliveryNetwork.Gestionidirette.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain),
+                    // Allow all fonts from the same domain.
+                    Self = true
+                });
+            // form-action - This directive restricts which URLs can be used as the action of HTML form elements.
+            filters.Add(
+                new CspFormActionAttribute()
+                {
+                    // Allow forms to post back to example.com.
+                    // CustomSources = "*.example.com",
+                    // Allow forms to post back to the same domain.
+                    Self = true
+                });
+            // frame-src - This directive restricts from where the protected resource can embed frames.
+            //             This is now deprecated in favour of child-src but should still be used for older browsers.
+            filters.Add(
+                new CspFrameSrcAttribute()
+                {
+                    // Allow iFrames from example.com.
+                    // CustomSources = "*.example.com",
+                    // Allow iFrames from the same domain.
+                    Self = false
+                });
+            // frame-ancestors - This directive restricts from where the protected resource can embed frame, iframe,
+            //                   object, embed or applet's.
+            filters.Add(
+                new CspFrameAncestorsAttribute()
+                {
+                    // Allow frame, iframe, object, embed or applet's from example.com.
+                    // CustomSources = "*.example.com",
+                    // Allow frame, iframe, object, embed or applet's from the same domain.
+                    Self = false
+                });
+            // img-src - This directive restricts from where the protected resource can load images.
+            filters.Add(
+                new CspImgSrcAttribute()
+                {
+                    /*
+#if DEBUG
+                    // Allow Browser Link to work in debug mode only.
+                    CustomSources = "data:",
+#endif
+                    */
+                    CustomSources = string.Join(
+                        " ",
+                        ContentDeliveryNetwork.Gestionidirette.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain),
+
+                    // Allow images from the same domain.
+                    Self = true,
+                });
+            // script-src - This directive restricts which scripts the protected resource can execute.
+            //              The directive also controls other resources, such as XSLT style sheets, which can cause the
+            //              user agent to execute script.
+            filters.Add(
+                new CspScriptSrcAttribute()
+                {
+                    // Allow scripts from the CDN's.
+                    CustomSources = string.Join(
+                        " ",
+#if DEBUG
+                        // Allow Browser Link to work in debug mode only.
+                        "localhost:*",
+#endif
+                        ContentDeliveryNetwork.Google.Domain,
+                        ContentDeliveryNetwork.Microsoft.Domain,
+                        ContentDeliveryNetwork.Gestionidirette.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain),
+                    // Allow scripts from the same domain.
+                    Self = true,
+                    // Allow the use of the eval() method to create code from strings. This is unsafe and can open your
+                    // site up to XSS vulnerabilities.
+                    UnsafeEval = true,
+                    // Allow in-line JavaScript, this is unsafe and can open your site up to XSS vulnerabilities.
+                    UnsafeInline = true
+                });
+            // media-src - This directive restricts from where the protected resource can load video and audio.
+            filters.Add(
+                new CspMediaSrcAttribute()
+                {
+                    // Allow audio and video from example.com.
+                    // CustomSources = "example.com",
+                    // Allow audio and video from the same domain.
+                    Self = false
+                });
+            // object-src - This directive restricts from where the protected resource can load plug-ins.
+            filters.Add(
+                new CspObjectSrcAttribute()
+                {
+                    // Allow plug-ins from example.com.
+                    // CustomSources = "example.com",
+                    // Allow plug-ins from the same domain.
+                    Self = false
+                });
+            // plugin-types - This directive restricts the set of plug-ins that can be invoked by the protected resource.
+            //                You can also use the @Html.CspMediaType("application/pdf") HTML helper instead of this
+            //                attribute. The HTML helper will add the media type to the CSP header.
+            // filters.Add(
+            //     new CspPluginTypesAttribute()
+            //     {
+            //         // Allow Adobe Flash and Microsoft Silverlight plug-ins
+            //         MediaTypes = "application/x-shockwave-flash application/xaml+xml"
+            //     });
+            // style-src - This directive restricts which styles the user applies to the protected resource.
+            filters.Add(
+                new CspStyleSrcAttribute()
+                {
+                    // Allow CSS from maxcdn.bootstrapcdn.com
+                    CustomSources = string.Join(
+                        " ",
+                        ContentDeliveryNetwork.MaxCdn.Domain,
+                        ContentDeliveryNetwork.Gestionidirette.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain),
+                    // Allow CSS from the same domain.
+                    Self = true,
+                    // Allow in-line CSS, this is unsafe and can open your site up to XSS vulnerabilities.
+                    // Note: This is currently enable because Modernizr does not support CSP and includes in-line styles
+                    // in its JavaScript files. This is a security hold. If you don't want to use Modernizr, be sure to
+                    // disable unsafe in-line styles. For more information See:
+                    // http://stackoverflow.com/questions/26532234/modernizr-causes-content-security-policy-csp-violation-errors
+                    // https://github.com/Modernizr/Modernizr/pull/1263
+                    UnsafeInline = true
+                });
         }
     }
 }

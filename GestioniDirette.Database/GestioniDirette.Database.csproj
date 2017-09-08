@@ -222,6 +222,8 @@
       <DependentUpon>201708172241276_24.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Operation\Interface\iOperation.cs" />
+    <Compile Include="Operation\Operation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CaliRepository.cs" />
     <Compile Include="Repository\CartissimaRepository.cs" />
@@ -237,6 +239,7 @@
     <Compile Include="Repository\Interface\iPvDeficienzeRepository.cs" />
     <Compile Include="Repository\Interface\iPvErogatoriRepository.cs" />
     <Compile Include="Repository\Interface\iPvRepository.cs" />
+    <Compile Include="Repository\Interface\iUserRepository.cs" />
     <Compile Include="Repository\Interface\iUsersImageRepository.cs" />
     <Compile Include="Repository\LicenzaRepository.cs" />
     <Compile Include="Repository\NoticeRepository.cs" />
@@ -249,6 +252,7 @@
     <Compile Include="Repository\RepositoryInterface\PvDeficienzeRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\PvErogatoriRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\PvRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\UserRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\UsersImageRepository.cs" />
     <Compile Include="Repository\TankRepository.cs" />
     <Compile Include="Utility\EmailAttribute.cs" />
