@@ -11,6 +11,7 @@ using GestioniDirette.Service;
 using GestioniDirette.ViewModels;
 using System;
 using System.Net.Mail;
+using GestioniDirette.Database.Entity;
 
 namespace GestioniDirette.Controllers
 {
@@ -27,29 +28,14 @@ namespace GestioniDirette.Controllers
 
         #endregion
 
-        #region Constructors
-
-        public HomeController(
-            IBrowserConfigService browserConfigService,
-            IFeedService feedService,
-            IManifestService manifestService,
-            IOpenSearchService openSearchService,
-            IRobotsService robotsService,
-            ISitemapService sitemapService)
-        {
-            this._browserConfigService = browserConfigService;
-            this._feedService = feedService;
-            this._manifestService = manifestService;
-            this._openSearchService = openSearchService;
-            this._robotsService = robotsService;
-            this._sitemapService = sitemapService;
-        }
-
-        #endregion
-
         [Route("", Name = HomeControllerRoute.GetIndex)]
         public ActionResult Index()
         {
+            MyDbContext ctx = new MyDbContext();
+            var _dbState = ctx.Database.Connection.State;
+            var _dbConInfo = ctx.Database.Connection.ConnectionTimeout;
+            var _dbName = ctx.Database.Connection.Database;
+            ViewBag.DbState = "The database " + _dbName + "is: " + _dbState + " and it tooks" + _dbConInfo + "ms to gets the connection state.";
             return View();
         }
 

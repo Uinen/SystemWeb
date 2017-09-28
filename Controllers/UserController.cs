@@ -25,6 +25,8 @@ using System.Reflection;
 using GestioniDirette.ActionFilters;
 using GestioniDirette.Database.Entity;
 using System.Data.Entity;
+using GestioniDirette.Database.Operation;
+using GestioniDirette.Database.Operation.Interface;
 
 namespace GestioniDirette.Controllers
 {
@@ -38,6 +40,7 @@ namespace GestioniDirette.Controllers
         private readonly iPvErogatoriRepository _pvErogatoriRepository;
         private readonly iPvCaliRepository _pvCaliRepository;
         private readonly iPvDeficienzeRepository _pvDeficienzeRepository;
+        private readonly iOperation _operation;
         public string Ly { get; set; }
 
         public UserController()
@@ -47,6 +50,7 @@ namespace GestioniDirette.Controllers
             _pvErogatoriRepository = new PvErogatoriRepository(new MyDbContext());
             _pvCaliRepository = new PvCaliRepository(new MyDbContext());
             _pvDeficienzeRepository = new PvDeficienzeRepository(new MyDbContext());
+            _operation = new Operation(new MyDbContext());
         }
 
         public UserController(ApplicationUserManager userManager)
@@ -73,74 +77,25 @@ namespace GestioniDirette.Controllers
         public ActionResult Index(DateTime? dateFrom, DateTime? dateTo, DateTime? dateFrom2, DateTime? dateTo2, Guid? id)
         {
             #region List
+            
+            var list = new UserIndexViewModel();
 
-            var list = new UserIndexViewModel
-            {
-                carico = _db.Carico
-                    .Include(i => i.Pv)
-                    .Include(i => i.Year)
-                    .ToList(),
-                pverogatori = _db.PvErogatori
-                    .Include(i => i.Pv)
-                    .Include(i => i.Dispenser)
-                    .Include(i => i.Product)
-                    .ToList(),
-                pv = _db.Pv
-                    .Include(i => i.Flag)
-                    .Include(i => i.Carico)
-                    .Include(i => i.PvTank)
-                    .Include(i => i.ApplicationUser)
-                    .ToList(),
-                pvprofile = _db.PvProfile
-                    .Include(i => i.Pv)
-                    .ToList(),
-                pvtank = _db.PvTank
-                    .Include(i => i.Product)
-                    .Include(i => i.Pv)
-                    .Include(i => i.PvCali)
-                    .Include(i => i.PvDeficienze)
-                    .ToList(),
-                dispenser = _db.Dispenser
-                    .Include(i => i.PvErogatori)
-                    .Include(i => i.PvTank)
-                    .ToList(),
-                company = _db.Company
-                    .Include(i => i.ApplicationUser)
-                    .Include(i => i.RagioneSociale)
-                    .ToList(),
-                companytask = _db.CompanyTask
-                    .Include(i => i.ApplicationUser)
-                    .ToList(),
-                userarea = _db.UserArea
-                    .Include(i => i.ApplicationUser)
-                    .ToList(),
-                applicationuser = _db.Users
-                    .Include(i => i.Pv)
-                    .Include(i => i.Company)
-                    .Include(i => i.FilePaths)
-                    .Include(i => i.Pv)
-                    .Include(i => i.UserArea)
-                    .Include(i => i.UserProfiles)
-                    .Include(i => i.CompanyTask)
-                    .Include(i => i.Roles)
-                    .Include(i => i.Logins)
-                    .Include(i => i.Claims)
-                    .ToList()
-            };
+            #endregion
+
+            #region GetOperation
+            var getCarico = _operation.GetCarico();
+            var getErogatori = _operation.GetErogatori();
+            var getErogatoriLastYear = _operation.GetErogatoriLastYear();
             #endregion
 
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-
-            /*var getPId = from a in _db.UserProfiles
-                         where a.ProfileId == currentUser.ProfileId
-                         select a;
             
-            ViewBag.profileId = getPId;*/
 
             list.usersimage = _db.UsersImage
-                    .Where(s => currentUser.ProfileId == s.ProfileID)
-                    .ToList();
+                .Include(i => i.UserProfiles)
+                .Where(s => currentUser.ProfileId == s.ProfileID)
+                .ToList();
 
             var somequalsD1 = (from pvProfile in _db.PvProfile where currentUser.pvID == pvProfile.pvID select pvProfile.Indirizzo).DefaultIfEmpty("Indirizzo non configurato").SingleOrDefault();
             var somequalsD2 = (from pvProfile in _db.PvProfile where currentUser.pvID == pvProfile.pvID select pvProfile.Città).DefaultIfEmpty("Città non configurata").SingleOrDefault();
@@ -151,6 +106,7 @@ namespace GestioniDirette.Controllers
             var somequalsD7 = _db.Users.Include(s => s.Company).Where(s => s.Id == currentUser.Id).Select(s => s.Company.Name).DefaultIfEmpty("Azienda non configurata").SingleOrDefault();
             var somequalsD8 = _db.Licenza.Where(c => currentUser.pvID == c.pvID);
             var somequalsD9 = _db.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID);
+            var calltomethod = _operation.DoSSPBTankPercentageById();
             ViewBag.FullAdress = somequalsD5;
             ViewBag.ProfileFullName = somequalsD6;
             ViewBag.Flag = somequalsD4;
@@ -160,56 +116,22 @@ namespace GestioniDirette.Controllers
             ViewBag.CompanyId = somequalsD7;
             ViewBag.Licenza = somequalsD8.Select(c => c.Codice).DefaultIfEmpty("Nessuna licenza inserita").Single();
             ViewBag.Scadenza = somequalsD8.Select(c => c.Scadenza).SingleOrDefault();
+            ViewBag.TankArray = calltomethod;
             //ViewBag.Bollino = somequalsD9.Select(c => c.Scadenza).SingleOrDefault();
 
-            IEnumerable<UserProfiles> userprofiles = (from up in _db.UserProfiles
-                                                      where currentUser.ProfileId == up.ProfileId
-                                                      select up);
+            IEnumerable<UserProfiles> userprofiles = _db.UserProfiles
+                .Where(w => w.ProfileId == currentUser.ProfileId);
+
             list.userprofiles = userprofiles;
 
             var notice = _db.Notice.AsEnumerable().Take(5);
             list.notice = notice;
 
-            #region CaricoCreate
-
-            var thisYear = DateTime.Now.Year;
-
-            var getall = from order in _pvRepository.GetPvs()
-                         where (currentUser.pvID == order.pvID)
-                         select order;
-
-            var year = _db.Year
-                .Where(c => c.Anno.Year == thisYear);
-
-            var dep = _db.Deposito;
-
-
-            var doc = _db.Documento;
-
-            ViewBag.pvID = new SelectList(getall, "pvID", "pvName");
-            ViewBag.yearId = new SelectList(year, "yearId", "Anno");
-            ViewBag.depId = new SelectList(dep, "depId", "Nome");
-            ViewBag.docId = new SelectList(doc, "DocumentoID", "Tipo");
-
-            #endregion
-
             #region TotaleContatori
-
-            dateFrom = new DateTime(2016, 12, 31);
-            dateTo = DateTime.Now;
-            lastYear = DateTime.Today.Year;
-            Ly = lastYear.ToString();
-
-            var getAll = (from a in _pvErogatoriRepository.GetPvErogatori()
-
-                          where (Convert.ToDateTime(a.FieldDate) >= dateFrom)
-                                   && (Convert.ToDateTime(a.FieldDate) <= dateTo
-                                   && currentUser.pvID == a.pvID)
-                          //where (a.FieldDate.Year.ToString().Contains(ly))
-                          select a);
-
-            if (getAll.Count() == 0)
+            
+            if (getErogatori.Count() == 0)
             {
+                #region ViewBag
                 ViewBag.SSPBTotalAmount = "0";
                 ViewBag.DieselTotalAmount = "0";
                 //ViewBag.HiQbTotalAmount = "0";
@@ -221,136 +143,93 @@ namespace GestioniDirette.Controllers
                 //ViewBag.HiQdTotalAmount2 = "0";
                 ViewBag.TotalAmount2 = "0";
                 ViewBag.TotalAmountDifference = "0";
+                #endregion
             }
 
             else
             {
-                var enumerable = getAll as IList<PvErogatori> ?? getAll.ToList();
+                if (currentUser.Id.Contains("9199e89c-59a0-4d88-83b6-6f73f548dc87"))
+                {
+                    #region Variabili
+                    var totalB1 = _operation.DoSSPBOperationShort();
+                    var totalG1 = _operation.DoDSLOperationShort();
+                    var _totalResult1 = totalB1 + totalG1;
+                    #endregion
 
-                var maxB = (enumerable
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Max(row => row.Value));
-                var minB = enumerable
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Min(row => row.Value);
+                    #region ViewBag
+                    ViewBag.SSPBTotalAmount = totalB1;
+                    ViewBag.DieselTotalAmount = totalG1;
+                    ViewBag.TotalAmount = _totalResult1;
+                    #endregion
+                }
 
-                var maxG = enumerable
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Max(row => row.Value);
-                var minG = enumerable
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Min(row => row.Value);
-
-                /* System.InvalidOperationException: La sequenza non contiene elementi
-                var maxHiqB = enumerable
-                    .Where(z => (z.Product.Nome.Contains("HiQb")))
-                    .Max(row => row.Value);
-                var minHiqB = enumerable
-                    .Where(z => (z.Product.Nome.Contains("HiQb")))
-                    .Min(row => row.Value);
-
-                var maxHiqD = enumerable
-                    .Where(z => (z.Product.Nome.Contains("HiQd")))
-                    .Max(row => row.Value);
-                var minHiqD = enumerable
-                    .Where(z => (z.Product.Nome.Contains("HiQd")))
-                    .Min(row => row.Value);*/
-
-                #region Risultati
-
-                var _resultB = maxB - minB;
-                var _resultG = maxG - minG;
-                //var _resultHiqB = maxHiqB - minHiqB;
-                //var _resultHiqD = maxHiqD - minHiqD;
-                var _totalResult = _resultB + _resultG /*+ _resultHiqB + _resultHiqD*/;
-
+                #region Variabili
+                var totalB = _operation.DoSSPBOperation();
+                var totalG = _operation.DoDSLOperation();
+                var _totalResult = totalB + totalG;
                 #endregion
 
-                ViewBag.SSPBTotalAmount = _resultB;
-                ViewBag.DieselTotalAmount = _resultG;
-                //ViewBag.HiQbTotalAmount = _resultHiqB;
-                //ViewBag.HiQdTotalAmount = _resultHiqD;
+                #region ViewBag
+                ViewBag.SSPBTotalAmount = totalB;
+                ViewBag.DieselTotalAmount = totalG;
                 ViewBag.TotalAmount = _totalResult;
+                #endregion
 
                 #endregion
 
                 #region TotaleContatoriPrecedente
                 var createdDate = from a in _db.Users where currentUser.Id == a.Id select a.CreateDate.Year;
-                
-                dateFrom2 = new DateTime(2015, 12, 31);
-                dateTo2 = DateTime.Now.AddYears(-1);
+                var thisID = "7c949a00-01bd-4057-a156-b6b33a4142ef";
+                var exID = Guid.Parse(thisID);
 
-                if (createdDate.Single() == DateTime.Today.Year)
+                if (currentUser.CreateDate.Year == DateTime.Today.Year)
                 {
+                    #region ViewBag
                     ViewBag.SSPBTotalAmount2 = 0;
                     ViewBag.DieselTotalAmount2 = 0;
                     //ViewBag.HiQbTotalAmount2 = 0;
                     //ViewBag.HiQdTotalAmount2 = 0;
                     ViewBag.TotalAmount2 = 0;
+                    #endregion
                 }
                 else
                 {
-                    var getAll2 = from a in _pvErogatoriRepository.GetPvErogatori()
-                                  where (Convert.ToDateTime(a.FieldDate) >= dateFrom2)
-                                          && (Convert.ToDateTime(a.FieldDate) <= dateTo2
-                                          && currentUser.pvID == a.pvID)
-                                  //where (a.FieldDate.Year.ToString().Contains(ly))
-                                  select a;
+                    if (currentUser.Id.Contains("9199e89c-59a0-4d88-83b6-6f73f548dc87"))
+                    {
+                        #region Variabili
+                        var totalB3 = _operation.DoSSPBOperationForLastYearShort();
+                        var totalG3 = _operation.DoDSLOperationForLastYearShort();
+                        var _totalResult3 = totalB3 + totalG3;
+                        #endregion
 
-                    var pvErogatoris = getAll2 as IList<PvErogatori> ?? getAll2.ToList();
+                        #region ViewBag
+                        ViewBag.SSPBTotalAmount2 = totalB3;
+                        ViewBag.DieselTotalAmount2 = totalG3;
+                        ViewBag.TotalAmount2 = _totalResult3;
+                        #endregion
 
-                    var maxB2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Max(row => row.Value);
-                    var minB2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Min(row => row.Value);
+                        #region Difference
 
-                    var maxG2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(row => row.Value);
-                    var minG2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(row => row.Value);
+                        ViewBag.TotalAmountDifference = _totalResult - _totalResult3;
 
-                    /* System.InvalidOperationException: La sequenza non contiene elementi
-                    var maxHiqB2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("HiQb")))
-                        .Max(row => row.Value);
-                    var minHiqB2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("HiQb")))
-                        .Min(row => row.Value);
+                        #endregion
+                    }
 
-                    var maxHiqD2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("HiQd")))
-                        .Max(row => row.Value);
-                    var minHiqD2 = pvErogatoris
-                        .DefaultIfEmpty()
-                        .Where(z => (z.Product.Nome.Contains("HiQd")))
-                        .Min(row => row.Value);*/
+                    #region Variabili
 
-                    #region Risultati
-
-                    var _resultB2 = maxB2 - minB2;
-                    var _resultG2 = maxG2 - minG2;
-                    //var _resultHiqB2 = maxHiqB2 - minHiqB2;
-                    //var _resultHiqD2 = maxHiqD2 - minHiqD2;
-                    var _totalResult2 = _resultB2 + _resultG2 /*+ _resultHiqB2 + _resultHiqD2*/;
+                    var totalB2 = _operation.DoSSPBOperationForLastYear();
+                    var totalG2 = _operation.DoDSLOperationForLastYear();
+                    var _resultB2 = totalB2;
+                    var _resultG2 = totalG2;
+                    var _totalResult2 = _resultB2 + _resultG2;
 
                     #endregion
 
+                    #region ViewBag
                     ViewBag.SSPBTotalAmount2 = _resultB2;
                     ViewBag.DieselTotalAmount2 = _resultG2;
-                    //ViewBag.HiQbTotalAmount2 = _resultHiqB2;
-                    //ViewBag.HiQdTotalAmount2 = _resultHiqD2;
                     ViewBag.TotalAmount2 = _totalResult2;
+                    #endregion
 
                     #endregion
 
@@ -359,6 +238,7 @@ namespace GestioniDirette.Controllers
                     ViewBag.TotalAmountDifference = _totalResult - _totalResult2;
 
                     #endregion
+
                 }
             }
 
@@ -504,9 +384,9 @@ namespace GestioniDirette.Controllers
             var thisYear = DateTime.Today.Year;
             #endregion
 
-            var dataSource = _db.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year == thisYear).OrderBy(o => o.Ordine).ToList();
+            var dataSource = _db.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year == thisYear).OrderByDescending(o => o.Ordine).ToList();
             ViewBag.datasource = dataSource;
-
+            
             IEnumerable dataSource2 = _db.Year.Where(a => a.Anno.Year == thisYear).ToList();
             ViewBag.datasource2 = dataSource2;
 
@@ -530,6 +410,11 @@ namespace GestioniDirette.Controllers
             ViewBag.DieselTotalAmountFrom = dataSource.ToList()
                 .Where(o => /*currentUser.pvID == o.pvID &&*/ Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
                 .Sum(o => (decimal?)o.Gasolio);
+
+            // Totale Additivo Gasolio secondo il parametro di ricerca specificato
+            ViewBag.DieselTotalAmountFrom = dataSource.ToList()
+                .Where(o => /*currentUser.pvID == o.pvID &&*/ Convert.ToDateTime(o.cData) >= dateFrom && Convert.ToDateTime(o.cData) <= dateTo)
+                .Sum(o => (decimal?)o.Lube);
             #endregion
 
             #region Total Ammount ViewBag
@@ -538,6 +423,9 @@ namespace GestioniDirette.Controllers
 
             // Totale Carico annuo gasolio. 
             ViewBag.DieselTotalAmount = dataSource.Sum(o => (decimal?)o.Gasolio);
+
+            // Totale additivo
+            ViewBag.LubeTotalAmount = dataSource.Sum(o => (decimal?)o.Lube);
             #endregion
 
             return View();
@@ -578,6 +466,9 @@ namespace GestioniDirette.Controllers
             #endregion
 
             value.yearId = _selectThisYear;
+            value.cData = DateTime.Today.Date;
+            value.rData = DateTime.Today.Date;
+
             OrderRepository.Add(value);
             var data = _db.Carico.Where(c => currentUser.pvID == c.pvID && c.Year.Anno.Year.ToString().Contains(Ly));
             return Json(value, JsonRequestBehavior.AllowGet);
@@ -618,6 +509,7 @@ namespace GestioniDirette.Controllers
 
             obj.Columns[1].DataSource = _db.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
             obj.Columns[2].DataSource = _db.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
+            obj.Columns[5].DataSource = _db.Documento.ToList();
 
             exp.Export(obj, dataSource, now + " - Ordini.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
             return Json(JsonRequestBehavior.AllowGet);
@@ -642,6 +534,7 @@ namespace GestioniDirette.Controllers
 
             obj.Columns[1].DataSource = _db.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
             obj.Columns[2].DataSource = _db.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
+            obj.Columns[5].DataSource = _db.Documento.ToList();
 
             exp.Export(obj, dataSource, now + " - Ordini.docx", false, false, "flat-saffron");
             return Json(JsonRequestBehavior.AllowGet);
@@ -666,6 +559,7 @@ namespace GestioniDirette.Controllers
 
             obj.Columns[1].DataSource = _db.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
             obj.Columns[2].DataSource = _db.Year.Where(a => a.Anno.Year.ToString().Contains(Ly)).ToList();
+            obj.Columns[5].DataSource = _db.Documento.ToList();
 
             exp.Export(obj, dataSource, now + " - Ordini.pdf", false, false, "flat-saffron");
 
@@ -784,7 +678,7 @@ namespace GestioniDirette.Controllers
             Ly = lastYear.ToString();
             #endregion
 
-            var dataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(Ly)) && c.Dispenser.isActive == true).OrderBy(o => o.FieldDate).ToList();
+            var dataSource = new MyDbContext().PvErogatori.Where(c => currentUser.pvID == c.pvID && (c.FieldDate.Year.ToString().Contains(Ly)) && c.Dispenser.isActive == true).OrderByDescending(o => o.FieldDate).ToList();
             ViewBag.datasource = dataSource;
 
             IEnumerable dataSource2 = new MyDbContext().Pv.Where(a => currentUser.pvID == a.pvID).ToList();
@@ -799,42 +693,20 @@ namespace GestioniDirette.Controllers
             #region IF dateFrom == null | dateTo == null
             if (dateFrom == null | dateTo == null)
             {
-                //da = new DateTime((newDate.Year), 12, 31);
-                var da = new DateTime(2016,12,31);
-                var al = DateTime.Now;
-
-                ViewBag.ShowLastYear = da.ToString(CultureInfo.CurrentCulture);
-                lastYear = DateTime.Today.Year;
-                Ly = lastYear.ToString();
-
-                var getall = _pvErogatoriRepository.GetPvErogatori()
-                    .Where(a => currentUser != null && (currentUser.pvID == a.pvID &&
-                                                        (Convert.ToDateTime(a.FieldDate) >= da)
-                                                        && (Convert.ToDateTime(a.FieldDate) <= al)));
-                if (getall.Count() == 0)
+                if (_operation.GetErogatori().Count() == 0)
                 {
                     ViewBag.SSPBTotalAmount = "0";
                     ViewBag.DieselTotalAmount = "0";
                 }
                 else
                 {
-                    var pvErogatoris = getall as IList<PvErogatori> ?? getall.ToList();
-                    var maxB = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Max(row => row.Value);
-                    var minB = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Min(row => row.Value);
+                    #region Variabili
+                    var totalB = _operation.DoSSPBOperation();
+                    var totalG = _operation.DoDSLOperation();
+                    #endregion
 
-                    var maxG = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(row => row.Value);
-                    var minG = pvErogatoris
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(row => row.Value);
-
-                    ViewBag.SSPBTotalAmount = maxB - minB;
-                    ViewBag.DieselTotalAmount = maxG - minG;
+                    ViewBag.SSPBTotalAmount = totalB;
+                    ViewBag.DieselTotalAmount = totalG;
                 }
             }
 
@@ -849,34 +721,20 @@ namespace GestioniDirette.Controllers
 
             if (!(dateFrom != null | dateTo != null)) return View();
             {
-                var getAllfromParam = _pvErogatoriRepository.GetPvErogatori()
-                    .Where(a => currentUser != null && (currentUser.pvID == a.pvID
-                                                        && (Convert.ToDateTime(a.FieldDate) >= dateFrom)
-                                                        && (Convert.ToDateTime(a.FieldDate) <= dateTo)));
-                if (getAllfromParam.Count() == 0)
+                if (_operation.GetErogatoriByParam(dal: dateFrom, a: dateTo).Count() == 0)
                 {
                     ViewBag.SSPBTotalAmountFrom = "0";
                     ViewBag.DieselTotalAmountFrom = "0";
                 }
                 else
                 {
-                    var enumerable = getAllfromParam as IList<PvErogatori> ?? getAllfromParam.ToList();
-                    var maxB = enumerable
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Max(row => row.Value);
-                    var minB = enumerable
-                        .Where(z => (z.Product.Nome.Contains("B")))
-                        .Min(row => row.Value);
+                    #region Variabili
+                    var totalB = _operation.DoSSPBOperationByParam(dal: dateFrom, a: dateTo);
+                    var totalG = _operation.DoDSLOperationByParam(dal: dateFrom, a: dateTo);
+                    #endregion
 
-                    var maxG = enumerable
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Max(row => row.Value);
-                    var minG = enumerable
-                        .Where(z => (z.Product.Nome.Contains("G")))
-                        .Min(row => row.Value);
-
-                    ViewBag.SSPBTotalAmountFrom = maxB - minB;
-                    ViewBag.DieselTotalAmountFrom = maxG - minG;
+                    ViewBag.SSPBTotalAmountFrom = totalB;
+                    ViewBag.DieselTotalAmountFrom = totalG;
                 }
             }
 
@@ -1632,7 +1490,7 @@ namespace GestioniDirette.Controllers
             Ly = lastYear.ToString();
             #endregion
 
-            IEnumerable dataSource = new MyDbContext().PvDeficienze.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(Ly))).OrderBy(o => o.FieldDate).ToList();
+            IEnumerable dataSource = new MyDbContext().PvDeficienze.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(Ly))).OrderByDescending(o => o.FieldDate).ToList();
             ViewBag.datasource = dataSource;
 
             IEnumerable dataSource2 = new MyDbContext().PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
@@ -1845,7 +1703,7 @@ namespace GestioniDirette.Controllers
             lastYear = DateTime.Today.Year;
             Ly = lastYear.ToString();
             
-            IEnumerable DataSource = new MyDbContext().PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(Ly))).OrderBy(o => o.FieldDate).ToList();
+            IEnumerable DataSource = new MyDbContext().PvCali.Where(c => currentUser.pvID == c.PvTank.pvID && (c.FieldDate.ToString().Contains(Ly))).OrderByDescending(o => o.FieldDate).ToList();
             ViewBag.datasource = DataSource;
 
             IEnumerable DataSource2 = new MyDbContext().PvTank.Where(a => currentUser.pvID == a.pvID).ToList();
@@ -2414,7 +2272,7 @@ namespace GestioniDirette.Controllers
             Ly = lastYear.ToString();
             #endregion
 
-            var DataSource = new MyDbContext().Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID).OrderBy(o => o.Modello).ToList();
+            var DataSource = new MyDbContext().Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID).OrderByDescending(o => o.Modello).ToList();
             ViewBag.datasource = DataSource;
 
             IEnumerable DataSource2 = new MyDbContext().PvTank.Where(c => currentUser.pvID == c.pvID).ToList();
@@ -2449,6 +2307,7 @@ namespace GestioniDirette.Controllers
             #endregion
 
             MyDbContext context = new MyDbContext();
+            value.isActive = true;
             DispenserRepository.Add(value);
             var data = context.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID);
             return Json(value, JsonRequestBehavior.AllowGet);
@@ -2991,6 +2850,7 @@ namespace GestioniDirette.Controllers
 
             var profileToUpdate = _db.UserProfiles.Find(id);
             var myOldImage = _db.UsersImage.Where(s => s.ProfileID == id).Select(s => s.UsersImageID).Single();
+            var _userImageId = _db.UsersImage.Find(myOldImage);
             if (TryUpdateModel(profileToUpdate, "",
                 new string[] { "ProfileName", "ProfileSurname", "ProfileAdress", "ProfileCity", "ProfileZipCode", "ProfileNation", "ProfileInfo" }))
             {
@@ -3000,19 +2860,19 @@ namespace GestioniDirette.Controllers
                     {
                         if (profileToUpdate.UsersImage.Any(f => f.FileType == FileType.Avatar))
                         {
-                            profileToUpdate.UsersImage.Remove(profileToUpdate.UsersImage.Single(f => f.FileType == FileType.Avatar && myOldImage == f.UsersImageID));
+                            profileToUpdate.UsersImage.Remove(profileToUpdate.UsersImage.Single(f => f.FileType == FileType.Avatar && _userImageId.UsersImageID == f.UsersImageID));
                         }
 
                         var avatar = new UsersImage
                         {
-                                //UsersImageID = myOldImage,
-                                UsersImageName = string.Format(Guid.NewGuid() + "-" + System.IO.Path.GetFileName(upload.FileName)),
+                                UsersImageID = _userImageId.UsersImageID,
+                                UsersImageName = string.Format(Guid.NewGuid() + "-" + Path.GetFileName(upload.FileName)),
                                 FileType = FileType.Avatar,
                                 ContentType = upload.ContentType,
                                 UploadDate = DateTime.Now.Date
                         };
 
-                        using (var reader = new System.IO.BinaryReader(upload.InputStream))
+                        using (var reader = new BinaryReader(upload.InputStream))
                         {
                             avatar.Content = reader.ReadBytes(upload.ContentLength);
                         }
@@ -3064,195 +2924,58 @@ namespace GestioniDirette.Controllers
 
         public ActionResult Chiusura()
         {
-            #region Initial var
+            #region Current User
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = userManager.FindById(User.Identity.GetUserId());
-            lastYear = DateTime.Today.Year;
-            Ly = lastYear.ToString();
-            var da = new DateTime(2016, 12, 31);
-            var al = DateTime.Now;
             #endregion
 
-            var Licenza = from a in _db.Licenza
-                               where currentUser.pvID == a.pvID
-                               select a;
+            #region Get Operations
+            var getCarico = _operation.GetCarico();
+            var getErogatori = _operation.GetErogatori();
+            var getDeficienze = _operation.GetDeficienze();
+            var getCali = _operation.GetCali();
+            var getLicenza = _operation.GetLicenza();
+            var getTank = _operation.GetTank();
+            var getPvProfile = _operation.GetPvProfile();
+            #endregion
 
-            ViewBag.nPrecedente = Licenza.Select(a => a.nPrecedente).Single();
+            #region Variabili
+            var emptyValue = "0";
 
-            ViewBag.nSuccessivo = Licenza.Select(a => a.nSuccessivo).Single();
+            var _cisternaRimB = getTank
+                                .Where(w => w.Product.Nome.Contains("B"))
+                                .Select(s => s.Rimanenza);
 
-            ViewBag.Code = Licenza.Select(a => a.Codice).Single();
+            var _cisternaRimG = getTank
+                                .Where(w => w.Product.Nome.Contains("G"))
+                                .Select(s => s.Rimanenza);
 
-            var _città = from a in _db.PvProfile
-                         where currentUser.pvID == a.pvID
-                         select a;
+            var _ordiniEccedenze = getCarico
+                .Where(w => w.DocumentoID.ToString() == "ce657bdc-ef45-4014-b638-ebac50214031");
 
-            ViewBag.Città = _città.Select(a => a.Città).Single();
-
-            var _carico = from a in _db.Carico
-                          where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly)
-                          select a;
-
-            var _contatori = _pvErogatoriRepository.GetPvErogatori()
-               .Where(a => currentUser != null && (currentUser.pvID == a.pvID &&
-                                                   (Convert.ToDateTime(a.FieldDate) >= da)
-                                                   && (Convert.ToDateTime(a.FieldDate) <= al)));
-
-            var _deficienze = _pvDeficienzeRepository.GetRecords()
-                    .ToList()
-                    .Where(a => Convert.ToDateTime(a.FieldDate) >= da
-                                && (Convert.ToDateTime(a.FieldDate) <= al));
-
-            var _cali = _pvCaliRepository.GetRecords()
-                         .ToList()
-                         .Where(a => Convert.ToDateTime(a.FieldDate) >= da
-                                && (Convert.ToDateTime(a.FieldDate) <= al));
-
-            var _cisternaRimB = from a in _db.PvTank
-                                where currentUser.pvID == a.pvID && a.Product.Nome.Contains("B")
-                                select a.Rimanenza;
-
-            var _cisternaRimG = from a in _db.PvTank
-                                where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
-                                select a.Rimanenza;
-
-            var _ordiniEccedenze = (from a in _db.Carico
-                                    where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly) && /*a.Tipo.Tipo.Contains("T")*/ a.DocumentoID.ToString() == "ce657bdc-ef45-4014-b638-ebac50214031"
-                                    select a);
-
-            //var _ordiniScatti = (from a in _db.Carico
-            //                    where currentUser.pvID == a.pvID && a.Year.Anno.ToString().Contains(Ly) && /*a.Tipo.Tipo.Contains("R")*/ a.DocumentoID.ToString() == "cb8deef4-a81d-45f6-bc6b-6ee445a5f6c7"
-            //                 select a);
+            var _ordiniScatti = getCarico
+                .Where(w => w.DocumentoID.ToString() == "cb8deef4-a81d-45f6-bc6b-6ee445a5f6c7");
 
             var _rimIB = _cisternaRimB.Sum();
             var _rimIG = _cisternaRimG.Sum();
+            #endregion
 
-            if (_carico.Count() > 0 && _ordiniEccedenze.Count() > 0 /*&& _ordiniScatti.Count() > 0*/ && _contatori.Count() > 0 && _deficienze.Count() > 0 && _cali.Count() > 0)
+            #region ViewBag
+
+            ViewBag.Città = getPvProfile.Select(a => a.Città).DefaultIfEmpty(emptyValue).SingleOrDefault();
+
+            ViewBag.nPrecedente = getLicenza.Select(a => a.nPrecedente).DefaultIfEmpty(emptyValue).SingleOrDefault();
+
+            ViewBag.nSuccessivo = getLicenza.Select(a => a.nSuccessivo).DefaultIfEmpty(emptyValue).SingleOrDefault();
+
+            ViewBag.Code = getLicenza.Select(a => a.Codice).DefaultIfEmpty(emptyValue).SingleOrDefault();
+
+            #endregion
+
+            // caso in cui non ho contatori ne ordini, dunque la chiusura non può essere compilata, e per questo assegno a tutti i viewbag lo zero
+            if (getErogatori == null && getCarico == null && _ordiniEccedenze == null && _ordiniScatti == null && getCali == null && getDeficienze == null)
             {
-                var _eccB = _ordiniEccedenze.Sum(s => s.Benzina);
-                var _eccG = _ordiniEccedenze.Sum(s => s.Gasolio);
-
-                ViewBag.eccB = _eccB;
-                ViewBag.eccG = _eccG;
-
-                //var _scatB = _ordiniScatti.Sum(s => s.Benzina);
-                //var _scatG = _ordiniScatti.Sum(s => s.Gasolio);
-
-                ViewBag.scatB = /*_scatB;*/0;
-                ViewBag.scatG = /*_scatG;*/0;
-
-                #region Carico
-                var _totCaricoB = _carico.Sum(s => s.Benzina);
-                var _totCaricoG = _carico.Sum(s => s.Gasolio);
-                var TotCaricoB = _rimIB + _totCaricoB;
-                var TotCaricoG = _rimIG + _totCaricoG;
-                var rCaricoB = _totCaricoB - _eccB;
-                var rCaricoG = _totCaricoG - _eccG;
-                ViewBag.RimIB = _rimIB;
-                ViewBag.RimIG = _rimIG;
-                ViewBag.rCaricoB = rCaricoB;
-                ViewBag.rCaricoG = rCaricoG;
-                ViewBag.TotCaricoB = TotCaricoB;
-                ViewBag.TotCaricoG = TotCaricoG;
-                #endregion
-
-                #region Scarico
-
-                #region contatori
-                var pvErogatoris = _contatori as IList<PvErogatori> ?? _contatori.ToList();
-                var maxB = pvErogatoris
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Max(row => row.Value);
-                var minB = pvErogatoris
-                    .Where(z => (z.Product.Nome.Contains("B")))
-                    .Min(row => row.Value);
-
-                var maxG = pvErogatoris
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Max(row => row.Value);
-                var minG = pvErogatoris
-                    .Where(z => (z.Product.Nome.Contains("G")))
-                    .Min(row => row.Value);
-
-                var totalB = maxB - minB;
-                var totalG = maxG - minG;
-                ViewBag.totalB = totalB;
-                ViewBag.totalG = totalG;
-                ViewBag.nettoB = totalB - 0;
-                ViewBag.nettoG = totalG - 0;
-
-                #endregion
-
-                #region deficienze
-                var enumerable = _deficienze as IList<PvDeficienze> ?? _deficienze.ToList();
-                var sumdG = enumerable
-                    .Where(z => currentUser.pvID == z.PvTank.pvID
-                    && z.PvTank.Modello.Contains("MC-10993"))
-                    .Sum(row => row.Value);
-
-                var sumdB = enumerable
-                    .Where(z => currentUser.pvID == z.PvTank.pvID
-                    && z.PvTank.Modello.Contains("MC-10688"))
-                    .Sum(row => row.Value);
-
-                ViewBag.sumdB = sumdB;
-                ViewBag.sumdG = sumdG;
-
-                #endregion
-
-                #region cali
-                var pvcali = _cali as IList<PvCali> ?? _cali.ToList();
-                var SumcG = pvcali
-                    .Where(z => currentUser.pvID == z.PvTank.pvID
-                    && z.PvTank.Modello.Contains("MC-10993"))
-                    .Sum(row => row.Value);
-
-                var SumcB = pvcali
-                    .Where(z => currentUser.pvID == z.PvTank.pvID
-                    && z.PvTank.Modello.Contains("MC-10688"))
-                    .Sum(row => row.Value);
-
-                ViewBag.SumcB = SumcB;
-                ViewBag.SumcG = SumcG;
-
-                #endregion
-
-                #endregion
-
-                var totScaricoB = totalB + sumdB + SumcB;
-                var totScaricoG = totalG + sumdG + SumcG;
-
-                #region Cisterne 
-
-                var _cisternaB = from a in _db.PvTank
-                                 where currentUser.pvID == a.pvID && a.Product.Nome.Contains("B")
-                                 select a.Giacenza;
-
-                var rimEfB = _cisternaB.Sum();
-
-                var _cisternaG = from a in _db.PvTank
-                                 where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
-                                 select a.Giacenza;
-
-                var rimEfG = _cisternaG.Sum();
-                #endregion
-
-                ViewBag.TotScaricoB = totScaricoB;
-                ViewBag.TotScaricoG = totScaricoG;
-
-                var rimContB = TotCaricoB - totScaricoB;
-                var rimContG = TotCaricoG - totScaricoG;
-
-                ViewBag.RiportoB = rimContB;
-                ViewBag.RiportoG = rimContG;
-                ViewBag.RiportoEB = rimEfB;
-                ViewBag.RiportoEG = rimEfG;
-                ViewBag.DifEB = rimEfB - rimContB;
-                ViewBag.DifEG = rimEfG - rimContG;
-            }
-
-            else
-            {
+                #region ViewBag
                 ViewBag.eccB = 0;
                 ViewBag.eccG = 0;
                 ViewBag.scatB = 0;
@@ -3271,11 +2994,203 @@ namespace GestioniDirette.Controllers
                 ViewBag.RiportoEG = 0;
                 ViewBag.DifEB = 0;
                 ViewBag.DifEG = 0;
+                #endregion
             }
-          
+
+            // caso in cui ho tutto
+            if (getCarico.Count() > 0 && _ordiniEccedenze.Count() > 0 && _ordiniScatti.Count() > 0 && getErogatori.Count() > 0 && getDeficienze.Count() > 0 && getCali.Count() > 0)
+            {
+                #region Carico
+
+                #region Variabili
+                var _eccB = _ordiniEccedenze.Sum(s => s.Benzina);
+                var _eccG = _ordiniEccedenze.Sum(s => s.Gasolio);
+                var _scatB = _ordiniScatti.Sum(s => s.Benzina);
+                var _scatG = _ordiniScatti.Sum(s => s.Gasolio);
+                var _totCaricoB = _operation.GetCarico().Sum(s => s.Benzina);
+                var _totCaricoG = _operation.GetCarico().Sum(s => s.Gasolio);
+                var TotCaricoB = _rimIB + _totCaricoB;
+                var TotCaricoG = _rimIG + _totCaricoG;
+                var rCaricoB = _totCaricoB - _eccB - _scatB;
+                var rCaricoG = _totCaricoG - _eccG - _scatG;
+                #endregion
+
+                #region ViewBag
+                ViewBag.eccB = _eccB;
+                ViewBag.eccG = _eccG;
+                ViewBag.scatB = _scatB;
+                ViewBag.scatG = _scatG;
+                ViewBag.RimIB = _rimIB;
+                ViewBag.RimIG = _rimIG;
+                ViewBag.rCaricoB = rCaricoB;
+                ViewBag.rCaricoG = rCaricoG;
+                ViewBag.TotCaricoB = TotCaricoB;
+                ViewBag.TotCaricoG = TotCaricoG;
+                #endregion
+
+                #endregion
+
+                #region Scarico
+
+                #region contatori <= 2
+                /*
+                var nPvDispenser = _db.Dispenser
+                    .Where(a => a.PvTank.pvID == currentUser.pvID)
+                    .Select(s => s.DispenserId);*/
+
+                if (currentUser.Id.Contains("9199e89c-59a0-4d88-83b6-6f73f548dc87"))
+                {
+                    #region Contatori
+                    var totalB = _operation.DoSSPBOperationShort();
+                    var totalG = _operation.DoDSLOperationShort();
+                    #endregion
+
+                    #region deficienze
+
+                    var sumdB = _operation.DoSSPBDeficienze();
+                    var sumdG = _operation.DoDSLDeficienze();
+                    ViewBag.sumdB = sumdB;
+                    ViewBag.sumdG = sumdG;
+
+                    #endregion
+
+                    #region cali
+
+                    var sumcB = _operation.DoSSPBCali();
+                    var sumcD = _operation.DoDSLCali();
+                    ViewBag.SumcB = sumcB;
+                    ViewBag.SumcG = sumcD;
+
+                    #endregion
+
+                    #region Totale Venduto Benzina e Gasolio
+                    var totScaricoB = totalB + sumdB + sumcB;
+                    var totScaricoG = totalG + sumdG + sumcD;
+                    #endregion
+
+                    #region Cisterne 
+
+                    var _cisternaB = from a in _db.PvTank
+                                     where currentUser.pvID == a.pvID && a.Product.Nome.Contains("B")
+                                     select a.Giacenza;
+
+                    var rimEfB = _cisternaB.Sum();
+
+                    var _cisternaG = from a in _db.PvTank
+
+                                     where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
+                                     select a.Giacenza;
+
+                    var rimEfG = _cisternaG.Sum();
+
+                    #endregion
+
+                    #region Differenze
+                    var rimContB = TotCaricoB - totScaricoB;
+                    var rimContG = TotCaricoG - totScaricoG;
+                    #endregion
+
+                    #region ViewBag
+                    ViewBag.totalB = totalB;
+                    ViewBag.totalG = totalG;
+                    ViewBag.nettoB = 0;
+                    ViewBag.nettoG = 0;
+                    ViewBag.TotScaricoB = totScaricoB;
+                    ViewBag.TotScaricoG = totScaricoG;
+                    ViewBag.RiportoB = rimContB;
+                    ViewBag.RiportoG = rimContG;
+                    ViewBag.RiportoEB = rimEfB;
+                    ViewBag.RiportoEG = rimEfG;
+                    ViewBag.DifEB = rimEfB - rimContB;
+                    ViewBag.DifEG = rimEfG - rimContG;
+                    #endregion
+                }
+                #endregion
+
+                #region contatori > 2
+                else
+                {
+                    #region Contatori
+                    var totalB = _operation.DoSSPBOperation();
+                    var totalG = _operation.DoDSLOperation();
+                    ViewBag.totalB = totalB;
+                    ViewBag.totalG = totalG;
+                    #endregion
+
+                    #region deficienze
+
+                    var sumdB = _operation.DoSSPBDeficienze();
+                    var sumdG = _operation.DoDSLDeficienze();
+                    ViewBag.sumdB = sumdB;
+                    ViewBag.sumdG = sumdG;
+
+                    #endregion
+
+                    #region cali
+
+                    var sumcB = _operation.DoSSPBCali();
+                    var sumcG = _operation.DoDSLCali();
+                    ViewBag.SumcB = sumcB;
+                    ViewBag.SumcG = sumcG;
+
+                    #endregion
+
+                    #region Totale Venduto Benzina e Gasolio
+
+                    var totScaricoB = totalB + sumdB + sumcB;
+                    var totScaricoG = totalG + sumdG + sumcG;
+
+                    #endregion
+
+                    #region Cisterne 
+
+                    var _cisternaB = from a in _db.PvTank
+                                     where currentUser.pvID == a.pvID && a.Product.Nome.Contains("B")
+                                     select a.Giacenza;
+
+                    var rimEfB = _cisternaB.Sum();
+
+                    var _cisternaG = from a in _db.PvTank
+
+                                     where currentUser.pvID == a.pvID && a.Product.Nome.Contains("G")
+                                     select a.Giacenza;
+
+                    var rimEfG = _cisternaG.Sum();
+
+                    #endregion
+
+                    #region Differenze
+                    var rimContB = TotCaricoB - totScaricoB;
+                    var rimContG = TotCaricoG - totScaricoG;
+                    #endregion
+
+                    #region ViewBag
+                    ViewBag.TotScaricoB = totScaricoB;
+                    ViewBag.TotScaricoG = totScaricoG;
+                    ViewBag.nettoB = 0;
+                    ViewBag.nettoG = 0;
+                    ViewBag.RiportoB = rimContB;
+                    ViewBag.RiportoG = rimContG;
+                    ViewBag.RiportoEB = rimEfB;
+                    ViewBag.RiportoEG = rimEfG;
+                    ViewBag.DifEB = rimEfB - rimContB;
+                    ViewBag.DifEG = rimEfG - rimContG;
+                    #endregion
+                }
+                #endregion
+
+                #endregion
+            }
+
             ViewBag.pvId = new SelectList(_db.Pv, "pvID", "pvName");
             return View();
         }
+
+        #endregion
+
+        #region Premium
+
+
 
         #endregion
 

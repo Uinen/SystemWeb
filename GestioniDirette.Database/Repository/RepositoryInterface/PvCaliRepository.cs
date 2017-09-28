@@ -18,7 +18,7 @@ namespace GestioniDirette.Database.Repository
 
         public IList<PvCali> GetRecords()
         {
-            return db.PvCali.Include(s => s.PvTank).ToList();
+            return db.PvCali.Include(s => s.PvTank).Include(s => s.PvTank.Product).ToList();
         }
 
         public PvCali GetRecordsById(Guid? Id)

@@ -10,7 +10,7 @@ Facebook: https://fb.me/gestionidirette
 Location: italy.
 
 /* SITE */
-Last update: 07/06/2017 (dd/MM/YYYY)
+Last update: 26/07/2017 (dd/MM/YYYY)
 
 Standards: HTML5, CSS3, ASP.NET MVC RAZOR
 

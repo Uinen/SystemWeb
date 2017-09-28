@@ -58,7 +58,7 @@
 
                                         col.Field(p => p.Modello).HeaderText("Modello").Width("50").EditType(EditingType.String).Add();
                                         col.Field(p => p.isActive).HeaderText("On/Off").Width("45").EditType(EditingType.Boolean).Add();
-                                        col.Field(p => p.Scadenza).HeaderText("Bollino Verde").Width("50").EditType(EditingType.Datepicker).Add();
+                                        col.Field(p => p.Scadenza).HeaderText("Bollino Verde").Width("50").EditType(EditingType.Datepicker).ValidationRules(v => v.AddRule("required", true)).Format("{0:dd/MM/yyyy}").Add();
                                     })
                 )
             </div>

@@ -8,134 +8,138 @@
         <div class="container">
             <div class="row">
                 <div id="no-more-tables">
-                    <div class="center-block">
-                        <div class="item">
-                            <span class="float-right text-primary">All'Ufficio delle Dogane di @ViewBag.Città</span>
-                            <p class="text-uppercase">Prospetto di chiusura registro carico e scarico Numero @ViewBag.nPrecedente del 16/11/@DateTime.Today.AddYears(-1).Year</p>
-                            <table class="table-bordered table-responsive">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-center">Impianto di Distribuzione stradale carburanti - oli minerali comma 1</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div class="item">
-                            <p class="text-capitalize">Codice Ditta: @ViewBag.Code - Esercizio Finanziario @DateTime.Today.Year</p>
-                            <p class="text-info">Si comunicano i dati relativi alla movimentazione dei prodotti nel periodo dal 31/12/@DateTime.Today.AddYears(-1).Year al @DateTime.Today.ToString("dd/MM/yy")</p>
-                        </div>
-                        <div class="item">
-                            <table class="table-bordered table-responsive">
-                                <thead>
-                                    <tr>
-                                        <th>
-
-                                        </th>
-                                        <th class="text-success">
-                                            Benzina
-                                        </th>
-                                        <th>
-
-                                        </th>
-                                        <th class="text-danger">
-                                            Gasolio
-                                        </th>
-                                        <th>
-
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th class="text-left">Rimanenze</th>
-                                        <td class="text-center">@ViewBag.RimIB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.RimIG</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-left">Ordini</th>
-                                        <td class="text-center">@ViewBag.rCaricoB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.rCaricoG</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-left">Eccedenze</th>
-                                        <td class="text-center">@ViewBag.eccB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.eccG</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-left">Scatti a vuoto</th>
-                                        <td class="text-center">@ViewBag.scatB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.scatG</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-left text-uppercase">Totale Carico</th>
-                                        <td class="text-center">@ViewBag.TotCaricoB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.TotCaricoG</td>
-                                    </tr>
-                                    <tr><th class="text-left">-</th></tr>
-                                    <tr>
-                                        <th class="text-left">Erogato da Totalizzatori</th>
-                                        <td class="text-center">@ViewBag.totalB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.totalG</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-left">Deficienze ATB</th>
-                                        <td class="text-center">@ViewBag.sumdB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.sumdG</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-left">Cali tecnici riscontrati e registrati</th>
-                                        <td class="text-center">@ViewBag.sumcB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.sumcG</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-left text-uppercase">Totale Scarico</th>
-                                        <td class="text-center">@ViewBag.TotScaricoB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.TotScaricoG</td>
-                                    </tr>
-                                    <tr><th class="text-left">-</th></tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th class="text-left">Rimanenza Contabile</th>
-                                        <td class="text-center">@ViewBag.RiportoB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.RiportoG</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-left">Rimanenza Effettiva </th>
-                                        <td class="text-center">@ViewBag.RiportoEB</td>
-                                        <th></th>
-                                        <td class="text-center">@ViewBag.RiportoEG</td>
-                                    </tr>
-                                    <tr><th class="text-left">-</th></tr>
-                                    <tr>
-                                        <th class="text-left">Differenza (+ o -)</th>
-                                        <td class="text-center text-success">@ViewBag.DifEB</td>
-                                        <th></th>
-                                        <td class="text-center text-danger">@ViewBag.DifEG</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div class="item">
-                            <p class="text-justify">In applicazione del D.M 30/07/1996 si dichiara che l'erogato della benzina e del gasolio, al netto degli scatti a vuoto, è il seguente: litri @ViewBag.nettoB di benzina e litri @ViewBag.nettoG di gasolio</p>
-                            <p class="text-justify">Le rimanenze effettive sono state riportate in carico sul registro numero @ViewBag.nSuccessivo del 15/11/@DateTime.Today.Year per l'esercizio @DateTime.Today.AddYears(1).Year</p>
-                            @*<p class="text-justify">Nel registro relativo alla presente chiusura sono stati allegati i seguenti documenti:</p>*@
-                            <p class="text-center text-uppercase">Ufficio delle dogane di @ViewBag.Città - Ufficio Economato</p>
-                            <p class="text-center">Si accusa ricevuta del presente prospetto di chiusura relativo al sopra citato registro</p>
-                            <p class="float-left">@ViewBag.Città , il @DateTime.Today.ToString("dd/MM/yy")</p>
-                            <p class="float-right">Il funzionario</p>
-                        </div>
+                    <div class="item">
+                        <span class="float-right text-primary">All'Ufficio delle Dogane di @ViewBag.Città</span>
+                        <p class="text-uppercase">Prospetto di chiusura registro carico e scarico Numero @ViewBag.nPrecedente del 16/11/@DateTime.Today.AddYears(-1).Year</p>
+                        <table class="table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-center">Impianto di Distribuzione stradale carburanti - oli minerali comma 1</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
+                    <div class="item">
+                        <p class="text-capitalize">Codice Ditta: @ViewBag.Code - Esercizio Finanziario @DateTime.Today.Year</p>
+                        <p class="text-info">Si comunicano i dati relativi alla movimentazione dei prodotti nel periodo dal 31/12/@DateTime.Today.AddYears(-1).Year al @DateTime.Today.ToString("dd/MM/yy")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="no-more-tables">
+                    <div class="item">
+                        <table class="table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>
+
+                                    </th>
+                                    <th class="text-success">
+                                        Benzina
+                                    </th>
+                                    <th>
+
+                                    </th>
+                                    <th class="text-danger">
+                                        Gasolio
+                                    </th>
+                                    <th>
+
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="text-left">Rimanenze</th>
+                                    <td class="text-center">@ViewBag.RimIB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.RimIG</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Ordini</th>
+                                    <td class="text-center">@ViewBag.rCaricoB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.rCaricoG</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Eccedenze</th>
+                                    <td class="text-center">@ViewBag.eccB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.eccG</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Scatti a vuoto</th>
+                                    <td class="text-center">@ViewBag.scatB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.scatG</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left text-uppercase">Totale Carico</th>
+                                    <td class="text-center">@ViewBag.TotCaricoB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.TotCaricoG</td>
+                                </tr>
+                                <tr><th class="text-left">-</th></tr>
+                                <tr>
+                                    <th class="text-left">Erogato da Totalizzatori</th>
+                                    <td class="text-center">@ViewBag.totalB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.totalG</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Deficienze ATB</th>
+                                    <td class="text-center">@ViewBag.sumdB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.sumdG</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Cali tecnici riscontrati e registrati</th>
+                                    <td class="text-center">@ViewBag.sumcB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.sumcG</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left text-uppercase">Totale Scarico</th>
+                                    <td class="text-center">@ViewBag.TotScaricoB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.TotScaricoG</td>
+                                </tr>
+                                <tr><th class="text-left">-</th></tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th class="text-left">Rimanenza Contabile</th>
+                                    <td class="text-center">@ViewBag.RiportoB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.RiportoG</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-left">Rimanenza Effettiva </th>
+                                    <td class="text-center">@ViewBag.RiportoEB</td>
+                                    <th></th>
+                                    <td class="text-center">@ViewBag.RiportoEG</td>
+                                </tr>
+                                <tr><th class="text-left">-</th></tr>
+                                <tr>
+                                    <th class="text-left">Differenza (+ o -)</th>
+                                    <td class="text-center text-success">@ViewBag.DifEB</td>
+                                    <th></th>
+                                    <td class="text-center text-danger">@ViewBag.DifEG</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="item">
+                    <p class="text-justify">In applicazione del D.M 30/07/1996 si dichiara che l'erogato della benzina e del gasolio, al netto degli scatti a vuoto, è il seguente: litri @ViewBag.nettoB di benzina e litri @ViewBag.nettoG di gasolio</p>
+                    <p class="text-justify">Le rimanenze effettive sono state riportate in carico sul registro numero @ViewBag.nSuccessivo del 15/11/@DateTime.Today.Year per l'esercizio @DateTime.Today.AddYears(1).Year</p>
+                    @*<p class="text-justify">Nel registro relativo alla presente chiusura sono stati allegati i seguenti documenti:</p>*@
+                    <p class="text-center text-uppercase">Ufficio delle dogane di @ViewBag.Città - Ufficio Economato</p>
+                    <p class="text-center">Si accusa ricevuta del presente prospetto di chiusura relativo al sopra citato registro</p>
+                    <p class="float-left">@ViewBag.Città , il @DateTime.Today.ToString("dd/MM/yy")</p>
+                    <p class="float-right">Il funzionario</p>
                 </div>
             </div>
         </div>

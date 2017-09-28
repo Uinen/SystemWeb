@@ -34,6 +34,14 @@ namespace GestioniDirette.Database.Repository
             result.DispenserId = value.DispenserId;
             result.pvID = value.pvID;
             result.Value = value.Value;
+            result.Value1 = value.Value1;
+            result.Value2 = value.Value2;
+            result.Value3 = value.Value3;
+            result.Value4 = value.Value4;
+            result.Value5 = value.Value5;
+            result.Value6 = value.Value6;
+            result.Value7 = value.Value7;
+
             result.FieldDate = value.FieldDate;
 
             context.Entry(result).CurrentValues.SetValues(value);
@@ -53,6 +61,13 @@ namespace GestioniDirette.Database.Repository
                 result.DispenserId = temp.DispenserId;
                 result.pvID = temp.pvID;
                 result.Value = temp.Value;
+                result.Value1 = temp.Value1;
+                result.Value2 = temp.Value2;
+                result.Value3 = temp.Value3;
+                result.Value4 = temp.Value4;
+                result.Value5 = temp.Value5;
+                result.Value6 = temp.Value6;
+                result.Value7 = temp.Value7;
                 result.FieldDate = temp.FieldDate;
 
                 context.Entry(result).CurrentValues.SetValues(temp);

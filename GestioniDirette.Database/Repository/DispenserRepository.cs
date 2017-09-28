@@ -11,15 +11,6 @@ namespace GestioniDirette.Database.Repository
         {
             var context = new MyDbContext();
 
-            if (value.isActive == true)
-            {
-                value.isActive = true;
-            }
-            else
-            {
-                value.isActive = false;
-            }
-
             context.Dispenser.Add(value);
             context.SaveChanges();
         }
@@ -29,15 +20,6 @@ namespace GestioniDirette.Database.Repository
             foreach (var temp in value)
             {
                 var context = new MyDbContext();
-
-                if (temp.isActive == true)
-                {
-                    temp.isActive = true;
-                }
-                else
-                {
-                    temp.isActive = false;
-                }
 
                 context.Dispenser.Add(temp);
                 context.SaveChanges();

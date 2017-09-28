@@ -31,6 +31,11 @@ namespace GestioniDirette
                 "UserPvErogatori", 
                 "PvErogatori", new { controller = "User", action = "PvErogatori", dateFrom = UrlParameter.Optional, dateTo = UrlParameter.Optional }
                 );
+
+            routes.MapRoute(
+                "PayPalSubscribeSuccess",
+                "SubscribeSuccess", new { controller = "PayPal", action = "SubscribeSuccess", token = UrlParameter.Optional }
+                );
         }
     }
 }

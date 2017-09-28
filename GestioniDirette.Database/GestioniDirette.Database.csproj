@@ -51,9 +51,13 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -82,6 +86,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -119,6 +124,7 @@
     <Compile Include="Entity\AppModel.cs" />
     <Compile Include="Entity\FileType.cs" />
     <Compile Include="Entity\Identity.cs" />
+    <Compile Include="Entity\UserInfo.cs" />
     <Compile Include="Migrations\201703121307376_1.cs" />
     <Compile Include="Migrations\201703121307376_1.Designer.cs">
       <DependentUpon>201703121307376_1.cs</DependentUpon>
@@ -207,7 +213,25 @@
     <Compile Include="Migrations\201706081150574_22.Designer.cs">
       <DependentUpon>201706081150574_22.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708141841274_23.cs" />
+    <Compile Include="Migrations\201708141841274_23.Designer.cs">
+      <DependentUpon>201708141841274_23.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708172241276_24.cs" />
+    <Compile Include="Migrations\201708172241276_24.Designer.cs">
+      <DependentUpon>201708172241276_24.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709272020431_25.cs" />
+    <Compile Include="Migrations\201709272020431_25.Designer.cs">
+      <DependentUpon>201709272020431_25.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709281840310_26.cs" />
+    <Compile Include="Migrations\201709281840310_26.Designer.cs">
+      <DependentUpon>201709281840310_26.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Operation\Interface\iOperation.cs" />
+    <Compile Include="Operation\Operation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CaliRepository.cs" />
     <Compile Include="Repository\CartissimaRepository.cs" />
@@ -223,6 +247,7 @@
     <Compile Include="Repository\Interface\iPvDeficienzeRepository.cs" />
     <Compile Include="Repository\Interface\iPvErogatoriRepository.cs" />
     <Compile Include="Repository\Interface\iPvRepository.cs" />
+    <Compile Include="Repository\Interface\iUserRepository.cs" />
     <Compile Include="Repository\Interface\iUsersImageRepository.cs" />
     <Compile Include="Repository\LicenzaRepository.cs" />
     <Compile Include="Repository\NoticeRepository.cs" />
@@ -235,9 +260,11 @@
     <Compile Include="Repository\RepositoryInterface\PvDeficienzeRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\PvErogatoriRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\PvRepository.cs" />
+    <Compile Include="Repository\RepositoryInterface\UserRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\UsersImageRepository.cs" />
     <Compile Include="Repository\TankRepository.cs" />
     <Compile Include="Utility\EmailAttribute.cs" />
+    <Compile Include="Utility\MemoryCache.cs" />
     <Compile Include="Utility\MyValidation.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -313,6 +340,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706081150574_22.resx">
       <DependentUpon>201706081150574_22.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708141841274_23.resx">
+      <DependentUpon>201708141841274_23.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708172241276_24.resx">
+      <DependentUpon>201708172241276_24.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709272020431_25.resx">
+      <DependentUpon>201709272020431_25.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709281840310_26.resx">
+      <DependentUpon>201709281840310_26.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

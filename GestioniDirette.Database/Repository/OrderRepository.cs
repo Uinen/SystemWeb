@@ -11,12 +11,12 @@ namespace GestioniDirette.Database.Repository
         public static void Add(Carico value)
         {
             var _context = new MyDbContext();
-            var thisYear = DateTime.Today.Year;
+            /*var thisYear = DateTime.Today.Year;
             var _selectThisYear = (from a in _context.Year
                                   where a.Anno.Year == thisYear
                                   select a.yearId).Single();
 
-            value.yearId = _selectThisYear;
+            value.yearId = _selectThisYear;*/
             _context.Carico.Add(value);
             _context.SaveChanges();
         }
@@ -47,6 +47,7 @@ namespace GestioniDirette.Database.Repository
             result.depId = value.depId;
             result.Benzina = value.Benzina;
             result.Gasolio = value.Gasolio;
+            result.Lube = value.Lube;
             result.HiQb = value.HiQb;
             result.HiQd = value.HiQd;
             result.Note = value.Note;
@@ -74,6 +75,7 @@ namespace GestioniDirette.Database.Repository
                 result.depId = temp.depId;
                 result.Benzina = temp.Benzina;
                 result.Gasolio = temp.Gasolio;
+                result.Lube = temp.Lube;
                 result.HiQb = temp.HiQb;
                 result.HiQd = temp.HiQd;
                 result.Note = temp.Note;

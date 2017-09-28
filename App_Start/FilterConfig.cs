@@ -29,7 +29,6 @@ namespace GestioniDirette
         /// <summary>
         /// Add filters to improve security.
         /// </summary>
-        
         private static void AddSecurityFilters(GlobalFilterCollection filters)
         {
             // Require HTTPS to be used across the whole site. System.Web.Mvc.RequireHttpsAttribute performs a
@@ -37,7 +36,7 @@ namespace GestioniDirette
             // 301 Permanent redirect or a 302 temporary redirect. You should perform a 301 permanent redirect if the
             // page can only ever be accessed by HTTPS and a 302 temporary redirect if the page can be accessed over
             // HTTP or HTTPS.
-            filters.Add(new RedirectToHttpsAttribute(true));
+            // filters.Add(new RedirectToHttpsAttribute(true));
 
             // Several NWebsec Security Filters are added here. See
             // http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/ and
@@ -114,20 +113,14 @@ namespace GestioniDirette
 
             // default-src - Sets a default source list for a number of directives. If the other directives below are
             //               not used then this is the default setting.
-            /*filters.Add(
+            filters.Add(
                 new CspDefaultSrcAttribute()
                 {
-                    // Allow scripts from the CDN's.
-                    CustomSources = string.Join(
-                        ContentDeliveryNetwork.Google.Domain,
-                        ContentDeliveryNetwork.Microsoft.Domain,
-                        ContentDeliveryNetwork.Syncfusion.Domain,
-                        ContentDeliveryNetwork.Gestionidirette.Domain),
                     // Disallow everything from the same domain by default.
                     //None = true,
                     // Allow everything from the same domain by default.
                     Self = true
-                });*/
+                });
 
 
             // base-uri - This directive restricts the document base URL
@@ -173,7 +166,9 @@ namespace GestioniDirette
                     // Allow fonts from maxcdn.bootstrapcdn.com.
                     CustomSources = string.Join(
                         " ",
-                        ContentDeliveryNetwork.MaxCdn.Domain),
+                        ContentDeliveryNetwork.MaxCdn.Domain,
+                        ContentDeliveryNetwork.Gestionidirette.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain),
                     // Allow all fonts from the same domain.
                     Self = true
                 });
@@ -207,21 +202,26 @@ namespace GestioniDirette
                     Self = false
                 });
             // img-src - This directive restricts from where the protected resource can load images.
-            /*filters.Add(
+            filters.Add(
                 new CspImgSrcAttribute()
                 {
+                    /*
+#if DEBUG
+                    // Allow Browser Link to work in debug mode only.
+                    CustomSources = "data:",
+#endif
+                    */
                     CustomSources = string.Join(
-                        ContentDeliveryNetwork.Google.Domain,
-                        ContentDeliveryNetwork.Microsoft.Domain,
-                        ContentDeliveryNetwork.Syncfusion.Domain,
-                        ContentDeliveryNetwork.Gestionidirette.Domain),
-                    // Allow scripts from the same domain.
-                    Self = true
-                });*/
+                        " ",
+                        ContentDeliveryNetwork.Gestionidirette.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain),
+
+                    // Allow images from the same domain.
+                    Self = true,
+                });
             // script-src - This directive restricts which scripts the protected resource can execute.
             //              The directive also controls other resources, such as XSLT style sheets, which can cause the
             //              user agent to execute script.
-            /*
             filters.Add(
                 new CspScriptSrcAttribute()
                 {
@@ -234,8 +234,8 @@ namespace GestioniDirette
 #endif
                         ContentDeliveryNetwork.Google.Domain,
                         ContentDeliveryNetwork.Microsoft.Domain,
-                        ContentDeliveryNetwork.Syncfusion.Domain,
-                        ContentDeliveryNetwork.Gestionidirette.Domain),
+                        ContentDeliveryNetwork.Gestionidirette.Domain,
+                        ContentDeliveryNetwork.Syncfusion.Domain),
                     // Allow scripts from the same domain.
                     Self = true,
                     // Allow the use of the eval() method to create code from strings. This is unsafe and can open your
@@ -244,7 +244,6 @@ namespace GestioniDirette
                     // Allow in-line JavaScript, this is unsafe and can open your site up to XSS vulnerabilities.
                     UnsafeInline = true
                 });
-                */
             // media-src - This directive restricts from where the protected resource can load video and audio.
             filters.Add(
                 new CspMediaSrcAttribute()
@@ -273,7 +272,6 @@ namespace GestioniDirette
             //         MediaTypes = "application/x-shockwave-flash application/xaml+xml"
             //     });
             // style-src - This directive restricts which styles the user applies to the protected resource.
-
             filters.Add(
                 new CspStyleSrcAttribute()
                 {

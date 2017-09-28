@@ -202,6 +202,10 @@
     <Reference Include="PagedList.Mvc">
       <HintPath>..\Repos\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="PayPal, Version=1.8.0.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+      <HintPath>packages\PayPal.1.8.0\lib\net451\PayPal.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RazorEngine">
       <HintPath>..\Repos\packages\RazorEngine.3.9.3\lib\net45\RazorEngine.dll</HintPath>
     </Reference>
@@ -337,7 +341,6 @@
     <Compile Include="ViewModels\EditParams.cs" />
     <Compile Include="ViewModels\ManageViewModels.cs" />
     <Compile Include="ViewModels\MenuItemViewModel.cs" />
-    <Compile Include="ViewModels\PayPalModels.cs" />
     <Compile Include="ViewModels\ProfileImageViewModel.cs" />
     <Compile Include="ViewModels\RuleViolation.cs" />
     <Compile Include="ViewModels\UserIndexViewModel.cs" />
@@ -698,8 +701,6 @@
     <Content Include="Views\Cartissima\Inserzioni.cshtml" />
     <Content Include="Views\Cartissima\RichiestaInviata.cshtml" />
     <Content Include="Views\Error\Unknown.cshtml" />
-    <Content Include="Views\PayPal\Index.cshtml" />
-    <Content Include="Views\PayPal\ValidateCommand.cshtml" />
     <Content Include="Views\Shared\_Banner.cshtml" />
     <Content Include="Views\Shared\_Blank.cshtml" />
     <Content Include="Views\Shared\_Cartissima.cshtml" />
@@ -715,66 +716,186 @@
     <Content Include="Views\Shared\_TotalPartialCal.cshtml" />
     <Content Include="Views\Shared\_TotalPartialDef.cshtml" />
     <Content Include="Views\Shared\_TotalPartialErog.cshtml" />
-    <Content Include="Views\User\_Profile.cshtml" />
-    <Content Include="Views\User\_TotalPartial.cshtml" />
-    <Content Include="Views\User\Area.cshtml" />
-    <Content Include="Views\User\AreaCreate.cshtml" />
-    <Content Include="Views\User\AreaDelete.cshtml" />
-    <Content Include="Views\User\AreaDetails.cshtml" />
-    <Content Include="Views\User\AreaEdit.cshtml" />
-    <Content Include="Views\User\Carico.cshtml" />
-    <Content Include="Views\User\CaricoChart.cshtml" />
-    <Content Include="Views\User\CaricoCreate.cshtml" />
-    <Content Include="Views\User\Chiusura.cshtml" />
-    <Content Include="Views\User\Companies.cshtml" />
-    <Content Include="Views\User\CompaniesCreate.cshtml" />
-    <Content Include="Views\User\CompaniesDelete.cshtml" />
-    <Content Include="Views\User\CompaniesDetails.cshtml" />
-    <Content Include="Views\User\CompaniesEdit.cshtml" />
-    <Content Include="Views\User\DeleteProfiles.cshtml" />
-    <Content Include="Views\User\Dispenser.cshtml" />
-    <Content Include="Views\User\EditProfiles.cshtml" />
-    <Content Include="Views\User\File.cshtml" />
-    <Content Include="Views\User\FileCreate.cshtml" />
-    <Content Include="Views\User\FileDelete.cshtml" />
-    <Content Include="Views\User\FileDetails.cshtml" />
-    <Content Include="Views\User\FileEdit.cshtml" />
-    <Content Include="Views\User\Index.cshtml" />
-    <Content Include="Views\User\Manage.cshtml" />
-    <Content Include="Views\User\ManageAddPhoneNumber.cshtml" />
-    <Content Include="Views\User\ManageChangePassword.cshtml" />
-    <Content Include="Views\User\ManageLogins.cshtml" />
-    <Content Include="Views\User\ManageSetPassword.cshtml" />
-    <Content Include="Views\User\ManageVerifyPhoneNumber.cshtml" />
-    <Content Include="Views\User\Profiles.cshtml" />
-    <Content Include="Views\User\Pv.cshtml" />
-    <Content Include="Views\User\PvCali.cshtml" />
-    <Content Include="Views\User\PvCaliCreate.cshtml" />
-    <Content Include="Views\User\PvCreate.cshtml" />
-    <Content Include="Views\User\PvDeficienze.cshtml" />
-    <Content Include="Views\User\PvDeficienzeCreate.cshtml" />
-    <Content Include="Views\User\PvDelete.cshtml" />
-    <Content Include="Views\User\PvDetails.cshtml" />
-    <Content Include="Views\User\PvEdit.cshtml" />
-    <Content Include="Views\User\PvErogatori.cshtml" />
-    <Content Include="Views\User\PvErogatoriCreate.cshtml" />
-    <Content Include="Views\User\PvProfiles.cshtml" />
-    <Content Include="Views\User\PvProfilesCreate.cshtml" />
-    <Content Include="Views\User\PvProfilesDelete.cshtml" />
-    <Content Include="Views\User\PvProfilesDetails.cshtml" />
-    <Content Include="Views\User\PvProfilesEdit.cshtml" />
-    <Content Include="Views\User\PvProfilesError.cshtml" />
-    <Content Include="Views\User\PvTanks.cshtml" />
-    <Content Include="Views\User\PvTanksDesc.cshtml" />
-    <Content Include="Views\User\PvTanksDescCreate.cshtml" />
-    <Content Include="Views\User\PvTanksDescDelete.cshtml" />
-    <Content Include="Views\User\PvTanksDescDetails.cshtml" />
-    <Content Include="Views\User\PvTanksDescEdit.cshtml" />
-    <Content Include="Views\User\Task.cshtml" />
-    <Content Include="Views\User\TaskCreate.cshtml" />
-    <Content Include="Views\User\TaskDelete.cshtml" />
-    <Content Include="Views\User\TaskDetails.cshtml" />
-    <Content Include="Views\User\TaskEdit.cshtml" />
+    <Content Include="Views\User\_Profile.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\_TotalPartial.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Area.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\AreaCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\AreaDelete.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\AreaDetails.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\AreaEdit.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Carico.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\CaricoChart.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\CaricoCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Chiusura.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Companies.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\CompaniesCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\CompaniesDelete.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\CompaniesDetails.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\CompaniesEdit.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\DeleteProfiles.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Dispenser.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\EditProfiles.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\File.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\FileCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\FileDelete.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\FileDetails.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\FileEdit.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Index.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Manage.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\ManageAddPhoneNumber.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\ManageChangePassword.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\ManageLogins.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\ManageSetPassword.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\ManageVerifyPhoneNumber.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Profiles.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Pv.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvCali.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvCaliCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvDeficienze.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvDeficienzeCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvDelete.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvDetails.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvEdit.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvErogatori.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvErogatoriCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvProfiles.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvProfilesCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvProfilesDelete.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvProfilesDetails.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvProfilesEdit.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvProfilesError.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvTanks.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvTanksDesc.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvTanksDescCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvTanksDescDelete.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvTanksDescDetails.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\PvTanksDescEdit.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\Task.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\TaskCreate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\TaskDelete.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\TaskDetails.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\User\TaskEdit.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\Shared\DisplayTemplates\CanonicalHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MenuHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MetaRobotsHelperModel.cshtml" />
@@ -783,7 +904,12 @@
     <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModelList.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapPathHelperModel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapTitleHelperModel.cshtml" />
-    <Content Include="Views\User\Licenza.cshtml" />
+    <Content Include="Views\User\Licenza.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="_xVyGhSettings.json" />
+    <Content Include="Views\PayPal\Index.cshtml" />
+    <Content Include="Views\PayPal\SubscribeSuccess.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Documents\" />
@@ -829,6 +955,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
+      <UserProperties _3xVyGhSettings_1json__JSONSchema="http://json.schemastore.org/config" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

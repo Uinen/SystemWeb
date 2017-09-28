@@ -9,7 +9,7 @@ namespace GestioniDirette
         public static void RegisterBundles(BundleCollection bundles)
         {
             BundleTable.EnableOptimizations = true;
-            bundles.UseCdn = false;
+            bundles.UseCdn = true;
             AddCss(bundles);
             AddJavaScript(bundles);
         }

@@ -59,7 +59,7 @@
                                         col.Field(p => p.Codice).HeaderText("Modello").Width("50").EditType(EditingType.String).Add();
                                         col.Field(p => p.nPrecedente).HeaderText("Numero Precedente").Width("45").EditType(EditingType.String).Add();
                                         col.Field(p => p.nSuccessivo).HeaderText("Numro Successivo").Width("45").EditType(EditingType.String).Add();
-                                        col.Field(p => p.Scadenza).HeaderText("Validità").Width("50").EditType(EditingType.Datepicker).Add();
+                                        col.Field(p => p.Scadenza).HeaderText("Validità").Width("50").EditType(EditingType.Datepicker).ValidationRules(v => v.AddRule("required", true)).Format("{0:dd/MM/yyyy}").Add();
                                     })
                 )
             </div>
