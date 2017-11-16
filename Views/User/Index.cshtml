@@ -8,7 +8,9 @@
 }
 
 @section style{
-
+@Styles.Render("~/Content/EjWidgetCore")
+@Styles.Render("~/Content/EjTheme")
+@Styles.Render("~/Content/EjResponsive")
 }
 @if (Request.IsAuthenticated)
 {
@@ -17,7 +19,7 @@
             <div class="row">
                 <div class="item">
                     @if (User.IsInRole("Administrator"))
-                {
+                    {
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item active">@ViewBag.Flag - @ViewBag.PvNamee, @ViewBag.PvCity - @ViewBag.PvInd</li>
                             <li class="breadcrumb-item alert alert-info">Il sistema ha rilevato che la tua utenza appartiene al Ruolo Amministratori, al seguente <a href="/admin">Link</a> puoi accedere ai servizi avanzati al momento disponibili.</li>
@@ -52,9 +54,11 @@
                     </div>
                     <div class="item">
                         <div class="col-sm-6 col-lg-3 col-md-3 mb-4">
-                            <div class="panel-default">
-                                <h4 class="text-uppercase"><strong> Licenze </strong></h4>
-                                <p class="text-info">Il tuo impianto ha licenza UTF numero: @ViewBag.Licenza e scadra' il @ViewBag.Scadenza</p>
+                            <div class="panel-default breadcrumb" style="background-color:#f5f5f5">
+                                <h5 class="text-info text-uppercase"><strong> Licenze </strong></h5>
+                                <div class="mb-4">
+                                    <p class="text-info">Il tuo impianto ha licenza UTF numero: @ViewBag.Licenza e scadra' il @ViewBag.Scadenza</p>
+                                </div>
                                 <div class="card-footer clearfix small z-1">
                                     <span class="float-left"><button id="opener">@Html.ActionLink("Modifica", "Licenza")</button></span>
                                     <span class="float-right"><i class="fa fa-angle-right"></i></span>
@@ -79,21 +83,148 @@
                                 <p>Il punto vendita ha venduto <strong> @ViewBag.TotalAmountDifference </strong> lt rispetto al anno precedente</p>
                             </div>
                         </div>
-                        <a href="#" class="clearfix small z-1">
-                            <span class="float-left">Esporta</span>
-                            <span class="float-right"><i class="fa fa-angle-right"></i></span>
-                        </a>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="col-sm-6 col-lg-3 col-md-3 mb-4">
-                        <div class="panel-default">
-                            <h4 class="text-uppercase"><strong> Gauge </strong></h4>
-                            <p class="text-info">Giacenza in cisterna: @ViewBag.TankArray %</p>
-                            <div class="card-footer clearfix small z-1">
-                                <span class="float-left"><button id="opener">@Html.ActionLink("Modifica", "Licenza")</button></span>
-                                <span class="float-right"><i class="fa fa-angle-right"></i></span>
-                            </div>
+                    <div class="col-sm-6 col-lg-4 col-md-3">
+                        <div class="panel-default breadcrumb"style="background-color:#f5f5f5; background-size:200px">
+                            <h5 class="text-info text-uppercase"><strong> Serbatoio Benzina </strong></h5>
+                            @{ double r = Model.sspbGauge; }
+
+                            @(Html.EJ().CircularGauge("SSPB")
+                                .IsResponsive(true)
+                                .BackgroundColor("#bdfcb3").Width(300).Height(140).Radius(100)
+                                .ReadOnly(false).EnableAnimation(true).GaugePosition(GaugePosition.TopLeft).DistanceFromCorner(20)
+                                .Frame(fr => fr.FrameType(Frame.HalfCircle).HalfCircleFrameStartAngle(180).HalfCircleFrameEndAngle(360))
+                                .Scales(sc =>
+                                {
+                                    sc.Radius(100)
+                                    .PointerCap(cap => cap.Radius(10).BackgroundColor("#dbecfc").BorderColor("#678296"))
+                                    .Maximum(100)
+                                    .MajorIntervalValue(20)
+                                    .MinorIntervalValue(10)
+                                    .ShowScaleBar(true)
+                                    .Size(10).BackgroundColor("#FFF")
+                                    .ShowRanges(true)
+                                    .StartAngle(180).SweepAngle(180)
+                                    .Labels(lbl => { lbl.Color("Black").AutoAngle(true).DistanceFromScale(0).Add(); })
+                                    .Labels(lbl => { lbl.UnitText(" %").Add(); })
+                                    .Ranges(ran =>
+                                    {
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(0).EndValue(5).BackgroundColor("#ff0000").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(5).EndValue(10).BackgroundColor("#ff3300").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(10).EndValue(15).BackgroundColor("#ff6600").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(15).EndValue(20).BackgroundColor("#ff9900").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(20).EndValue(25).BackgroundColor("#ffcc00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(25).EndValue(30).BackgroundColor("#ffff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(30).EndValue(35).BackgroundColor("#ccff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(35).EndValue(40).BackgroundColor("#99ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(40).EndValue(45).BackgroundColor("#66ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(45).EndValue(50).BackgroundColor("#00ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(50).EndValue(55).BackgroundColor("#00ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(55).EndValue(60).BackgroundColor("#66ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(60).EndValue(65).BackgroundColor("#99ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(65).EndValue(70).BackgroundColor("#ccff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(70).EndValue(75).BackgroundColor("#ffff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(75).EndValue(80).BackgroundColor("#ffcc00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(80).EndValue(85).BackgroundColor("#ff9900").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(85).EndValue(90).BackgroundColor("#ff6600").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(90).EndValue(95).BackgroundColor("#ff3300").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(95).EndValue(100).BackgroundColor("#ff0000").Add();
+                                    })
+                                    .Ticks(tic =>
+                                    {
+                                        tic.Type(CircularTickTypes.Major).Height(12).Width(2).Color("#000").Add();
+                                        tic.Type(CircularTickTypes.Minor).Height(6).Width(1).Color("#000").Add();
+                                    })
+                                    .Pointers(po =>
+                                    {
+                                        po.Value(r)
+                                         .Length(70)
+                                         .Width(5)
+                                         .ShowBackNeedle(true)
+                                         .BackNeedleLength(10)
+                                         .NeedleType(NeedleType.Trapezoid)
+                                         .BackgroundColor("#f2f2f2")
+                                         .Border(bor => bor.Color("#aaaaaa")).Add();
+                                    })
+                                    .Add();
+                                })
+                            )
+                            <p class="text-info text-uppercase">Capienza Totale: </p><p>@ViewBag.CapienzaSSPB Litri</p>
+                            <p class="text-info text-uppercase">Giacenza Totale: </p><p>@ViewBag.GiacenzaSSPB Litri</p>
+                            <p class="text-info text-uppercase">Vuoto: </p><p>@ViewBag.VuotoSSPB Litri</p>
+                            <p class="text-info text-uppercase">Rimanenza Totale: </p><p>@r %</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4 col-md-4">
+                        <div class="panel-default breadcrumb" style="background-color:#f5f5f5; background-size:200px">
+                            <h5 class="text-info text-uppercase"><strong> Serbatoio Diesel </strong></h5>
+                            @{ double d = Model.dslGauge; }
+                            @(Html.EJ().CircularGauge("DSL")
+                                .IsResponsive(true)
+                                .BackgroundColor("#fff7a5 ").Width(300).Height(140).Radius(100)
+                                .ReadOnly(false).EnableAnimation(true).GaugePosition(GaugePosition.TopLeft).DistanceFromCorner(20)
+                                .Frame(fr => fr.FrameType(Frame.HalfCircle).HalfCircleFrameStartAngle(180).HalfCircleFrameEndAngle(360))
+                                .Scales(sc =>
+                                {
+                                    sc.Radius(100)
+                                    .PointerCap(cap => cap.Radius(10).BackgroundColor("#dbecfc").BorderColor("#678296"))
+                                    .Maximum(100)
+                                    .MajorIntervalValue(20)
+                                    .MinorIntervalValue(10)
+                                    .ShowScaleBar(true)
+                                    .Size(10).BackgroundColor("#FFF")
+                                    .ShowRanges(true)
+                                    .StartAngle(180).SweepAngle(180)
+                                    .Labels(lbl => { lbl.Color("Black").AutoAngle(true).DistanceFromScale(0).Add(); })
+                                    .Labels(lbl => { lbl.UnitText(" %").Add(); })
+                                    .Ranges(ran =>
+                                    {
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(0).EndValue(5).BackgroundColor("#ff0000").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(5).EndValue(10).BackgroundColor("#ff3300").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(10).EndValue(15).BackgroundColor("#ff6600").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(15).EndValue(20).BackgroundColor("#ff9900").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(20).EndValue(25).BackgroundColor("#ffcc00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(25).EndValue(30).BackgroundColor("#ffff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(30).EndValue(35).BackgroundColor("#ccff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(35).EndValue(40).BackgroundColor("#99ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(40).EndValue(45).BackgroundColor("#66ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(45).EndValue(50).BackgroundColor("#00ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(50).EndValue(55).BackgroundColor("#00ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(55).EndValue(60).BackgroundColor("#66ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(60).EndValue(65).BackgroundColor("#99ff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(65).EndValue(70).BackgroundColor("#ccff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(70).EndValue(75).BackgroundColor("#ffff00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(75).EndValue(80).BackgroundColor("#ffcc00").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(80).EndValue(85).BackgroundColor("#ff9900").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(85).EndValue(90).BackgroundColor("#ff6600").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(90).EndValue(95).BackgroundColor("#ff3300").Add();
+                                        ran.Size(10).DistanceFromScale(-30).StartValue(95).EndValue(100).BackgroundColor("#ff0000").Add();
+                                    })
+                                    .Ticks(tic =>
+                                    {
+                                        tic.Type(CircularTickTypes.Major).Height(12).Width(2).Color("#000").Add();
+                                        tic.Type(CircularTickTypes.Minor).Height(6).Width(2).Color("#000").Add();
+                                    })
+                                    .Pointers(po =>
+                                    {
+                                        po.Value(d)
+                                         .Length(70)
+                                         .Width(5)
+                                         .ShowBackNeedle(true)
+                                         .BackNeedleLength(10)
+                                         .NeedleType(NeedleType.Trapezoid)
+                                         .BackgroundColor("#f2f2f2")
+                                         .Border(bor => bor.Color("#aaaaaa")).Add();
+                                    })
+                                    .Add();
+                                })
+                            )
+                            <p class="text-info text-uppercase">Capienza Totale: </p><p>@ViewBag.CapienzaDSL Litri</p>
+                            <p class="text-info text-uppercase">Giacenza Totale: </p><p>@ViewBag.GiacenzaDSL Litri</p>
+                            <p class="text-info text-uppercase">Vuoto: </p><p>@ViewBag.VuotoDSL Litri</p>
+                            <p class="text-info text-uppercase">Rimanenza Totale: </p><p>@d %</p>
                         </div>
                     </div>
                 </div>
@@ -155,4 +286,12 @@
     </section>
 }
 @section script{
+@Scripts.Render("~/bundles/jqueryeasing")
+@Scripts.Render("~/bundles/jsrender")
+@Scripts.Render("https://cdn.syncfusion.com/js/assets/external/excanvas.min.js")
+@Scripts.Render("~/bundles/jqueryglobalize")
+@Scripts.Render("~/bundles/jquerybrowser")
+@Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+@Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+@Html.EJ().ScriptManager()
 }

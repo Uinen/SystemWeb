@@ -182,3 +182,15 @@ function ActionCompleteLicenza(args, sender) {
     }
 }
 
+function ActionCompleteReclami(args, sender) {
+    var gridObj = $("#FlatGridReclami").ejGrid("instance");
+    this.getContent().addClass("e-widget");
+    var browserDetails = gridObj.getBrowserDetails();
+    if (browserDetails.browser == "msie" && parseInt(browserDetails.version, 10) <= 9)
+        $("#FlatGridReclami").ejGrid("model.enableResponsiveRow", false);
+    if (args.requestType == "filtering" || args.requestType == "searching") {
+        var proxy = this;
+        setTimeout(function () { proxy.windowonresize(); }, 30);
+    }
+}
+

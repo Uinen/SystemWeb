@@ -229,6 +229,10 @@
     <Compile Include="Migrations\201709281840310_26.Designer.cs">
       <DependentUpon>201709281840310_26.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710031108141_27.cs" />
+    <Compile Include="Migrations\201710031108141_27.Designer.cs">
+      <DependentUpon>201710031108141_27.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Operation\Interface\iOperation.cs" />
     <Compile Include="Operation\Operation.cs" />
@@ -253,6 +257,7 @@
     <Compile Include="Repository\NoticeRepository.cs" />
     <Compile Include="Repository\OrderRepository.cs" />
     <Compile Include="Repository\ProductRepository.cs" />
+    <Compile Include="Repository\ReclamiRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\CaricoRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\CartissimaRepository.cs" />
     <Compile Include="Repository\RepositoryInterface\ProductRepository.cs" />
@@ -352,6 +357,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709281840310_26.resx">
       <DependentUpon>201709281840310_26.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710031108141_27.resx">
+      <DependentUpon>201710031108141_27.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

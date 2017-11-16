@@ -50,7 +50,7 @@
                         </div>
                         <div class="form-bottom">
                             <div class="form-group">
-                                <a href="https://www.gestionidirette.com/account/registrati/emailconfermata/token=@Model.Id_email=@Model.Email" class="card-footer clearfix large z-1">
+                                <a href="https://www.gestionidirette.com/account/registrati/emailconfermata/token=@Model.Id&email=@Model.Email" class="card-footer clearfix large z-1">
                                     <span class="float-left text-uppercase text-primary"><strong>Confermalo ora</strong></span>
                                     <span class="float-right"><i class="fa fa-angle-right"></i></span>
                                 </a>

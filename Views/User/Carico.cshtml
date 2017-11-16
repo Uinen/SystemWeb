@@ -3,9 +3,11 @@
     Layout = "~/Views/Shared/_SecondLayout.cshtml";
 }
 @section style{
+    
     @Styles.Render("~/Content/EjWidgetCore")
     @Styles.Render("~/Content/EjTheme")
-    @Styles.Render("~/Content/EjResponsive")
+    @Styles.Render("~/Content/EjResponsive") 
+
     <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
 }
 
@@ -118,6 +120,8 @@
 
                         col.Field(p => p.Benzina).HeaderText("Benzina").Width("50").AllowEditing(true).Add();
                         col.Field(p => p.Gasolio).HeaderText("Gasolio").Width("50").AllowEditing(true).Add();
+                        col.Field(p => p.HiQb).HeaderText("Benzina Speciale").Width("50").AllowEditing(true).Add();
+                        col.Field(p => p.HiQd).HeaderText("Gasolio Speciale").Width("50").AllowEditing(true).Add();
                         col.Field(p => p.Lube).HeaderText("Additivo").Width("50").AllowEditing(true).Add();
                         col.Field(p => p.Note).HeaderText("Note").Width("50").AllowEditing(true).Add();
                     })
@@ -128,7 +132,7 @@
 </section>
 
 @section script{
-
+   
     @Scripts.Render("~/bundles/jqueryeasing")
     @Scripts.Render("~/bundles/jsrender")
     @Scripts.Render("~/bundles/jqueryglobalize")
@@ -137,7 +141,7 @@
     @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/GridOption")
-    @Html.EJ().ScriptManager()
+    @Html.EJ().ScriptManager() 
 
     <script type="text/javascript">
         $(function () {

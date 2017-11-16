@@ -234,8 +234,8 @@ namespace GestioniDirette.Database.Operation
         {
             #region Diesel
             var max1G = GetErogatori()
-                        .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                        .Max(s => s.Value);
+                .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                .Max(s => s.Value);
 
             var min1G = GetErogatori()
                 .Where(z => z.Value > 0 & (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
@@ -463,18 +463,52 @@ namespace GestioniDirette.Database.Operation
         public int? DoSSPBOperationShort()
         {
             #region Benzina
+
             var max1B = GetErogatori()
-                        .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
-                        .Max(s => s.Value);
+                .Where(z => z.Value > 0 && (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                .Max(s => s.Value);
 
             var min1B = GetErogatori()
-                .Where(z => (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                .Where(z => z.Value > 0 && (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
                 .Min(s => s.Value);
+
+            var max2B = GetErogatori()
+                .Where(z => z.Value1 > 0 && (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                .Max(s => s.Value1);
+
+            var min2B = GetErogatori()
+                .Where(z => z.Value1 > 0 && (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                .Min(s => s.Value1);
+
+            var max3B = GetErogatori()
+                .Where(z => z.Value2 > 0 && (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                .Max(s => s.Value2);
+
+            var min3B = GetErogatori()
+                .Where(z => z.Value2 > 0 && (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                .Min(s => s.Value2);
+
+            var max4B = GetErogatori()
+                .Where(z => z.Value3 > 0 && (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                .Max(s => s.Value3);
+
+            var min4B = GetErogatori()
+                .Where(z => z.Value3 > 0 && (z.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")))
+                .Min(s => s.Value3);
+
             #endregion
 
             #region Variabili
-            var totalB = max1B - min1B;
+
+            var pist1 = max1B - min1B;
+            var pist2 = max2B - min2B;
+            var pist3 = max3B - min3B;
+            var pist4 = max4B - min4B;
+
+            var totalB = pist1 + pist2 + pist3 + pist4;
+
             #endregion
+
 
             return totalB;
         }
@@ -487,16 +521,39 @@ namespace GestioniDirette.Database.Operation
         {
             #region Diesel
             var max1G = GetErogatori()
-                       .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
-                       .Max(s => s.Value);
+                .Where(z => z.Value > 0 && (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                .Max(s => s.Value);
 
             var min1G = GetErogatori()
-                .Where(z => (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                .Where(z => z.Value > 0 && (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
                 .Min(s => s.Value);
+
+            var max2G = GetErogatori()
+                .Where(z => z.Value1 > 0 && (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                .Max(s => s.Value1);
+
+            var min2G = GetErogatori()
+                .Where(z => z.Value1 > 0 && (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                .Min(s => s.Value1);
+
+            var max3G = GetErogatori()
+                .Where(z => z.Value2 > 0 && (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                .Max(s => s.Value2);
+
+            var min3G = GetErogatori()
+                .Where(z => z.Value2 > 0 && (z.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")))
+                .Min(s => s.Value2);
+
             #endregion
 
             #region Variabili
-            var totalG = max1G - min1G;
+
+            var pist1 = max1G - min1G;
+            var pist2 = max2G - min2G;
+            var pist3 = max3G - min3G;
+
+            var totalG = pist1 + pist2 + pist3;
+
             #endregion
 
             return totalG;
@@ -739,15 +796,38 @@ namespace GestioniDirette.Database.Operation
             return sumcG;
         }
 
-        public decimal DoSSPBTankPercentageById()
+        public double DoSSPBTankPercentageById()
         {
+            #region Count
+            var countTank = GetTank()
+                .Where(w => w.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
+                .Count();
+
+            double divide = (100 / countTank);
+            #endregion
+
             var percentage = GetTank()
                 .Where(w => w.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785"))
-                .Select(s => (((decimal)s.Giacenza)/ s.Capienza) * 50).Sum();
+                .Select(s => (((double)s.Giacenza) / s.Capienza) * divide).Sum();
 
             return percentage;
         }
+        public double DoDSLTankPercentageById()
+        {
+            #region Count
+            var countTank = GetTank()
+                .Where(w => w.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
+                .Count();
 
+            double divide = (100 / countTank);
+            #endregion
+
+            var percentage = GetTank()
+                .Where(w => w.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0"))
+                .Select(s => (((double)s.Giacenza) / s.Capienza) * divide).Sum();
+
+            return percentage;
+        }
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)

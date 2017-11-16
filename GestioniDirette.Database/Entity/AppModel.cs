@@ -2,6 +2,7 @@
 #region Direttive 
 using System;
 using System.Data.Entity;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -12,6 +13,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Data.Entity.Validation;
+using System.Web.Mvc;
 #endregion
 
 namespace GestioniDirette.Database.Entity
@@ -347,6 +350,7 @@ namespace GestioniDirette.Database.Entity
             ApplicationUser = new HashSet<ApplicationUser>();
             Cartissima = new HashSet<Cartissima>();
             Licenza = new HashSet<Licenza>();
+            Reclami = new HashSet<Reclami>();
             pvID = Guid.NewGuid();
         }
 
@@ -363,6 +367,7 @@ namespace GestioniDirette.Database.Entity
         public ICollection<ApplicationUser> ApplicationUser { get; set; }
         public ICollection<Cartissima> Cartissima { get; set; }
         public ICollection<Licenza> Licenza { get; set; }
+        public ICollection<Reclami> Reclami { get; set; }
     }
     #endregion
 
@@ -732,20 +737,39 @@ namespace GestioniDirette.Database.Entity
     }
     #endregion
 
-    #region CheckList
-    /*
-    public class CheckList
+    #region Reclami
+
+    public class Reclami
     {
-        public CheckList()
+        public Reclami()
         {
-            CheckListID = Guid.NewGuid();
+            ReclamiID = Guid.NewGuid();
+            DataCreazione = DateTime.Now.Date;
+            NumeroInterno = new Random().Next();
         }
-        public Guid CheckListID { get; set; }
+
+        [Key]
+        [HiddenInput(DisplayValue = false)]
+        public Guid ReclamiID { get; set; }
         public Guid pvID { get; set; }
-        public DateTime Data { get; set; }
-        public bool isChecked { get; set; }
+        public TipoReclamo Tipologia { get; set; }
+        public string Reclamante { get; set; } 
+        public DocumentoIdentità Documento { get; set; }
+        public string NumeroDocumento { get; set; }
+        [DataType(DataType.PhoneNumber)]
+        public string Cellulare { get; set; }
+        [DataType(DataType.DateTime), DisplayFormat(DataFormatString = "{0:f}", ApplyFormatInEditMode = true)]
+        public DateTime DataEvento { get; set; }
+        public int ImportoInserito { get; set; }
+        public double ImportoMancato { get; set; }
+        public double ImportoRimanente { get; set; }
+        public int NumeroInterno { get; set; }
+        public string NumeroAssegnato { get; set; }
         public string Note { get; set; }
-    }*/
+        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yy}")]
+        public DateTime DataCreazione { get; set; }
+        public Pv pv { get; set; }
+    }
 
     #endregion
 
@@ -833,6 +857,35 @@ namespace GestioniDirette.Database.Entity
             modelBuilder.Entity<PayPal>().HasRequired(p => p.User)
                .WithMany(b => b.PayPal)
                .HasForeignKey(p => p.UserID);
+            modelBuilder.Entity<Reclami>().HasRequired(p => p.pv)
+               .WithMany(b => b.Reclami)
+               .HasForeignKey(p => p.pvID);
+        }
+        #endregion
+
+        #region SaveChanges
+        public override int SaveChanges()
+        {
+            try
+            {
+                return base.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors
+                        .SelectMany(x => x.ValidationErrors)
+                        .Select(x => x.ErrorMessage);
+
+                // Join the list to a single string.
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Combine the original exception message with the new one.
+                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                // Throw a new DbEntityValidationException with the improved exception message.
+                throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
+            }
         }
         #endregion
 
@@ -862,6 +915,7 @@ namespace GestioniDirette.Database.Entity
         public DbSet<Documento> Documento { get; set; }
         public DbSet<Licenza> Licenza { get; set; }
         public DbSet<PayPal> PayPal { get; set; }
+        public DbSet<Reclami> Reclami { get; set; }
 
         #endregion
     }

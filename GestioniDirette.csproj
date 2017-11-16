@@ -349,7 +349,7 @@
   <ItemGroup>
     <Content Include="App_Data\Templates\Business-Card-Success.txt" />
     <Content Include="App_Data\Templates\Register-Proccess-Confirmed.txt" />
-    <Content Include="ApplicationInsights.config">
+    <Content Include="Views\ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Contenuti\Bootstrap\bootstrap-theme.css.map" />
@@ -559,9 +559,6 @@
     <Content Include="MainFont\font-awesome.css" />
     <Content Include="MainFont\fonts\fontawesome-webfont.svg" />
     <Content Include="Scripts\ActionComplete.js" />
-    <Content Include="Scripts\ActionComplete.min.js">
-      <DependentUpon>ActionComplete.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\bootstrap\v3\bootstrap.js" />
     <Content Include="Scripts\bootstrap\v3\bootstrap.min.js">
       <DependentUpon>bootstrap.js</DependentUpon>
@@ -910,6 +907,9 @@
     <Content Include="_xVyGhSettings.json" />
     <Content Include="Views\PayPal\Index.cshtml" />
     <Content Include="Views\PayPal\SubscribeSuccess.cshtml" />
+    <Content Include="Views\User\Reclami.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Uploads\Documents\" />

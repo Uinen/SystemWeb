@@ -29,6 +29,7 @@ namespace GestioniDirette.Database.Operation.Interface
         int DoDSLDeficienze();
         int DoSSPBCali();
         int DoDSLCali();
-        decimal DoSSPBTankPercentageById();
+        double DoSSPBTankPercentageById();
+        double DoDSLTankPercentageById();
     }
 }

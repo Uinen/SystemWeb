@@ -69,6 +69,7 @@ namespace GestioniDirette.Mail
 
             catch (Exception ex)
             {
+                string.Format("{0}, {1}", ex.Message, ex.Data);
             }
         }
 

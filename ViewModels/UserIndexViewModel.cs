@@ -19,5 +19,7 @@ namespace GestioniDirette.Models
         public IEnumerable<UserProfiles> userprofiles { get; set; }
         public IEnumerable<UsersImage> usersimage { get; set; }
         public IEnumerable<Notice> notice { get; set; }
+        public double sspbGauge { get; set; }
+        public double dslGauge { get; set; }
     }
 }

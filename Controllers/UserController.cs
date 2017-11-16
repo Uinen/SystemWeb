@@ -77,7 +77,7 @@ namespace GestioniDirette.Controllers
         public ActionResult Index(DateTime? dateFrom, DateTime? dateTo, DateTime? dateFrom2, DateTime? dateTo2, Guid? id)
         {
             #region List
-            
+
             var list = new UserIndexViewModel();
 
             #endregion
@@ -106,7 +106,15 @@ namespace GestioniDirette.Controllers
             var somequalsD7 = _db.Users.Include(s => s.Company).Where(s => s.Id == currentUser.Id).Select(s => s.Company.Name).DefaultIfEmpty("Azienda non configurata").SingleOrDefault();
             var somequalsD8 = _db.Licenza.Where(c => currentUser.pvID == c.pvID);
             var somequalsD9 = _db.Dispenser.Where(c => currentUser.pvID == c.PvTank.pvID);
-            var calltomethod = _operation.DoSSPBTankPercentageById();
+            
+            // SSPB 
+            var somequalsD10 = _operation.GetTank().Where(w => w.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")).Sum(s => s.Capienza);
+            var somequalsD11 = _operation.GetTank().Where(w => w.Product.ProductId.ToString().Contains("e906a6fa-c5d7-4850-9b8e-3e1b5a342785")).Sum(s => s.Giacenza);
+            
+            // DSL
+            var somequalsD13 = _operation.GetTank().Where(w => w.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")).Sum(s => s.Capienza);
+            var somequalsD14 = _operation.GetTank().Where(w => w.Product.ProductId.ToString().Contains("0ac61d1f-db50-4781-b147-d43325718dc0")).Sum(s => s.Giacenza);
+
             ViewBag.FullAdress = somequalsD5;
             ViewBag.ProfileFullName = somequalsD6;
             ViewBag.Flag = somequalsD4;
@@ -116,8 +124,15 @@ namespace GestioniDirette.Controllers
             ViewBag.CompanyId = somequalsD7;
             ViewBag.Licenza = somequalsD8.Select(c => c.Codice).DefaultIfEmpty("Nessuna licenza inserita").Single();
             ViewBag.Scadenza = somequalsD8.Select(c => c.Scadenza).SingleOrDefault();
-            ViewBag.TankArray = calltomethod;
+            ViewBag.CapienzaSSPB = somequalsD10;
+            ViewBag.GiacenzaSSPB = somequalsD11;
+            ViewBag.VuotoSSPB = somequalsD10 - somequalsD11;
+            ViewBag.CapienzaDSL = somequalsD13;
+            ViewBag.GiacenzaDSL = somequalsD14;
+            ViewBag.VuotoDSL = somequalsD13 - somequalsD14;
             //ViewBag.Bollino = somequalsD9.Select(c => c.Scadenza).SingleOrDefault();
+            list.sspbGauge = _operation.DoSSPBTankPercentageById();
+            list.dslGauge = _operation.DoDSLTankPercentageById();
 
             IEnumerable<UserProfiles> userprofiles = _db.UserProfiles
                 .Where(w => w.ProfileId == currentUser.ProfileId);
@@ -148,7 +163,11 @@ namespace GestioniDirette.Controllers
 
             else
             {
-                if (currentUser.Id.Contains("9199e89c-59a0-4d88-83b6-6f73f548dc87"))
+                var nPvDispenser = _db.Dispenser
+                    .Where(a => a.PvTank.pvID == currentUser.pvID)
+                    .Select(s => s.DispenserId);
+
+                if (nPvDispenser.Count() == 6)
                 {
                     #region Variabili
                     var totalB1 = _operation.DoSSPBOperationShort();
@@ -163,86 +182,240 @@ namespace GestioniDirette.Controllers
                     #endregion
                 }
 
-                #region Variabili
-                var totalB = _operation.DoSSPBOperation();
-                var totalG = _operation.DoDSLOperation();
-                var _totalResult = totalB + totalG;
-                #endregion
-
-                #region ViewBag
-                ViewBag.SSPBTotalAmount = totalB;
-                ViewBag.DieselTotalAmount = totalG;
-                ViewBag.TotalAmount = _totalResult;
-                #endregion
-
-                #endregion
-
-                #region TotaleContatoriPrecedente
-                var createdDate = from a in _db.Users where currentUser.Id == a.Id select a.CreateDate.Year;
-                var thisID = "7c949a00-01bd-4057-a156-b6b33a4142ef";
-                var exID = Guid.Parse(thisID);
-
-                if (currentUser.CreateDate.Year == DateTime.Today.Year)
-                {
-                    #region ViewBag
-                    ViewBag.SSPBTotalAmount2 = 0;
-                    ViewBag.DieselTotalAmount2 = 0;
-                    //ViewBag.HiQbTotalAmount2 = 0;
-                    //ViewBag.HiQdTotalAmount2 = 0;
-                    ViewBag.TotalAmount2 = 0;
-                    #endregion
-                }
                 else
                 {
-                    if (currentUser.Id.Contains("9199e89c-59a0-4d88-83b6-6f73f548dc87"))
+                    #region Variabili
+                    var totalB = _operation.DoSSPBOperation();
+                    var totalG = _operation.DoDSLOperation();
+                    var _totalResult = totalB + totalG;
+                    #endregion
+
+                    #region ViewBag
+                    ViewBag.SSPBTotalAmount = totalB;
+                    ViewBag.DieselTotalAmount = totalG;
+                    ViewBag.TotalAmount = _totalResult;
+                    #endregion
+
+                    #endregion
+
+                    #region TotaleContatoriPrecedente
+                    var createdDate = from a in _db.Users where currentUser.Id == a.Id select a.CreateDate.Year;
+                    var thisID = "7c949a00-01bd-4057-a156-b6b33a4142ef";
+                    var exID = Guid.Parse(thisID);
+
+                    if (currentUser.CreateDate.Year == DateTime.Today.Year)
                     {
+                        #region ViewBag
+                        ViewBag.SSPBTotalAmount2 = 0;
+                        ViewBag.DieselTotalAmount2 = 0;
+                        //ViewBag.HiQbTotalAmount2 = 0;
+                        //ViewBag.HiQdTotalAmount2 = 0;
+                        ViewBag.TotalAmount2 = 0;
+                        #endregion
+                    }
+                    else
+                    {
+                        // E' necessario aggiornare lastYearShort in operation
+                        if (currentUser.Id.Contains("9199e89c-59a0-4d88-83b6-6f73f548dc87"))
+                        {
+                            #region Variabili
+                            var totalB3 = _operation.DoSSPBOperationForLastYearShort();
+                            var totalG3 = _operation.DoDSLOperationForLastYearShort();
+                            var _totalResult3 = totalB3 + totalG3;
+                            #endregion
+
+                            #region ViewBag
+                            ViewBag.SSPBTotalAmount2 = totalB3;
+                            ViewBag.DieselTotalAmount2 = totalG3;
+                            ViewBag.TotalAmount2 = _totalResult3;
+                            #endregion
+
+                            #region Difference
+
+                            ViewBag.TotalAmountDifference = _totalResult - _totalResult3;
+
+                            #endregion
+                        }
+
                         #region Variabili
-                        var totalB3 = _operation.DoSSPBOperationForLastYearShort();
-                        var totalG3 = _operation.DoDSLOperationForLastYearShort();
-                        var _totalResult3 = totalB3 + totalG3;
+
+                        var totalB2 = _operation.DoSSPBOperationForLastYear();
+                        var totalG2 = _operation.DoDSLOperationForLastYear();
+                        var _resultB2 = totalB2;
+                        var _resultG2 = totalG2;
+                        var _totalResult2 = _resultB2 + _resultG2;
+
                         #endregion
 
                         #region ViewBag
-                        ViewBag.SSPBTotalAmount2 = totalB3;
-                        ViewBag.DieselTotalAmount2 = totalG3;
-                        ViewBag.TotalAmount2 = _totalResult3;
+                        ViewBag.SSPBTotalAmount2 = _resultB2;
+                        ViewBag.DieselTotalAmount2 = _resultG2;
+                        ViewBag.TotalAmount2 = _totalResult2;
+                        #endregion
+
                         #endregion
 
                         #region Difference
 
-                        ViewBag.TotalAmountDifference = _totalResult - _totalResult3;
+                        ViewBag.TotalAmountDifference = _totalResult - _totalResult2;
 
-                        #endregion
+                        
+
                     }
-
-                    #region Variabili
-
-                    var totalB2 = _operation.DoSSPBOperationForLastYear();
-                    var totalG2 = _operation.DoDSLOperationForLastYear();
-                    var _resultB2 = totalB2;
-                    var _resultG2 = totalG2;
-                    var _totalResult2 = _resultB2 + _resultG2;
-
                     #endregion
-
-                    #region ViewBag
-                    ViewBag.SSPBTotalAmount2 = _resultB2;
-                    ViewBag.DieselTotalAmount2 = _resultG2;
-                    ViewBag.TotalAmount2 = _totalResult2;
-                    #endregion
-
-                    #endregion
-
-                    #region Difference
-
-                    ViewBag.TotalAmountDifference = _totalResult - _totalResult2;
-
-                    #endregion
-
                 }
             }
 
             return View(list);
+        }
+
+        #endregion
+
+        #region Reclami
+
+        [Route("user/reclami/")]
+        [WhitespaceFilter]
+        public ActionResult Reclami()
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            var dataSource = new MyDbContext().Reclami.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.DataCreazione).ToList();
+            ViewBag.datasource = dataSource;
+
+            IEnumerable dataSource2 = new MyDbContext().Pv.Where(c => currentUser.pvID == c.pvID).ToList();
+            ViewBag.datasource2 = dataSource2;
+
+            IEnumerable dataSource3 = new Liste().Reclamo;
+            ViewBag.datasource3 = dataSource3;
+
+            IEnumerable dataSource4 = new Liste().Documento;
+            ViewBag.datasource4 = dataSource4;
+
+            return View();
+        }
+
+        [Route("user/reclami/update")]
+        public ActionResult UpdateReclami(Reclami value)
+        {
+            ReclamiRepository.Update(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+        [Route("user/reclami/insert")]
+        public ActionResult InsertReclami(Reclami value)
+        {
+            ReclamiRepository.Add(value);
+            return Json(value, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/reclami/remove")]
+        public ActionResult RemoveReclami(Guid key)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            MyDbContext context = new MyDbContext();
+            context.Reclami.Remove(context.Reclami.Single(o => o.ReclamiID == key));
+            context.SaveChanges();
+
+            var data = context.Reclami.Where(c => currentUser.pvID == c.pvID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/reclami/reclamiexcell")]
+        public ActionResult ReclamiExcell(string gridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            var exp = new ExcelExport();
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+
+            IEnumerable dataSource = context.Reclami.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.DataCreazione).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            obj.Columns[2].DataSource = new Liste().Reclamo;
+
+            obj.Columns[4].DataSource = new Liste().Documento;
+
+            exp.Export(obj, dataSource, now + " - Reclami.xlsx", ExcelVersion.Excel2010, false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/reclami/reclamiword")]
+        public ActionResult ReclamiWord(string gridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            var context = new MyDbContext();
+            var now = Guid.NewGuid();
+            var exp = new WordExport();
+
+            IEnumerable dataSource = context.Reclami.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.DataCreazione).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            obj.Columns[2].DataSource = new Liste().Reclamo;
+
+            obj.Columns[4].DataSource = new Liste().Documento;
+
+            exp.Export(obj, dataSource, now + " - Reclami.docx", false, false, "flat-saffron");
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+
+        [Route("user/reclami/reclamipdf")]
+        public ActionResult ReclamiPdf(string gridModel)
+        {
+            #region Initial var
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = userManager.FindById(User.Identity.GetUserId());
+            lastYear = DateTime.Today.Year;
+            Ly = lastYear.ToString();
+            #endregion
+
+            var context = new MyDbContext();
+
+            var now = Guid.NewGuid();
+
+            var exp = new PdfExport();
+
+            IEnumerable dataSource = context.Reclami.Where(c => currentUser.pvID == c.pvID).OrderBy(o => o.DataCreazione).ToList();
+
+            var obj = ConvertGridObject(gridModel);
+
+            obj.Columns[1].DataSource = context.Pv.Where(a => currentUser.pvID == a.pvID).ToList();
+
+            obj.Columns[2].DataSource = new Liste().Reclamo;
+
+            obj.Columns[4].DataSource = new Liste().Documento;
+
+            exp.Export(obj, dataSource, now + " - Reclami.pdf", false, false, "flat-saffron");
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
         #endregion
@@ -419,10 +592,10 @@ namespace GestioniDirette.Controllers
 
             #region Total Ammount ViewBag
             // Totale Carico annuo benzina.
-            ViewBag.SSPBTotalAmount = dataSource.Sum(o => (decimal?)o.Benzina);
+            ViewBag.SSPBTotalAmount = dataSource.Sum(o => (decimal?)o.Benzina + (decimal?)o.HiQb);
 
             // Totale Carico annuo gasolio. 
-            ViewBag.DieselTotalAmount = dataSource.Sum(o => (decimal?)o.Gasolio);
+            ViewBag.DieselTotalAmount = dataSource.Sum(o => (decimal?)o.Gasolio + (decimal?)o.HiQd);
 
             // Totale additivo
             ViewBag.LubeTotalAmount = dataSource.Sum(o => (decimal?)o.Lube);
@@ -3003,12 +3176,12 @@ namespace GestioniDirette.Controllers
                 #region Carico
 
                 #region Variabili
-                var _eccB = _ordiniEccedenze.Sum(s => s.Benzina);
-                var _eccG = _ordiniEccedenze.Sum(s => s.Gasolio);
-                var _scatB = _ordiniScatti.Sum(s => s.Benzina);
-                var _scatG = _ordiniScatti.Sum(s => s.Gasolio);
-                var _totCaricoB = _operation.GetCarico().Sum(s => s.Benzina);
-                var _totCaricoG = _operation.GetCarico().Sum(s => s.Gasolio);
+                var _eccB = _ordiniEccedenze.Sum(s => s.Benzina + s.HiQb);
+                var _eccG = _ordiniEccedenze.Sum(s => s.Gasolio + s.HiQd);
+                var _scatB = _ordiniScatti.Sum(s => s.Benzina + s.HiQb);
+                var _scatG = _ordiniScatti.Sum(s => s.Gasolio + s.HiQd);
+                var _totCaricoB = _operation.GetCarico().Sum(s => s.Benzina + s.HiQb);
+                var _totCaricoG = _operation.GetCarico().Sum(s => s.Gasolio + s.HiQd);
                 var TotCaricoB = _rimIB + _totCaricoB;
                 var TotCaricoG = _rimIG + _totCaricoG;
                 var rCaricoB = _totCaricoB - _eccB - _scatB;
@@ -3033,12 +3206,12 @@ namespace GestioniDirette.Controllers
                 #region Scarico
 
                 #region contatori <= 2
-                /*
+               
                 var nPvDispenser = _db.Dispenser
                     .Where(a => a.PvTank.pvID == currentUser.pvID)
-                    .Select(s => s.DispenserId);*/
+                    .Select(s => s.DispenserId);
 
-                if (currentUser.Id.Contains("9199e89c-59a0-4d88-83b6-6f73f548dc87"))
+                if (nPvDispenser.Count() == 6)
                 {
                     #region Contatori
                     var totalB = _operation.DoSSPBOperationShort();

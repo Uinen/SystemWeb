@@ -1,0 +1,205 @@
+﻿@{
+    ViewBag.Title = "Reclami";
+    Layout = "~/Views/Shared/_SecondLayout.cshtml";
+}
+@section style{
+    @Styles.Render("~/Content/EjWidgetCore")
+    @Styles.Render("~/Content/EjTheme")
+    @Styles.Render("~/Content/EjResponsive")
+    <link href="@Url.Content("~/Contenuti/ej/web/responsive-css/ejgrid.responsive.min.css")" rel="stylesheet" />
+}
+<section id="features">
+    <div class="container">
+        <div class="row">
+            <div class="item">
+                @(Html.EJ().Grid<Reclami>("FlatGridReclami")
+                                    .Locale("it-IT")
+                                    .Datasource(ds => ds.Json((IEnumerable<object>)ViewBag.dataSource)
+                                    .UpdateURL("update")
+                                    .InsertURL("insert")
+                                    .RemoveURL("remove")
+                                    .Adaptor(AdaptorType.RemoteSaveAdaptor))
+                                    .AllowPaging()
+                                    .PageSettings(p => p.PageCount(2).PageSize(5))
+                                    .IsResponsive(true)
+                                    .EnableResponsiveRow(true)
+                                    .AllowSorting()
+                                    .AllowMultiSorting()
+                                    .ClientSideEvents(eve => eve.ActionComplete("ActionCompleteReclami"))
+                                    .MinWidth(400)
+                                    .EditSettings(d => d.AllowAdding(true).AllowDeleting(true).AllowEditing(true).EditMode(EditMode.Dialog))
+                                    .ToolbarSettings(toolBar => toolBar.ShowToolbar().ToolbarItems(items =>
+                                    {
+                                        items.AddTool(ToolBarItems.Add);
+                                        items.AddTool(ToolBarItems.Edit);
+                                        items.AddTool(ToolBarItems.Delete);
+                                        items.AddTool(ToolBarItems.Cancel);
+                                        items.AddTool(ToolBarItems.Search);
+                                        items.AddTool(ToolBarItems.ExcelExport);
+                                        items.AddTool(ToolBarItems.WordExport);
+                                        items.AddTool(ToolBarItems.PdfExport);
+
+                                    }))
+
+                                    .AllowFiltering()
+                                    .FilterSettings(filter =>
+                                    {
+                                        filter.FilterType(FilterType.Excel);
+                                    })
+
+                                    .Mappers(map => map.ExportToExcelAction("reclamiexcell")
+                                    .ExportToPdfAction("reclamipdf")
+                                    .ExportToWordAction("reclamiword"))
+                                    .Columns(col =>
+                                    {
+                                        col.Field(p => p.ReclamiID).HeaderText("ID Reclamo").IsPrimaryKey(true).Visible(false).Width(45).Add();
+                                        col.Field(p => p.pvID).HeaderText("Punto Vendita").ForeignKeyField("pvID").ForeignKeyValue("pvName")
+                                        .DataSource((IEnumerable<object>)ViewBag.dataSource2).Width(50).EditType(EditingType.Dropdown).Add();
+
+                                        col.Field(p => p.Tipologia).HeaderText("Tipo Reclamo").ForeignKeyField("Text").ForeignKeyValue("Value")
+                                        .DataSource((IEnumerable<SelectListItem>)ViewBag.dataSource3).EditType(EditingType.Dropdown).Width("50").Add();
+
+                                        col.Field(p => p.Reclamante).HeaderText("Reclamante").Width("55").EditType(EditingType.String).Add();
+                                        col.Field(p => p.Cellulare).HeaderText("Cellulare").Width("55").EditType(EditingType.String).Add();
+
+                                        col.Field(p => p.Documento).HeaderText("Tipo Documento").ForeignKeyField("Text").ForeignKeyValue("Value")
+                                        .DataSource((IEnumerable<SelectListItem>)ViewBag.dataSource4).EditType(EditingType.Dropdown).Width("55").Add();
+
+                                        col.Field(p => p.NumeroDocumento).HeaderText("Numero Documento").Width("50").EditType(EditingType.String).Add();
+                                        col.Field(p => p.ImportoInserito).HeaderText("Importo Inserito").Width("50").EditType(EditingType.Numeric).Add();
+                                        col.Field(p => p.ImportoMancato).HeaderText("Importo Mancato").Width("50").EditType(EditingType.Numeric).Add();
+                                        col.Field(p => p.ImportoRimanente).HeaderText("Importo Rimanente").Width("50").EditType(EditingType.Numeric).Add();
+                                        col.Field(p => p.Note).HeaderText("Note").Width("50").EditType(EditingType.String).Add();
+                                        col.Field(p => p.NumeroInterno).HeaderText("Numero interno").Width("50").AllowEditing(false).Add();
+                                        col.Field(p => p.NumeroAssegnato).HeaderText("Numero Assegnato").Width("50").EditType(EditingType.String).Add();
+                                        col.Field(p => p.DataEvento).HeaderText("Data Evento").Width("50").EditType(EditingType.DateTimePicker).Format("{0:f}").Add();
+                                        col.Field(p => p.DataCreazione).HeaderText("Data Creazione").Width("50").AllowEditing(false).Format("{0:dd/MM/yyyy}").Add();
+                                    })
+                )
+            </div>
+        </div>
+    </div>
+</section>
+
+@section script{
+    @Scripts.Render("~/bundles/jqueryeasing")
+    @Scripts.Render("~/bundles/jsrender")
+    @Scripts.Render("~/bundles/jqueryglobalize")
+    @Scripts.Render("~/bundles/jquerybrowser")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/web/ej.web.all.min.js")
+    @Scripts.Render("https://cdn.syncfusion.com/15.1.0.33/js/common/ej.unobtrusive.min.js")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/GridOption")
+    @Html.EJ().ScriptManager()
+
+    <script type="text/javascript">
+        ej.Grid.Locale["it-IT"] = {
+            EmptyRecord: "Non esistono dati da visualizzare. Inseriscine uno.",
+
+            //Editing option localization strings
+
+            DeleteOperationAlert: "Nessun record selezionato per l'operazione di eliminazione",
+
+            EditOperationAlert: "Nessun record selezionato per l'operazione di modifica",
+
+            SaveButton: "Salva",
+
+            OkButton: "OK",
+
+            CancelButton: "Annulla",
+
+            EditFormTitle: "Dettagli di ",
+
+            AddFormTitle: "Aggiungi nuovo record ",
+
+            //Key Combination alert message
+
+            Notactionkeyalert: "Questa combinazione di tasti non è disponibile",
+
+            Keyconfigalerttext: "Questa combinazione di tasti è già stata assegnata ",
+
+            //Group drop area and caption format
+
+            GroupDropArea: "Trascina un'intestazione di colonna per raggrupparla",
+
+            GroupCaptionFormat: ":  - 8  oggetto  oggetti ",
+
+            //Bulk Editing Alert Messages
+
+            BatchSaveConifrm: "Sei sicuro di voler salvare le modifiche?",
+
+            BatchSaveLostChanges: "Le modifiche non salvate verranno perse. Sei sicuro di voler continuare?",
+
+            //Pager bar message string 
+
+            PagerInfo: "{0} di {1} pagine ({2} oggetti)",
+
+            GroupCaptionFormat: "{{:field}}: {{:key}} - {{:count}} {{if count == 1}}Oggetto{{else}}Oggetti{{/if}}",
+
+            UnGroup: "Clicca qui per separare",
+
+            //Frozen Alert Messages
+
+            FrozenColumnsViewAlert: "Le colonne congelate dovrebbero essere in area di griglia",
+
+            FrozenColumnsScrollAlert: "Attiva allowScrolling durante l'utilizzo di colonne congelate",
+
+            FrozenNotSupportedException: "Le colonne e le righe congelate non sono supportate per il raggruppamento, il modello di riga, il modello di dettaglio e la modifica batch",
+
+            //Toolbar tooltip
+
+            Add: "Inserisci",
+
+            Edit: "Modifica",
+
+            Delete: "Elimina",
+
+            Update: "Aggiorna",
+
+            Cancel: "Annulla",
+
+            //Filter menu strings
+
+            StringMenuOptions: [{ text: "Inizia con", value: "StartsWith" }, { text: "Finisce con", value: "EndsWith" }, { text: "Contiene", value: "Contains" }, { text: "Pari", value: "Equal" }, { text: "Diverso", value: "NotEqual" }],
+
+            NumberMenuOptions: [{ text: "Minori di", value: "LessThan" }, { text: "Più grande di", value: "GreaterThan" }, { text: "Minore di o Uguali", value: "LessThanOrEqual" }, { text: "Più grande di o uguale", value: "GreaterThanOrEqual" }, { text: "Uguale", value: "Equal" }, { text: "Diverso", value: "NotEqual" }],
+
+            PredicateAnd: "E",
+
+            PredicateOr: "O",
+
+            Filter: "Filtro",
+
+            MatchCase: "Caso di corrispondenza",
+
+            Clear: "Pulisci",
+
+            PrintGrid: "Stampa",
+
+            ExcelExport: "Esportazione in formato Excel",
+
+            WordExport: "Esportazione in formato Word",
+
+            PdfExport: "Esportazione in formato PDF",
+
+            ResponsiveFilter: "Filtro",
+
+            ResponsiveSorting: "Ordinare"
+    };
+    ej.Pager.Locale["it-IT"] = {
+        pagerInfo: "{0} di {1} Pagine ({2} Oggetti)",
+        firstPageTooltip: "Per la prima pagina",
+        lastPageTooltip: "L'ultima pagina",
+        nextPageTooltip: "Pagina successiva",
+        previousPageTooltip: "Pagina precedente",
+        nextPagerTooltip: "Alla prossima pagina",
+        previousPagerTooltip: "Pagina precedente"
+    };
+    </script>
+}
+
+
+
+
+
+
